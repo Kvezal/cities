@@ -5,6 +5,7 @@ export { FeatureEntity, IFeature } from './feature';
 export { HotelEntity, IHotel } from './hotel';
 export { HotelTypeEntity, IHotelType } from './hotel-type';
 export { ImageEntity, IImage } from './image';
+export { JsonWebTokenEntity, IJsonWebToken, IJsonWebTokenParams } from './json-web-token';
 export { LocationEntity, ILocation } from './location';
 export { RatingEntity, IRating } from './rating';
 export { UserEntity, IUser } from './user';

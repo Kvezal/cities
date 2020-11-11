@@ -4,7 +4,9 @@ import { GetUserByIdQuery } from '../../queries';
 import { CreateUserUseCase } from '../../use-cases';
 
 
-export class UserService implements GetUserByIdQuery, CreateUserUseCase {
+export class UserService implements
+  GetUserByIdQuery,
+  CreateUserUseCase {
   constructor(
     private readonly _userLoaderService: LoadUserByIdPort,
     private readonly _userCreatorService: CreateUserPort
