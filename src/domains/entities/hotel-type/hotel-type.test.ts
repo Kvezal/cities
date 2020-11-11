@@ -1,4 +1,4 @@
-import { HotelType } from './hotel-type';
+import { HotelTypeEntity } from './hotel-type.entity';
 import { IHotelType } from './hotel-type.interface';
 
 
@@ -9,10 +9,10 @@ const hotelTypeParams: IHotelType = {
 
 describe(`HotelType entity`, () => {
   describe(`constructor`, () => {
-    let hotelType: HotelType;
+    let hotelType: HotelTypeEntity;
 
     beforeAll(() => {
-      hotelType = new HotelType(
+      hotelType = new HotelTypeEntity(
         hotelTypeParams.id,
         hotelTypeParams.title
       );
@@ -24,14 +24,14 @@ describe(`HotelType entity`, () => {
   });
 
   describe(`create method`, () => {
-    let hotelType: HotelType;
+    let hotelType: HotelTypeEntity;
 
     beforeAll(() => {
-      hotelType = HotelType.create(hotelTypeParams);
+      hotelType = HotelTypeEntity.create(hotelTypeParams);
     });
 
     it(`should create a new HotelType instance`, () => {
-      expect(hotelType).toBeInstanceOf(HotelType);
+      expect(hotelType).toBeInstanceOf(HotelTypeEntity);
     });
 
     it.each([`id`, `title`])(`should create a new HotelType instance with correct %p property`, (property) => {

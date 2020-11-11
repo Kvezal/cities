@@ -1,2 +1,2 @@
 export { IUserType } from './user-type.interface';
-export { UserType } from './user-type';
+export { UserTypeEntity } from './user-type.entity';

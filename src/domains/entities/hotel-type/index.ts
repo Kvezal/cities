@@ -1,3 +1,3 @@
 export { IHotelType } from './hotel-type.interface';
-export { HotelType } from './hotel-type';
+export { HotelTypeEntity } from './hotel-type.entity';
 

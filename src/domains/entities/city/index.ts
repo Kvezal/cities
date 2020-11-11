@@ -1,2 +1,2 @@
 export { ICity } from './city-interface';
-export { City } from './city';
+export { CityEntity } from './city.entity';

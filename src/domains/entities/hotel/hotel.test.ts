@@ -1,10 +1,10 @@
-import { City } from '../city';
-import { Feature } from '../feature';
-import { HotelType } from '../hotel-type';
-import { Image } from '../image';
-import { Location } from '../location';
-import { User } from '../user';
-import { Hotel } from './hotel';
+import { CityEntity } from '../city';
+import { FeatureEntity } from '../feature';
+import { HotelTypeEntity } from '../hotel-type';
+import { ImageEntity } from '../image';
+import { LocationEntity } from '../location';
+import { UserEntity } from '../user';
+import { HotelEntity } from './hotel.entity';
 import { IHotel } from './hotel.interface';
 
 
@@ -75,10 +75,10 @@ const hotelParams: IHotel = {
 
 describe(`Hotel entity`, () => {
   describe(`constructor`, () => {
-    let hotel: Hotel;
+    let hotel: HotelEntity;
 
     beforeAll(() => {
-      hotel = new Hotel(
+      hotel = new HotelEntity(
         hotelParams.id,
         hotelParams.title,
         hotelParams.description,
@@ -87,12 +87,12 @@ describe(`Hotel entity`, () => {
         hotelParams.price,
         hotelParams.isPremium,
         hotelParams.rating,
-        hotelParams.features.map(Feature.create),
-        HotelType.create(hotelParams.type),
-        City.create(hotelParams.city),
-        Location.create(hotelParams.location),
-        User.create(hotelParams.host),
-        hotelParams.images.map(Image.create),
+        hotelParams.features.map(FeatureEntity.create),
+        HotelTypeEntity.create(hotelParams.type),
+        CityEntity.create(hotelParams.city),
+        LocationEntity.create(hotelParams.location),
+        UserEntity.create(hotelParams.host),
+        hotelParams.images.map(ImageEntity.create),
       );
     });
 
@@ -110,10 +110,10 @@ describe(`Hotel entity`, () => {
   });
 
   describe(`create method`, () => {
-    let hotel: Hotel;
+    let hotel: HotelEntity;
 
     beforeAll(() => {
-      hotel = Hotel.create(hotelParams);
+      hotel = HotelEntity.create(hotelParams);
     });
 
     it.each(

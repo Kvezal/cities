@@ -1,4 +1,4 @@
-import { UserType } from './user-type';
+import { UserTypeEntity } from './user-type.entity';
 import { IUserType } from './user-type.interface';
 
 
@@ -9,10 +9,10 @@ const userTypeParams: IUserType = {
 
 describe(`UserType entity`, () => {
   describe(`constructor`, () => {
-    let userType: UserType;
+    let userType: UserTypeEntity;
 
     beforeAll(() => {
-      userType = new UserType(
+      userType = new UserTypeEntity(
         userTypeParams.id,
         userTypeParams.title
       );
@@ -24,14 +24,14 @@ describe(`UserType entity`, () => {
   });
 
   describe(`create method`, () => {
-    let userType: UserType;
+    let userType: UserTypeEntity;
 
     beforeAll(() => {
-      userType = UserType.create(userTypeParams);
+      userType = UserTypeEntity.create(userTypeParams);
     });
 
     it(`should create a new UserType instance`, () => {
-      expect(userType).toBeInstanceOf(UserType);
+      expect(userType).toBeInstanceOf(UserTypeEntity);
     });
 
     it.each([`id`, `title`])(`should create a new UserType instance with correct %p property`, (property) => {

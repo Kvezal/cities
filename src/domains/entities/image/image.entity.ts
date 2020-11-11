@@ -1,7 +1,7 @@
-import { IHotelType } from './hotel-type.interface';
+import { IImage } from './image.interface';
 
 
-export class HotelType {
+export class ImageEntity {
   constructor(
     private readonly _id: number,
     private readonly _title: string
@@ -15,8 +15,8 @@ export class HotelType {
     return this._title;
   }
 
-  static create(params: IHotelType): HotelType {
-    return new HotelType(
+  static create(params: IImage): ImageEntity {
+    return new ImageEntity(
       params.id,
       params.title
     );

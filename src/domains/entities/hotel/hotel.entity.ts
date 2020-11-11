@@ -1,13 +1,13 @@
-import { City } from '../city';
-import { Feature } from '../feature';
-import { HotelType } from '../hotel-type';
-import { Image } from '../image';
-import { Location } from '../location';
-import { User } from '../user';
+import { CityEntity } from '../city';
+import { FeatureEntity } from '../feature';
+import { HotelTypeEntity } from '../hotel-type';
+import { ImageEntity } from '../image';
+import { LocationEntity } from '../location';
+import { UserEntity } from '../user';
 import { IHotel } from './hotel.interface';
 
 
-export class Hotel {
+export class HotelEntity {
   constructor(
     private readonly _id: number,
     private readonly _title: string,
@@ -17,12 +17,12 @@ export class Hotel {
     private readonly _price: number,
     private readonly _isPremium: boolean,
     private readonly _rating: number,
-    private readonly _features: Feature[],
-    private readonly _type: HotelType,
-    private readonly _city: City,
-    private readonly _location: Location,
-    private readonly _host: User,
-    private readonly _images: Image[]
+    private readonly _features: FeatureEntity[],
+    private readonly _type: HotelTypeEntity,
+    private readonly _city: CityEntity,
+    private readonly _location: LocationEntity,
+    private readonly _host: UserEntity,
+    private readonly _images: ImageEntity[]
   ) {}
 
   get id(): number {
@@ -57,32 +57,32 @@ export class Hotel {
     return this._rating;
   }
 
-  get features(): Feature[] {
+  get features(): FeatureEntity[] {
     return this._features;
   }
 
-  get type(): HotelType {
+  get type(): HotelTypeEntity {
     return this._type;
   }
 
-  get city(): City {
+  get city(): CityEntity {
     return this._city;
   }
 
-  get location(): Location {
+  get location(): LocationEntity {
     return this._location;
   }
 
-  get host(): User {
+  get host(): UserEntity {
     return this._host;
   }
 
-  get images(): Image[] {
+  get images(): ImageEntity[] {
     return this._images;
   }
 
-  static create(params: IHotel): Hotel {
-    return new Hotel(
+  static create(params: IHotel): HotelEntity {
+    return new HotelEntity(
       params.id,
       params.title,
       params.description,
@@ -91,12 +91,12 @@ export class Hotel {
       params.price,
       params.isPremium,
       params.rating,
-      params.features.map(Feature.create),
-      HotelType.create(params.type),
-      City.create(params.city),
-      Location.create(params.location),
-      User.create(params.host),
-      params.images.map(Image.create),
+      params.features.map(FeatureEntity.create),
+      HotelTypeEntity.create(params.type),
+      CityEntity.create(params.city),
+      LocationEntity.create(params.location),
+      UserEntity.create(params.host),
+      params.images.map(ImageEntity.create),
     )
   }
 }

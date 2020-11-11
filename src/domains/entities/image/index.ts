@@ -1,2 +1,2 @@
 export { IImage } from './image.interface';
-export { Image } from './image';
+export { ImageEntity } from './image.entity';

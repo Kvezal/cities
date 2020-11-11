@@ -1,7 +1,7 @@
 import { ILocation } from './location.interface';
 
 
-export class Location {
+export class LocationEntity {
   constructor(
     private readonly _id: number,
     private readonly _latitude: number,
@@ -25,8 +25,8 @@ export class Location {
     return this._zoom;
   }
 
-  static create(params: ILocation): Location {
-    return new Location(
+  static create(params: ILocation): LocationEntity {
+    return new LocationEntity(
       params.id,
       params.latitude,
       params.longitude,

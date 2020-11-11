@@ -1,4 +1,4 @@
-import { Location } from './location';
+import { LocationEntity } from './location.entity';
 import { ILocation } from './location.interface';
 
 
@@ -11,10 +11,10 @@ const locationParams: ILocation = {
 
 describe(`Feature entity`, () => {
   describe(`constructor`, () => {
-    let location: Location = null;
+    let location: LocationEntity = null;
 
     beforeAll(() => {
-      location = new Location(
+      location = new LocationEntity(
         locationParams.id,
         locationParams.latitude,
         locationParams.longitude,
@@ -30,14 +30,14 @@ describe(`Feature entity`, () => {
   });
 
   describe(`create method`, () => {
-    let location: Location = null;
+    let location: LocationEntity = null;
 
     beforeAll(() => {
-      location = Location.create(locationParams);
+      location = LocationEntity.create(locationParams);
     });
 
     it(`should create a new Feature instance`, () => {
-      expect(location).toBeInstanceOf(Location);
+      expect(location).toBeInstanceOf(LocationEntity);
     });
 
     it.each(

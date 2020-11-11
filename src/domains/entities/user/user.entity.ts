@@ -1,15 +1,15 @@
-import { UserType } from '../user-type';
-import { Image } from '../image';
+import { UserTypeEntity } from '../user-type';
+import { ImageEntity } from '../image';
 import { IUser } from './user.interface';
 
-export class User {
+export class UserEntity {
   constructor(
     private readonly _id: number,
     private readonly _name: string,
     private readonly _email: string,
     private readonly _password: string,
-    private readonly _type: UserType,
-    private readonly _image: Image,
+    private readonly _type: UserTypeEntity,
+    private readonly _image: ImageEntity,
   ) {}
 
   get id(): number {
@@ -28,22 +28,22 @@ export class User {
     return this._password;
   }
 
-  get type(): UserType {
+  get type(): UserTypeEntity {
     return this._type;
   }
 
-  get image(): Image {
+  get image(): ImageEntity {
     return this._image;
   }
 
-  static create(params: IUser): User {
-    return new User(
+  static create(params: IUser): UserEntity {
+    return new UserEntity(
       params.id,
       params.name,
       params.email,
       params.password,
-      UserType.create(params.type),
-      Image.create(params.image)
+      UserTypeEntity.create(params.type),
+      ImageEntity.create(params.image)
     );
   }
 }

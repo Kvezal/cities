@@ -1,7 +1,7 @@
-import { UserType } from '../user-type';
-import { Image } from '../image';
+import { UserTypeEntity } from '../user-type';
+import { ImageEntity } from '../image';
 import { IUser } from './user.interface';
-import { User } from './user';
+import { UserEntity } from './user.entity';
 
 
 const userParams: IUser = {
@@ -20,16 +20,16 @@ const userParams: IUser = {
 };
 describe(`User entity`, () => {
   describe(`constructor`, () => {
-    let user: User;
+    let user: UserEntity;
 
     beforeAll( () => {
-      user = new User(
+      user = new UserEntity(
         userParams.id,
         userParams.name,
         userParams.email,
         userParams.password,
-        UserType.create(userParams.type),
-        Image.create(userParams.image)
+        UserTypeEntity.create(userParams.type),
+        ImageEntity.create(userParams.image)
       );
     });
 
@@ -47,10 +47,10 @@ describe(`User entity`, () => {
   });
 
   describe(`create method`, () => {
-    let user: User;
+    let user: UserEntity;
 
     beforeAll( () => {
-      user = User.create(userParams);
+      user = UserEntity.create(userParams);
     });
 
     it.each(

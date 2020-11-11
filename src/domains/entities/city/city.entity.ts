@@ -1,12 +1,12 @@
-import {Location} from '../location';
+import { LocationEntity } from '../location';
 import { ICity } from './city-interface';
 
 
-export class City {
+export class CityEntity {
   constructor(
     private readonly _id: number,
     private readonly _title: string,
-    private readonly _location: Location
+    private readonly _location: LocationEntity
   ) {}
 
   get id(): number {
@@ -17,15 +17,15 @@ export class City {
     return this._title;
   }
 
-  get location(): Location {
+  get location(): LocationEntity {
     return this._location;
   }
 
-  static create(params: ICity): City {
-    return new City(
+  static create(params: ICity): CityEntity {
+    return new CityEntity(
       params.id,
       params.title,
-      Location.create(params.location)
+      LocationEntity.create(params.location)
     );
   }
 }
