@@ -1,6 +1,6 @@
-import { UserEntity } from '../entities';
+import { JsonWebTokenEntity, UserEntity } from '../entities';
 
 
 export interface LoadUserByEmailPort {
-  loadUserByEmail(email: string): UserEntity;
+  loadUserByEmail(email: string): Promise<UserEntity>;
 }

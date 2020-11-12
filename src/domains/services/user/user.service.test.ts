@@ -19,50 +19,50 @@ describe(`User service`, () => {
   };
 
   describe(`getUserById`, () => {
-    it(`should call loadUserById method`, () => {
+    it(`should call loadUserById method`, async () => {
       const loadUserById = jest.fn();
       const userService = new UserService(
         {loadUserById},
         null
       );
-      userService.getUserById(userParams.id);
+      await userService.getUserById(userParams.id);
       expect(loadUserById).toHaveBeenCalledTimes(1);
     });
 
-    it(`should call loadUserById method with params`, () => {
+    it(`should call loadUserById method with params`, async () => {
       const loadUserById = jest.fn();
       const userService = new UserService(
         {loadUserById},
         null
       );
-      userService.getUserById(userParams.id);
+      await userService.getUserById(userParams.id);
       expect(loadUserById).toHaveBeenCalledWith(userParams.id);
     });
 
-    it(`should return result of loadUserById method`, () => {
+    it(`should return result of loadUserById method`, async () => {
       const userEntity = UserEntity.create(userParams);
       const loadUserById = jest.fn().mockReturnValue(userEntity);
       const userService = new UserService(
         {loadUserById},
         null
       );
-      const result = userService.getUserById(userParams.id);
+      const result = await userService.getUserById(userParams.id);
       expect(result).toEqual(userEntity);
     });
   });
 
   describe(`createUser`, () => {
-    it(`should call createUser method`, () => {
+    it(`should call createUser method`, async () => {
       const createUser = jest.fn();
       const userService = new UserService(
         null,
         {createUser}
       );
-      userService.createUser(userParams);
+      await userService.createUser(userParams);
       expect(createUser).toHaveBeenCalledTimes(1);
     });
 
-    it(`should call create method of User`, () => {
+    it(`should call create method of User`, async () => {
       const staticCreate = jest.fn();
       UserEntity.create = staticCreate;
 
@@ -70,11 +70,11 @@ describe(`User service`, () => {
         null,
         {createUser: () => null}
       );
-      userService.createUser(userParams);
+      await userService.createUser(userParams);
       expect(staticCreate).toHaveBeenCalledTimes(1);
     });
 
-    it(`should call create method of User with params`, () => {
+    it(`should call create method of User with params`, async () => {
       const staticCreate = jest.fn();
       UserEntity.create = staticCreate;
 
@@ -82,11 +82,11 @@ describe(`User service`, () => {
         null,
         {createUser: () => null}
       );
-      userService.createUser(userParams);
+      await userService.createUser(userParams);
       expect(staticCreate).toHaveBeenCalledWith(userParams);
     });
 
-    it(`should call createUser method with params`, () => {
+    it(`should call createUser method with params`, async () => {
       const userEntity = UserEntity.create(userParams);
       const createUser = jest.fn();
       UserEntity.create = jest.fn().mockReturnValue(userEntity);
@@ -95,11 +95,11 @@ describe(`User service`, () => {
         null,
         {createUser}
       );
-      userService.createUser(userParams);
+      await userService.createUser(userParams);
       expect(createUser).toHaveBeenCalledWith(userEntity);
     });
 
-    it(`should return result of createUser method`, () => {
+    it(`should return result of createUser method`, async () => {
       const userEntity = UserEntity.create(userParams);
       const createUser = jest.fn().mockReturnValue(userEntity);
 
@@ -107,7 +107,7 @@ describe(`User service`, () => {
         null,
         {createUser}
       );
-      const result = userService.createUser(userParams);
+      const result = await userService.createUser(userParams);
       expect(result).toEqual(userEntity);
     });
   });

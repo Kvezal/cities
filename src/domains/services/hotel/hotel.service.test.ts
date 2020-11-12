@@ -69,22 +69,22 @@ describe(`Hotel Service`, () => {
   };
 
   describe(`getHotelList method`, () => {
-    it(`should call loadHotelList method`, () => {
+    it(`should call loadHotelList method`, async () => {
       const loadHotelListMock = jest.fn();
       const hotelService = new HotelService(
         {loadHotelList: loadHotelListMock}
       );
-      hotelService.getHotelList();
+      await hotelService.getHotelList();
       expect(loadHotelListMock.mock.calls).toHaveLength(1);
     });
 
-    it(`should return result of loadHotelList method`, () => {
+    it(`should return result of loadHotelList method`, async () => {
       const hotelEntity = HotelEntity.create(hotelParams);
       const loadHotelListMock = jest.fn().mockReturnValue(hotelEntity);
       const hotelService = new HotelService(
         {loadHotelList: loadHotelListMock}
       );
-      const result = hotelService.getHotelList();
+      const result = await hotelService.getHotelList();
       expect(result).toEqual(hotelEntity);
     });
   });

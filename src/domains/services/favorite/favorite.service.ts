@@ -13,16 +13,16 @@ export class FavoriteService implements
     private readonly _favoriteHotelStateUpdaterService: SaveUserHotelStatePort
   ) {}
 
-  public getFavoriteHotelList(userId: number): HotelEntity[] {
+  public async getFavoriteHotelList(userId: number): Promise<HotelEntity[]> {
     return this._favoriteHotelLoaderService.loadFavoriteHotelList(userId);
   }
 
-  public toggleFavoriteStateOfHotelForUser(userId: number, hotelId: number): FavoriteEntity {
-    const hotelUserState = this._favoriteHotelStateLoaderService.loadUserStateOfHotel(userId, hotelId);
+  public async toggleFavoriteStateOfHotelForUser(userId: number, hotelId: number): Promise<FavoriteEntity> {
+    const hotelUserState = await this._favoriteHotelStateLoaderService.loadUserStateOfHotel(userId, hotelId);
     if (!hotelUserState) {
       return;
     }
-    const updatedHotelFavoriteState = hotelUserState.toggleFavoriteStateOfHotel();
+    const updatedHotelFavoriteState = await hotelUserState.toggleFavoriteStateOfHotel();
     return this._favoriteHotelStateUpdaterService.saveUserHotelState(updatedHotelFavoriteState);
   }
 }

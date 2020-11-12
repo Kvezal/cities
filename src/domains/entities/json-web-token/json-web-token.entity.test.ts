@@ -1,4 +1,5 @@
 import { JsonWebTokenEntity } from './json-web-token.entity';
+import { IJsonWebTokenParams } from './json-web-token.interface';
 
 
 describe(`Json Web Token entity`, () => {
@@ -7,14 +8,10 @@ describe(`Json Web Token entity`, () => {
     refreshToken: `refreshToken`,
   };
 
-  const jsonWebTokenParams = {
+  const jsonWebTokenParams: IJsonWebTokenParams = {
     id: 1,
     name: `name`,
     email: `email@gmail.com`,
-    type: {
-      id: 1,
-      title: `title`,
-    },
     image: {
       id: 1,
       title: `title`,
@@ -33,7 +30,7 @@ describe(`Json Web Token entity`, () => {
 
     it.each(
       [`accessToken`, `refreshToken`]
-    )(`should create a new JsonWebTokenEntity instance with correct %p property`, (property) => {
+    )(`should create a new JsonWebTokenEntity instance with correct %p property`, (property: string) => {
       expect(jsonWebTokenEntity[property]).toBe(jsonWebTokenEntityParams[property]);
     });
   });
@@ -47,7 +44,7 @@ describe(`Json Web Token entity`, () => {
 
     it.each(
       [`accessToken`, `refreshToken`]
-    )(`should create a new JsonWebTokenEntity instance with correct %p property`, (property) => {
+    )(`should create a new JsonWebTokenEntity instance with correct %p property`, (property: string) => {
       expect(jsonWebTokenEntity[property]).toBe(jsonWebTokenEntityParams[property]);
     });
   });
@@ -61,8 +58,72 @@ describe(`Json Web Token entity`, () => {
 
     it.each(
       [`accessToken`, `refreshToken`]
-    )(`should create a new JsonWebTokenEntity instance with property`, (property) => {
+    )(`should create a new JsonWebTokenEntity instance with property`, (property: string) => {
       expect(jsonWebTokenEntity).toHaveProperty(property);
+    });
+  });
+
+  describe(`checkAccessToken method`, () => {
+    it(`result should return "true" if JWT is valid`, async () => {
+      const jsonWebTokenEntity = JsonWebTokenEntity.generate(jsonWebTokenParams);
+      const result = await jsonWebTokenEntity.checkAccessToken();
+      expect(result).toBeTruthy();
+    });
+
+    it(`result should return "false" if JWT is invalid`, async () => {
+      const jsonWebTokenEntity = JsonWebTokenEntity.create({
+        accessToken: `invalid access JWT token`,
+        refreshToken: ``,
+      });
+      const result = await jsonWebTokenEntity.checkAccessToken();
+      expect(result).toBeFalsy();
+    });
+  });
+
+  describe(`decodeAccessToken method`, () => {
+    it.each(
+      [`id`, `name`, `email`, `image`]
+    )(`result should have correct %p property value`, async (property: string) => {
+      const jsonWebTokenEntity = JsonWebTokenEntity.generate(jsonWebTokenParams);
+      const result = await jsonWebTokenEntity.decodeAccessToken();
+      expect(result[property]).toEqual(jsonWebTokenParams[property]);
+    });
+  });
+
+  describe(`checkRefreshToken method`, () => {
+    it(`result should return "true" if JWT is valid`, async () => {
+      const jsonWebTokenEntity = JsonWebTokenEntity.generate(jsonWebTokenParams);
+      const result = await jsonWebTokenEntity.checkRefreshToken();
+      expect(result).toBeTruthy();
+    });
+
+    it(`result should return "false" if JWT is invalid`, async () => {
+      const jsonWebTokenEntity = JsonWebTokenEntity.create({
+        accessToken: `invalid access JWT token`,
+        refreshToken: ``,
+      });
+      const result = await jsonWebTokenEntity.checkRefreshToken();
+      expect(result).toBeFalsy();
+    });
+  });
+
+  describe(`refresh method`, () => {
+    const jsonWebTokenEntity = JsonWebTokenEntity.generate(jsonWebTokenParams);
+
+    it(`should call generate method`, async () => {
+      const generate = jest.fn();
+      const generateJsonWebTokenEntity = JsonWebTokenEntity.generate;
+      JsonWebTokenEntity.generate = (params) => {
+        generate();
+        return generateJsonWebTokenEntity(params);
+      };
+      await jsonWebTokenEntity.refresh();
+      expect(generate).toHaveBeenCalledTimes(1);
+    });
+
+    it.each([`accessToken`, `refreshToken`])(`result should return new JsonWebTokenEntity with %p property`, async (property: string) => {
+      const result = await jsonWebTokenEntity.refresh();
+      expect(result).toHaveProperty(property);
     });
   });
 });

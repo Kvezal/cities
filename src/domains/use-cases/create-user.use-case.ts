@@ -1,6 +1,6 @@
-import { UserEntity } from '../entities/user';
+import { UserEntity } from '../entities';
 
 
 export interface CreateUserUseCase {
-  createUser(userEntity: UserEntity): UserEntity;
+  createUser(userEntity: UserEntity): Promise<UserEntity>;
 }

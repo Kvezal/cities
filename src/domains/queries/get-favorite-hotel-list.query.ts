@@ -1,6 +1,6 @@
-import { HotelEntity } from '../entities/hotel';
+import { HotelEntity } from '../entities';
 
 
 export interface GetFavoriteHotelListQuery {
-  getFavoriteHotelList(userId: number): HotelEntity[];
+  getFavoriteHotelList(userId: number): Promise<HotelEntity[]>;
 }

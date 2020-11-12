@@ -12,11 +12,11 @@ export class UserService implements
     private readonly _userCreatorService: CreateUserPort
   ) {}
 
-  public getUserById(userId: number): UserEntity {
+  public async getUserById(userId: number): Promise<UserEntity> {
     return this._userLoaderService.loadUserById(userId);
   }
 
-  public createUser(userParams: IUser): UserEntity {
+  public async createUser(userParams: IUser): Promise<UserEntity> {
     const userEntity = UserEntity.create(userParams);
     return this._userCreatorService.createUser(userEntity);
   }

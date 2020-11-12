@@ -8,7 +8,7 @@ export class HotelService implements GetHotelListQuery {
     private readonly _hotelLoaderService: LoadHotelListPort
   ) {}
 
-  public getHotelList(): HotelEntity[] {
-    return  this._hotelLoaderService.loadHotelList();
+  public async getHotelList(): Promise<HotelEntity[]> {
+    return await this._hotelLoaderService.loadHotelList();
   }
 }
