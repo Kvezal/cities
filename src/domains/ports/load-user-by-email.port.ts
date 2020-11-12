@@ -1,4 +1,4 @@
-import { JsonWebTokenEntity, UserEntity } from '../entities';
+import { UserEntity } from '../entities';
 
 
 export interface LoadUserByEmailPort {

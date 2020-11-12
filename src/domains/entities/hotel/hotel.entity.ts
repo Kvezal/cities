@@ -99,4 +99,16 @@ export class HotelEntity {
       params.images.map(ImageEntity.create),
     )
   }
+
+  public getNearbyHotelList(hotels: HotelEntity[]): HotelEntity[] {
+    const NEARBY_HOTEL_LIMIT = 3;
+    return hotels
+      .filter((hotel) => this.location.id !== hotel.location.id)
+      .sort((left: HotelEntity, right: HotelEntity): number => {
+        const leftDistance = this.location.calculateDistance(left.location);
+        const rightDistance = this.location.calculateDistance(right.location);
+        return leftDistance - rightDistance;
+      })
+      .slice(0, NEARBY_HOTEL_LIMIT);
+  }
 }
