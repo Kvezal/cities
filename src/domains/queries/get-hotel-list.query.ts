@@ -1,6 +1,7 @@
-import { HotelEntity } from '../entities/hotel';
+import { HotelEntity } from '../entities';
+import { IHotelSortingParams } from '../interfaces';
 
 
 export interface GetHotelListQuery {
-  getHotelList(): Promise<HotelEntity[]>;
+  getHotelList(sortParams: IHotelSortingParams): Promise<HotelEntity[]>;
 }

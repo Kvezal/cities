@@ -1,4 +1,5 @@
 import { HotelEntity } from '../../entities';
+import { IHotelSortingParams } from '../../interfaces';
 import { LoadHotelByIdPort, LoadHotelListPort } from '../../ports';
 import { GetHotelByIdQuery, GetHotelListQuery, GetNearbyHotelListQuery } from '../../queries';
 
@@ -12,8 +13,8 @@ export class HotelService implements
     private readonly _hotelLoaderService: LoadHotelByIdPort
   ) {}
 
-  public async getHotelList(): Promise<HotelEntity[]> {
-    return this._hotelListLoaderService.loadHotelList();
+  public async getHotelList(sortParams: IHotelSortingParams): Promise<HotelEntity[]> {
+    return this._hotelListLoaderService.loadHotelList(sortParams);
   }
 
   public async getHotelById(hotelId: number): Promise<HotelEntity> {
@@ -25,7 +26,9 @@ export class HotelService implements
     if (!hotelEntity) {
       return;
     }
-    const hotelEntityList = await this.getHotelList();
+    const hotelEntityList = await this.getHotelList({
+      cityId: hotelEntity.city.id,
+    });
     return hotelEntity.getNearbyHotelList(hotelEntityList);
   }
 }

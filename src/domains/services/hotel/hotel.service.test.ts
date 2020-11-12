@@ -1,6 +1,7 @@
 import { HotelService } from './hotel.service';
 import { HotelEntity, IHotel } from '../../entities/hotel';
 import { ILocation } from '../../entities/location';
+import { IHotelSortingParams } from '../../interfaces';
 
 
 const hotelParams: IHotel = {
@@ -68,6 +69,10 @@ const hotelParams: IHotel = {
   ],
 };
 
+const hotelSortingParams: IHotelSortingParams = {
+  cityId: 1,
+};
+
 const hotelLocations = [
   {
     id: 1,
@@ -129,8 +134,18 @@ describe(`Hotel Service`, () => {
         {loadHotelList},
         null
       );
-      await hotelService.getHotelList();
+      await hotelService.getHotelList(hotelSortingParams);
       expect(loadHotelList).toHaveBeenCalledTimes(1);
+    });
+
+    it(`should call loadHotelList method with sorting params`, async () => {
+      const loadHotelList = jest.fn();
+      const hotelService = new HotelService(
+        {loadHotelList},
+        null
+      );
+      await hotelService.getHotelList(hotelSortingParams);
+      expect(loadHotelList).toHaveBeenCalledWith(hotelSortingParams);
     });
 
     it(`should return result of loadHotelList method`, async () => {
@@ -139,7 +154,7 @@ describe(`Hotel Service`, () => {
         {loadHotelList: jest.fn().mockReturnValue(hotelEntityList)},
         null
       );
-      const result = await hotelService.getHotelList();
+      const result = await hotelService.getHotelList(hotelSortingParams);
       expect(result).toEqual(hotelEntityList);
     });
   });
