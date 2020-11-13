@@ -1,14 +1,14 @@
 import { compare } from 'bcrypt';
 
-import { IJsonWebTokenParams, JsonWebTokenEntity } from '../../entities';
-import { IUserAuthenticate } from '../../interfaces';
-import { DeleteJsonWebTokenPort, LoadJsonWebTokenPort, LoadUserByEmailPort, SaveJsonWebTokenPort } from '../../ports';
+import { IJsonWebTokenParams, JsonWebTokenEntity } from 'domains/entities';
+import { IUserAuthenticate } from 'domains/interfaces';
+import { DeleteJsonWebTokenPort, LoadJsonWebTokenPort, LoadUserByEmailPort, SaveJsonWebTokenPort } from 'domains/ports';
 import {
   AuthenticateUserUseCase,
   CheckTokenUseCase,
   DecodeAccessTokenUseCase,
   RefreshTokenUseCase,
-} from '../../use-cases';
+} from 'domains/use-cases';
 
 
 export class AuthService implements

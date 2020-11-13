@@ -1,7 +1,7 @@
-import { HotelEntity } from '../../entities';
-import { IHotelSortingParams } from '../../interfaces';
-import { LoadHotelByIdPort, LoadHotelListPort } from '../../ports';
-import { GetHotelByIdQuery, GetHotelListQuery, GetNearbyHotelListQuery } from '../../queries';
+import { HotelEntity } from 'domains/entities';
+import { IHotelSortingParams } from 'domains/interfaces';
+import { LoadHotelByIdPort, LoadHotelListPort } from 'domains/ports';
+import { GetHotelByIdQuery, GetHotelListQuery, GetNearbyHotelListQuery } from 'domains/queries';
 
 
 export class HotelService implements

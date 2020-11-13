@@ -1,4 +1,5 @@
-import { LocationEntity } from '../location';
+import { LocationEntity } from 'domains/entities';
+
 import { ICity } from './city-interface';
 
 

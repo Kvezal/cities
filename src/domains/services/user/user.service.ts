@@ -1,10 +1,10 @@
 import { hash } from 'bcrypt';
 
-import { SALT_ROUND } from '../../constants';
-import { IUser, UserEntity } from '../../entities';
-import { SaveUserPort, LoadUserByIdPort } from '../../ports';
-import { GetUserByIdQuery } from '../../queries';
-import { CreateUserUseCase } from '../../use-cases';
+import { SALT_ROUND } from 'domains/constants';
+import { IUser, UserEntity } from 'domains/entities';
+import { SaveUserPort, LoadUserByIdPort } from 'domains/ports';
+import { GetUserByIdQuery } from 'domains/queries';
+import { CreateUserUseCase } from 'domains/use-cases';
 
 
 export class UserService implements

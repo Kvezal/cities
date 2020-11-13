@@ -1,4 +1,5 @@
-import { CityEntity, ICity } from '../../entities';
+import { CityEntity, ICity } from 'domains/entities';
+
 import { CityService } from './city.service';
 
 

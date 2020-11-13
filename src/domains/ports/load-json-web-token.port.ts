@@ -1,4 +1,4 @@
-import { JsonWebTokenEntity } from '../entities';
+import { JsonWebTokenEntity } from 'domains/entities';
 
 
 export interface LoadJsonWebTokenPort {

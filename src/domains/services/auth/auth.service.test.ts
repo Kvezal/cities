@@ -1,8 +1,9 @@
 import { hash } from 'bcrypt';
 
-import { SALT_ROUND } from '../../constants';
-import { IJsonWebTokenParams, IUser, JsonWebTokenEntity, UserEntity } from '../../entities';
-import { IUserAuthenticate } from '../../interfaces';
+import { SALT_ROUND } from 'domains/constants';
+import { IJsonWebTokenParams, IUser, JsonWebTokenEntity, UserEntity } from 'domains/entities';
+import { IUserAuthenticate } from 'domains/interfaces';
+
 import { AuthService } from './auth.service';
 
 

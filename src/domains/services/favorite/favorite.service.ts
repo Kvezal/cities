@@ -1,7 +1,7 @@
-import { FavoriteEntity, HotelEntity } from '../../entities';
-import { LoadFavoriteHotelListPort, LoadUserStateOfHotelPort, SaveUserHotelStatePort } from '../../ports';
-import { GetFavoriteHotelListQuery } from '../../queries';
-import { ToggleFavoriteStateOfHotelForUserUseCase } from '../../use-cases';
+import { FavoriteEntity, HotelEntity } from 'domains/entities';
+import { LoadFavoriteHotelListPort, LoadUserStateOfHotelPort, SaveUserHotelStatePort } from 'domains/ports';
+import { GetFavoriteHotelListQuery } from 'domains/queries';
+import { ToggleFavoriteStateOfHotelForUserUseCase } from 'domains/use-cases';
 
 
 export class FavoriteService implements

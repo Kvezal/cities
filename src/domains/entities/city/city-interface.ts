@@ -1,4 +1,4 @@
-import { ILocation, LocationEntity } from '../location';
+import { ILocation, LocationEntity } from 'domains/entities';
 
 
 export interface ICity {

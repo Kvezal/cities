@@ -1,6 +1,5 @@
-import { HotelEntity } from '../hotel';
-import { RatingEntity } from '../rating';
-import { UserEntity } from '../user';
+import { HotelEntity, RatingEntity, UserEntity } from 'domains/entities';
+
 import { IComment } from './comment.interface';
 
 

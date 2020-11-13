@@ -1,5 +1,6 @@
-import { HotelEntity, IHotel, ILocation } from '../../entities';
-import { IHotelSortingParams } from '../../interfaces';
+import { HotelEntity, IHotel, ILocation } from 'domains/entities';
+import { IHotelSortingParams } from 'domains/interfaces';
+
 import { HotelService } from './hotel.service';
 
 

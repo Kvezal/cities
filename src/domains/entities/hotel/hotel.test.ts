@@ -1,9 +1,13 @@
-import { CityEntity } from '../city';
-import { FeatureEntity } from '../feature';
-import { HotelTypeEntity } from '../hotel-type';
-import { ImageEntity } from '../image';
-import { ILocation, LocationEntity } from '../location';
-import { UserEntity } from '../user';
+import {
+  CityEntity,
+  FeatureEntity,
+  HotelTypeEntity,
+  ILocation,
+  ImageEntity,
+  LocationEntity,
+  UserEntity,
+} from 'domains/entities';
+
 import { HotelEntity } from './hotel.entity';
 import { IHotel } from './hotel.interface';
 

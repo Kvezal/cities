@@ -1,8 +1,8 @@
-import { CommentEntity } from '../../entities';
-import { ICommentSorting, IHotelCommentParams } from '../../interfaces';
-import { LoadHotelByIdPort, LoadHotelCommentListPort, LoadUserByIdPort, SaveHotelCommentPort } from '../../ports';
-import { GetHotelCommentListQuery } from '../../queries';
-import { CreateHotelCommentUseCase } from '../../use-cases';
+import { CommentEntity } from 'domains/entities';
+import { ICommentSorting, IHotelCommentParams } from 'domains/interfaces';
+import { LoadHotelByIdPort, LoadHotelCommentListPort, LoadUserByIdPort, SaveHotelCommentPort } from 'domains/ports';
+import { GetHotelCommentListQuery } from 'domains/queries';
+import { CreateHotelCommentUseCase } from 'domains/use-cases';
 
 
 export class CommentService implements

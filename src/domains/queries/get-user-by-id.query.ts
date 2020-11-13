@@ -1,4 +1,4 @@
-import { UserEntity } from '../entities/user';
+import { UserEntity } from 'domains/entities';
 
 
 export interface GetUserByIdQuery {

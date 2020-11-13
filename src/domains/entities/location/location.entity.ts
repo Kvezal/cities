@@ -1,4 +1,5 @@
-import { DISTANCE_ACCURACY } from '../../constants';
+import { DISTANCE_ACCURACY } from 'domains/constants';
+
 import { ILocation } from './location.interface';
 
 

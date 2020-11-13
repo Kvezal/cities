@@ -1,7 +1,7 @@
 export enum ESortingType {
   POPULAR = `popular`,
   RATING = `rating`,
-  HIGN_PRICE= `high-price`,
+  HIGH_PRICE= `high-price`,
   LOW_PRICE = `low-price`,
 }
 

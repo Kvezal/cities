@@ -1,6 +1,6 @@
-import { CityEntity } from '../../entities';
-import { LoadCityByIdPort, LoadCityListPort } from '../../ports';
-import { GetCityByIdQuery, GetCityListQuery } from '../../queries';
+import { CityEntity } from 'domains/entities';
+import { LoadCityByIdPort, LoadCityListPort } from 'domains/ports';
+import { GetCityByIdQuery, GetCityListQuery } from 'domains/queries';
 
 
 export class CityService implements

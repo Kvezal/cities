@@ -1,7 +1,4 @@
 import { CommentEntity } from './comment.entity';
-import { HotelEntity } from '../hotel';
-import { RatingEntity } from '../rating';
-import { UserEntity } from '../user';
 import { IComment } from './comment.interface';
 
 
@@ -95,20 +92,7 @@ describe(`Comment entity`, () => {
     let comment: CommentEntity;
 
     beforeAll(() => {
-      const ratingParams = {
-        value: commentParams.rating,
-        userId: commentParams.user.id,
-        hotelId: commentParams.hotel.id,
-      };
-
-      comment = new CommentEntity(
-        commentParams.id,
-        commentParams.text,
-        commentParams.date,
-        RatingEntity.create(ratingParams),
-        HotelEntity.create(commentParams.hotel),
-        UserEntity.create(commentParams.user)
-      );
+      comment = CommentEntity.create(commentParams);
     });
 
     it.each(

@@ -1,4 +1,5 @@
-import { FavoriteEntity, IFavorite } from '../../entities';
+import { FavoriteEntity, IFavorite } from 'domains/entities';
+
 import { FavoriteService } from './favorite.service';
 
 

@@ -1,4 +1,4 @@
-import { RatingEntity } from '../entities';
+import { RatingEntity } from 'domains/entities';
 
 
 export interface IHotelCommentParams {

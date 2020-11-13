@@ -27,14 +27,17 @@
     "bcrypt": "5.0.0",
     "dotenv": "8.2.0",
     "jsonwebtoken": "8.5.1",
+    "pg": "8.5.0",
     "reflect-metadata": "0.1.13",
     "rimraf": "3.0.2",
-    "rxjs": "6.6.3"
+    "rxjs": "6.6.3",
+    "typeorm": "0.2.29"
   },
   "devDependencies": {
     "@nestjs/cli": "7.5.2",
     "@nestjs/schematics": "7.2.1",
     "@nestjs/testing": "7.5.1",
+    "@nestjs/typeorm": "7.1.4",
     "@types/express": "4.17.8",
     "@types/jest": "26.0.10",
     "@types/node": "13.13.30",
@@ -69,7 +72,11 @@
     "testEnvironment": "node",
     "setupFiles": [
       "dotenv/config"
-    ]
+    ],
+    "moduleNameMapper": {
+      "^domains(.*)": "<rootDir>/domains$1",
+      "^modules(.*)": "<rootDir>/modules$1"
+    }
   },
   "husky": {
     "hooks": {

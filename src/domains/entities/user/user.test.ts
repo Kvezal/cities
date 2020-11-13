@@ -1,5 +1,4 @@
-import { UserTypeEntity } from '../user-type';
-import { ImageEntity } from '../image';
+import { ImageEntity, UserTypeEntity } from 'domains/entities';
 import { IUser } from './user.interface';
 import { UserEntity } from './user.entity';
 

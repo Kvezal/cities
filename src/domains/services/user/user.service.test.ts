@@ -1,4 +1,5 @@
-import { IUser, UserEntity } from '../../entities';
+import { IUser, UserEntity } from 'domains/entities';
+
 import { UserService } from './user.service';
 
 

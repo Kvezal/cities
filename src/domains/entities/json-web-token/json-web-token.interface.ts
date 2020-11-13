@@ -1,4 +1,4 @@
-import { IImage } from '../image';
+import { IImage } from 'domains/entities';
 
 
 export interface IJsonWebToken {

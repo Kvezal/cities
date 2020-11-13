@@ -1,4 +1,4 @@
-import { HotelEntity } from '../entities';
+import { HotelEntity } from 'domains/entities';
 
 
 export interface GetFavoriteHotelListQuery {

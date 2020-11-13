@@ -1,6 +1,6 @@
-import { CommentEntity } from '../entities/comment';
+import { CommentEntity } from 'domains/entities';
 
 
 export interface LoadCommentListPort {
-  loadCommentListPort(): CommentEntity[];
+  loadCommentListPort(): Promise<CommentEntity[]>;
 }

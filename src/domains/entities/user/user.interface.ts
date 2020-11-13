@@ -1,5 +1,4 @@
-import { IUserType, UserTypeEntity } from '../user-type';
-import { IImage, ImageEntity } from '../image';
+import { IImage, ImageEntity, IUserType, UserTypeEntity } from 'domains/entities';
 
 
 export interface IUser {

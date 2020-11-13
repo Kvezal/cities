@@ -1,4 +1,4 @@
-import { FavoriteEntity } from '../entities';
+import { FavoriteEntity } from 'domains/entities';
 
 
 export interface LoadUserStateOfHotelPort {

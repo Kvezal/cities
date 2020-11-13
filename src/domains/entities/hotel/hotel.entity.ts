@@ -1,10 +1,14 @@
-import { NEARBY_HOTEL_LIMIT } from '../../constants';
-import { CityEntity } from '../city';
-import { FeatureEntity, IFeature } from '../feature';
-import { HotelTypeEntity } from '../hotel-type';
-import { IImage, ImageEntity } from '../image';
-import { LocationEntity } from '../location';
-import { UserEntity } from '../user';
+import {
+  CityEntity,
+  FeatureEntity,
+  HotelTypeEntity,
+  IFeature, IImage,
+  ImageEntity,
+  LocationEntity,
+  UserEntity,
+} from 'domains/entities';
+import { NEARBY_HOTEL_LIMIT } from 'domains/constants';
+
 import { IHotel } from './hotel.interface';
 
 

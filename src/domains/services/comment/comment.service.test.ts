@@ -1,6 +1,7 @@
-import { CommentEntity, HotelEntity, IComment, IHotel, UserEntity } from '../../entities';
+import { CommentEntity, HotelEntity, IComment, IHotel, UserEntity } from 'domains/entities';
+import { ICommentSorting, IHotelCommentParams } from 'domains/interfaces';
+
 import { CommentService } from './comment.service';
-import { ICommentSorting, IHotelCommentParams } from '../../interfaces';
 
 
 const commentParams: IComment = {
