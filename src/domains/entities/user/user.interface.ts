@@ -1,5 +1,5 @@
-import { IUserType } from '../user-type';
-import { IImage } from '../image';
+import { IUserType, UserTypeEntity } from '../user-type';
+import { IImage, ImageEntity } from '../image';
 
 
 export interface IUser {
@@ -7,6 +7,6 @@ export interface IUser {
   name: string;
   email: string;
   password: string;
-  type: IUserType;
-  image: IImage;
+  type: IUserType | UserTypeEntity;
+  image: IImage | ImageEntity;
 }

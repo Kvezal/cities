@@ -25,7 +25,7 @@ export class CityEntity {
     return new CityEntity(
       params.id,
       params.title,
-      LocationEntity.create(params.location)
+      params.location instanceof LocationEntity ? params.location : LocationEntity.create(params.location)
     );
   }
 }

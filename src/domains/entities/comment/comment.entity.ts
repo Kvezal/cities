@@ -39,19 +39,24 @@ export class CommentEntity {
   }
 
   static create(params: IComment): CommentEntity {
-    const ratingParams = {
-      value: params.rating,
-      userId: params.user.id,
-      hotelId: params.hotel.id,
-    };
+    let ratingEntity: RatingEntity;
+    if (params.rating instanceof RatingEntity) {
+      ratingEntity = params.rating;
+    } else {
+      ratingEntity = RatingEntity.create({
+        value: params.rating,
+        userId: params.user.id,
+        hotelId: params.hotel.id,
+      })
+    }
 
     return new CommentEntity(
       params.id,
       params.text,
       params.date,
-      RatingEntity.create(ratingParams),
-      HotelEntity.create(params.hotel),
-      UserEntity.create(params.user)
+      ratingEntity,
+      params.hotel instanceof HotelEntity ? params.hotel : HotelEntity.create(params.hotel),
+      params.user instanceof UserEntity ? params.user : UserEntity.create(params.user)
     );
   }
 }

@@ -1,9 +1,9 @@
-import { IHotelType } from '../hotel-type';
-import { ICity } from '../city';
-import { IFeature } from '../feature';
-import { IImage } from '../image';
-import { ILocation } from '../location';
-import { IUser } from '../user';
+import { HotelTypeEntity, IHotelType } from '../hotel-type';
+import { CityEntity, ICity } from '../city';
+import { FeatureEntity, IFeature } from '../feature';
+import { IImage, ImageEntity } from '../image';
+import { ILocation, LocationEntity } from '../location';
+import { IUser, UserEntity } from '../user';
 
 
 export interface IHotel {
@@ -15,10 +15,10 @@ export interface IHotel {
   price: number;
   isPremium: boolean;
   rating: number;
-  features: IFeature[];
-  type: IHotelType;
-  city: ICity;
-  location: ILocation;
-  host: IUser;
-  images: IImage[];
+  features: (IFeature | FeatureEntity)[];
+  type: IHotelType | HotelTypeEntity;
+  city: ICity | CityEntity;
+  location: ILocation | LocationEntity;
+  host: IUser | UserEntity;
+  images: (IImage | ImageEntity)[];
 }

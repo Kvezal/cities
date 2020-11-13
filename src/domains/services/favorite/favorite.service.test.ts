@@ -19,7 +19,7 @@ describe(`Favorite Service`, () => {
         null
       );
       await hotelService.getFavoriteHotelList(favoriteParams.userId);
-      expect(loadFavoriteHotelList.mock.calls).toHaveLength(1);
+      expect(loadFavoriteHotelList).toHaveBeenCalledTimes(1);
     });
 
     it(`should call loadFavoriteHotelList method with params`, async () => {
@@ -34,9 +34,8 @@ describe(`Favorite Service`, () => {
     });
 
     it(`should return result of loadFavoriteHotelList method`, async () => {
-      const loadFavoriteHotelList = jest.fn().mockReturnValue(favoriteEntity);
       const hotelService = new FavoriteService(
-        {loadFavoriteHotelList},
+        {loadFavoriteHotelList: jest.fn().mockReturnValue(favoriteEntity)},
         null,
         null
       );
@@ -54,7 +53,7 @@ describe(`Favorite Service`, () => {
         null
       );
       await hotelService.toggleFavoriteStateOfHotelForUser(favoriteParams.userId, favoriteParams.hotelId);
-      expect(loadUserStateOfHotel.mock.calls).toHaveLength(1);
+      expect(loadUserStateOfHotel).toHaveBeenCalledTimes(1);
     });
 
     it(`should call loadUserStateOfHotel method with params`, async () => {
@@ -68,40 +67,37 @@ describe(`Favorite Service`, () => {
       expect(loadUserStateOfHotel).toHaveBeenCalledWith(favoriteParams.userId, favoriteParams.hotelId);
     });
 
-    it(`should call saveUserHotelState method`, async () => {
-      const loadUserStateOfHotel = jest.fn().mockReturnValue(favoriteEntity);
-      const saveUserHotelState = jest.fn();
-      const hotelService = new FavoriteService(
-        null,
-        {loadUserStateOfHotel},
-        {saveUserHotelState}
-      );
-      await hotelService.toggleFavoriteStateOfHotelForUser(favoriteParams.userId, favoriteParams.hotelId);
-      expect(saveUserHotelState.mock.calls).toHaveLength(1);
-    });
-
     it(`should call toggleHotelState method of Feature Entity`, async () => {
-      const loadUserStateOfHotel = jest.fn().mockReturnValue(favoriteEntity);
       const toggleFavoriteStateOfHotel = jest.fn();
-      const saveUserHotelState = jest.fn();
       Object.setPrototypeOf(favoriteEntity, {toggleFavoriteStateOfHotel});
       const hotelService = new FavoriteService(
         null,
-        {loadUserStateOfHotel},
+        {loadUserStateOfHotel: jest.fn().mockReturnValue(favoriteEntity)},
+        {saveUserHotelState: () => null}
+      );
+      await hotelService.toggleFavoriteStateOfHotelForUser(favoriteParams.userId, favoriteParams.hotelId);
+      expect(toggleFavoriteStateOfHotel).toHaveBeenCalledTimes(1);
+    });
+
+    it(`should call saveUserHotelState method`, async () => {
+      const saveUserHotelState = jest.fn();
+      const hotelService = new FavoriteService(
+        null,
+        {loadUserStateOfHotel: jest.fn().mockReturnValue(favoriteEntity)},
         {saveUserHotelState}
       );
       await hotelService.toggleFavoriteStateOfHotelForUser(favoriteParams.userId, favoriteParams.hotelId);
-      expect(toggleFavoriteStateOfHotel.mock.calls).toHaveLength(1);
+      expect(saveUserHotelState).toHaveBeenCalledTimes(1);
     });
 
     it(`should call saveUserHotelState method with Feature Entity`, async () => {
-      const loadUserStateOfHotel = jest.fn().mockReturnValue(favoriteEntity);
-      const toggleFavoriteStateOfHotel = jest.fn().mockReturnValue(favoriteEntity);
+      favoriteEntity.toggleFavoriteStateOfHotel = jest
+        .fn(favoriteEntity.toggleFavoriteStateOfHotel)
+        .mockReturnValue(favoriteEntity);
       const saveUserHotelState = jest.fn();
-      Object.setPrototypeOf(favoriteEntity, {toggleFavoriteStateOfHotel});
       const hotelService = new FavoriteService(
         null,
-        {loadUserStateOfHotel},
+        {loadUserStateOfHotel: jest.fn().mockReturnValue(favoriteEntity)},
         {saveUserHotelState}
       );
       await hotelService.toggleFavoriteStateOfHotelForUser(favoriteParams.userId, favoriteParams.hotelId);
@@ -109,17 +105,17 @@ describe(`Favorite Service`, () => {
     });
 
     it(`should return result of saveUserHotelState method`, async () => {
-      const loadUserStateOfHotel = jest.fn().mockReturnValue(favoriteEntity);
-      const toggleFavoriteStateOfHotel = jest.fn().mockReturnValue(favoriteEntity);
-      const saveUserHotelState = jest.fn().mockReturnValue(favoriteEntity);
-      Object.setPrototypeOf(favoriteEntity, {toggleFavoriteStateOfHotel});
+      favoriteEntity.toggleFavoriteStateOfHotel = jest
+        .fn(favoriteEntity.toggleFavoriteStateOfHotel)
+        .mockReturnValue(favoriteEntity);
       const hotelService = new FavoriteService(
         null,
-        {loadUserStateOfHotel},
-        {saveUserHotelState}
+        {loadUserStateOfHotel: jest.fn().mockReturnValue(favoriteEntity)},
+        {saveUserHotelState: jest.fn().mockReturnValue(favoriteEntity)}
       );
-      const result = await hotelService.toggleFavoriteStateOfHotelForUser(favoriteParams.userId, favoriteParams.hotelId);
-      expect(result).toEqual(favoriteEntity);
+      const toggleFavoriteStateOfHotelForUserResult =
+        await hotelService.toggleFavoriteStateOfHotelForUser(favoriteParams.userId, favoriteParams.hotelId);
+      expect(toggleFavoriteStateOfHotelForUserResult).toEqual(favoriteEntity);
     });
   });
 });

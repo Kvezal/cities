@@ -1,4 +1,4 @@
-import { IUser, UserEntity } from '../../entities/user';
+import { IUser, UserEntity } from '../../entities';
 import { UserService } from './user.service';
 
 
@@ -63,33 +63,29 @@ describe(`User service`, () => {
     });
 
     it(`should call create method of User`, async () => {
-      const staticCreate = jest.fn();
-      UserEntity.create = staticCreate;
-
+      UserEntity.create = jest.fn(UserEntity.create);
       const userService = new UserService(
         null,
         {createUser: () => null}
       );
       await userService.createUser(userParams);
-      expect(staticCreate).toHaveBeenCalledTimes(1);
+      expect(UserEntity.create).toHaveBeenCalledTimes(1);
     });
 
     it(`should call create method of User with params`, async () => {
-      const staticCreate = jest.fn();
-      UserEntity.create = staticCreate;
-
+      UserEntity.create = jest.fn(UserEntity.create);
       const userService = new UserService(
         null,
         {createUser: () => null}
       );
       await userService.createUser(userParams);
-      expect(staticCreate).toHaveBeenCalledWith(userParams);
+      expect(UserEntity.create).toHaveBeenCalledWith(userParams);
     });
 
     it(`should call createUser method with params`, async () => {
       const userEntity = UserEntity.create(userParams);
       const createUser = jest.fn();
-      UserEntity.create = jest.fn().mockReturnValue(userEntity);
+      UserEntity.create = jest.fn(UserEntity.create).mockReturnValue(userEntity);
 
       const userService = new UserService(
         null,

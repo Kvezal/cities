@@ -44,7 +44,7 @@ describe(`Auth service`, () => {
 
     it(`should call generate method of JsonWebTokenEntity`, async () => {
       const userEntity = UserEntity.create(userEntityParams);
-      JsonWebTokenEntity.generate = jest.fn();
+      JsonWebTokenEntity.generate = jest.fn(JsonWebTokenEntity.generate);
       const authService = new AuthService(
         {loadUserByEmail: jest.fn().mockReturnValue(userEntity)},
         {saveJsonWebToken: () => null},
@@ -140,12 +140,7 @@ describe(`Auth service`, () => {
     const jsonWebTokenEntity: JsonWebTokenEntity = JsonWebTokenEntity.generate(jsonWebTokenEntityParams);
 
     it(`should call decodeAccessToken method`, async () => {
-      const checkRefreshToken = jest.fn();
-      const checkRefreshTokenOfJsonWebTokenEntity = jsonWebTokenEntity.checkRefreshToken;
-      jsonWebTokenEntity.checkRefreshToken = async (): Promise<boolean> => {
-        checkRefreshToken();
-        return checkRefreshTokenOfJsonWebTokenEntity.call(this);
-      };
+      jsonWebTokenEntity.checkRefreshToken = jest.fn(jsonWebTokenEntity.checkRefreshToken);
       const loadJsonWebToken = jest.fn();
       const authService = new AuthService(
         null,
@@ -154,7 +149,7 @@ describe(`Auth service`, () => {
         null
       );
       await authService.refreshToken(jsonWebTokenEntity);
-      expect(checkRefreshToken).toHaveBeenCalledTimes(1);
+      expect(jsonWebTokenEntity.checkRefreshToken).toHaveBeenCalledTimes(1);
     });
 
     it(`should call loadJsonWebToken method`, async () => {

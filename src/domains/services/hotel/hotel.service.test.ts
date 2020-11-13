@@ -1,7 +1,6 @@
-import { HotelService } from './hotel.service';
-import { HotelEntity, IHotel } from '../../entities/hotel';
-import { ILocation } from '../../entities/location';
+import { HotelEntity, IHotel, ILocation } from '../../entities';
 import { IHotelSortingParams } from '../../interfaces';
+import { HotelService } from './hotel.service';
 
 
 const hotelParams: IHotel = {
@@ -167,7 +166,7 @@ describe(`Hotel Service`, () => {
         {loadHotelById}
       );
       await hotelService.getHotelById(hotelParams.id);
-      expect(loadHotelById.mock.calls).toHaveLength(1);
+      expect(loadHotelById).toHaveBeenCalledTimes(1);
     });
 
     it(`should return result of loadHotelById method`, async () => {
@@ -175,8 +174,8 @@ describe(`Hotel Service`, () => {
         null,
         {loadHotelById: jest.fn().mockReturnValue(hotelEntity)}
       );
-      const result = await hotelService.getHotelById(hotelParams.id);
-      expect(result).toEqual(hotelEntity);
+      const hotelResult = await hotelService.getHotelById(hotelParams.id);
+      expect(hotelResult).toEqual(hotelEntity);
     });
   });
 
@@ -216,7 +215,7 @@ describe(`Hotel Service`, () => {
     });
 
     it(`should call getNearbyHotels method of hotelEntity instance`, async () => {
-      hotelEntity.getNearbyHotelList = jest.fn();
+      hotelEntity.getNearbyHotelList = jest.fn(hotelEntity.getNearbyHotelList);
       const hotelService = new HotelService(
         {loadHotelList: jest.fn().mockReturnValue(hotelEntityList)},
         {loadHotelById: jest.fn().mockReturnValue(hotelEntity)}
@@ -226,7 +225,7 @@ describe(`Hotel Service`, () => {
     });
 
     it(`should call getNearbyHotels method of hotelEntity instance with correct params`, async () => {
-      hotelEntity.getNearbyHotelList = jest.fn();
+      hotelEntity.getNearbyHotelList = jest.fn(hotelEntity.getNearbyHotelList);
       const hotelService = new HotelService(
         {loadHotelList: jest.fn().mockReturnValue(hotelEntityList)},
         {loadHotelById: jest.fn().mockReturnValue(hotelEntity)}
@@ -237,7 +236,7 @@ describe(`Hotel Service`, () => {
 
     it(`should return result of getNearbyHotels method`, async () => {
       const expectedHotelEntityList = hotelEntityList.slice(0, 3);
-      hotelEntity.getNearbyHotelList = jest.fn().mockReturnValue(expectedHotelEntityList);
+      hotelEntity.getNearbyHotelList = jest.fn(hotelEntity.getNearbyHotelList).mockReturnValue(expectedHotelEntityList);
       const hotelService = new HotelService(
         {loadHotelList: jest.fn().mockReturnValue(hotelEntityList)},
         {loadHotelById: jest.fn().mockReturnValue(hotelEntity)}

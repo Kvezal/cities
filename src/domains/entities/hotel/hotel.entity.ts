@@ -1,7 +1,7 @@
 import { CityEntity } from '../city';
-import { FeatureEntity } from '../feature';
+import { FeatureEntity, IFeature } from '../feature';
 import { HotelTypeEntity } from '../hotel-type';
-import { ImageEntity } from '../image';
+import { IImage, ImageEntity } from '../image';
 import { LocationEntity } from '../location';
 import { UserEntity } from '../user';
 import { IHotel } from './hotel.interface';
@@ -82,6 +82,13 @@ export class HotelEntity {
   }
 
   static create(params: IHotel): HotelEntity {
+    const features = params.features.map(
+      (feature: IFeature | FeatureEntity) => feature instanceof FeatureEntity ? feature : FeatureEntity.create(feature)
+    );
+    const images = params.images.map(
+      (image: IImage | ImageEntity) => image instanceof ImageEntity ? image : ImageEntity.create(image)
+    );
+
     return new HotelEntity(
       params.id,
       params.title,
@@ -91,12 +98,12 @@ export class HotelEntity {
       params.price,
       params.isPremium,
       params.rating,
-      params.features.map(FeatureEntity.create),
-      HotelTypeEntity.create(params.type),
-      CityEntity.create(params.city),
-      LocationEntity.create(params.location),
-      UserEntity.create(params.host),
-      params.images.map(ImageEntity.create),
+      features,
+      params.type instanceof HotelTypeEntity ? params.type : HotelTypeEntity.create(params.type),
+      params.city instanceof CityEntity ? params.city : CityEntity.create(params.city),
+      params.location instanceof LocationEntity ? params.location : LocationEntity.create(params.location),
+      params.host instanceof UserEntity ? params.host : UserEntity.create(params.host),
+      images,
     )
   }
 
