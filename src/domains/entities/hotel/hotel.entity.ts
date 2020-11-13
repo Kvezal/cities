@@ -1,3 +1,4 @@
+import { NEARBY_HOTEL_LIMIT } from '../../constants';
 import { CityEntity } from '../city';
 import { FeatureEntity, IFeature } from '../feature';
 import { HotelTypeEntity } from '../hotel-type';
@@ -6,8 +7,6 @@ import { LocationEntity } from '../location';
 import { UserEntity } from '../user';
 import { IHotel } from './hotel.interface';
 
-
-const NEARBY_HOTEL_LIMIT = 3;
 
 export class HotelEntity {
   constructor(

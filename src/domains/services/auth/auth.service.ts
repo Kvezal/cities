@@ -1,3 +1,5 @@
+import { compare } from 'bcrypt';
+
 import { IJsonWebTokenParams, JsonWebTokenEntity } from '../../entities';
 import { IUserAuthenticate } from '../../interfaces';
 import { DeleteJsonWebTokenPort, LoadJsonWebTokenPort, LoadUserByEmailPort, SaveJsonWebTokenPort } from '../../ports';
@@ -24,6 +26,10 @@ export class AuthService implements
   public async authenticateUser(params: IUserAuthenticate): Promise<JsonWebTokenEntity> {
     const userEntity = await this._userLoaderService.loadUserByEmail(params.email);
     if (!userEntity) {
+      return;
+    }
+    const isCorrectPassword = await compare(params.password, userEntity.password);
+    if (!isCorrectPassword) {
       return;
     }
     const jsonWebTokenEntity = JsonWebTokenEntity.generate({

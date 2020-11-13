@@ -1,7 +1,9 @@
+import { hash } from 'bcrypt';
+
+import { SALT_ROUND } from '../../constants';
+import { IJsonWebTokenParams, IUser, JsonWebTokenEntity, UserEntity } from '../../entities';
 import { IUserAuthenticate } from '../../interfaces';
 import { AuthService } from './auth.service';
-import { IUser, UserEntity } from '../../entities/user';
-import { IJsonWebTokenParams, JsonWebTokenEntity } from '../../entities/json-web-token';
 
 
 describe(`Auth service`, () => {
@@ -43,7 +45,12 @@ describe(`Auth service`, () => {
     });
 
     it(`should call generate method of JsonWebTokenEntity`, async () => {
-      const userEntity = UserEntity.create(userEntityParams);
+      const password = await hash(userEntityParams.password, SALT_ROUND);
+      const newUserEntityParams = {
+        ...userEntityParams,
+        password,
+      };
+      const userEntity = UserEntity.create(newUserEntityParams);
       JsonWebTokenEntity.generate = jest.fn(JsonWebTokenEntity.generate);
       const authService = new AuthService(
         {loadUserByEmail: jest.fn().mockReturnValue(userEntity)},
@@ -56,7 +63,12 @@ describe(`Auth service`, () => {
     });
 
     it(`should call saveJsonWebToken method`, async () => {
-      const userEntity = UserEntity.create(userEntityParams);
+      const password = await hash(userEntityParams.password, SALT_ROUND);
+      const newUserEntityParams = {
+        ...userEntityParams,
+        password,
+      };
+      const userEntity = UserEntity.create(newUserEntityParams);
       const saveJsonWebToken = jest.fn();
       const authService = new AuthService(
         {loadUserByEmail: jest.fn().mockReturnValue(userEntity)},
@@ -69,7 +81,12 @@ describe(`Auth service`, () => {
     });
 
     it(`should return result of saveJsonWebToken method`, async () => {
-      const userEntity = UserEntity.create(userEntityParams);
+      const password = await hash(userEntityParams.password, SALT_ROUND);
+      const newUserEntityParams = {
+        ...userEntityParams,
+        password,
+      };
+      const userEntity = UserEntity.create(newUserEntityParams);
       const jsonWebTokenEntity = JsonWebTokenEntity.generate(jsonWebTokenEntityParams);
 
       const authService = new AuthService(

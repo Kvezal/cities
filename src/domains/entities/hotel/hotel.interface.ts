@@ -1,6 +1,6 @@
-import { HotelTypeEntity, IHotelType } from '../hotel-type';
 import { CityEntity, ICity } from '../city';
 import { FeatureEntity, IFeature } from '../feature';
+import { HotelTypeEntity, IHotelType } from '../hotel-type';
 import { IImage, ImageEntity } from '../image';
 import { ILocation, LocationEntity } from '../location';
 import { IUser, UserEntity } from '../user';

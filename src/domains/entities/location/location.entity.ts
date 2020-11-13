@@ -1,7 +1,6 @@
+import { DISTANCE_ACCURACY } from '../../constants';
 import { ILocation } from './location.interface';
 
-
-const DISTANCE_ACCURACY = 1000000;
 
 export class LocationEntity {
   constructor(

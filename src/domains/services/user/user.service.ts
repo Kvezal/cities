@@ -1,3 +1,6 @@
+import { hash } from 'bcrypt';
+
+import { SALT_ROUND } from '../../constants';
 import { IUser, UserEntity } from '../../entities';
 import { CreateUserPort, LoadUserByIdPort } from '../../ports';
 import { GetUserByIdQuery } from '../../queries';
@@ -17,6 +20,7 @@ export class UserService implements
   }
 
   public async createUser(userParams: IUser): Promise<UserEntity> {
+    userParams.password = await hash(userParams.password, SALT_ROUND);
     const userEntity = UserEntity.create(userParams);
     return this._userCreatorService.createUser(userEntity);
   }
