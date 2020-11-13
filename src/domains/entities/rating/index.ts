@@ -1,2 +1,2 @@
 export { IRating } from './rating.interface';
-export { Rating } from './rating';
+export { RatingEntity } from './rating.entity';

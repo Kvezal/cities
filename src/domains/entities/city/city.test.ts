@@ -1,5 +1,5 @@
-import { Location } from '../location';
-import { City } from './city';
+import { LocationEntity } from '../location';
+import { CityEntity } from './city.entity';
 import { ICity } from './city-interface';
 
 
@@ -16,13 +16,13 @@ const cityParams: ICity = {
 
 describe(`City entity`, () => {
   describe(`constructor`, () => {
-    let city: City;
+    let city: CityEntity;
 
     beforeAll(() => {
-      city = new City(
+      city = new CityEntity(
         cityParams.id,
         cityParams.title,
-        Location.create(cityParams.location)
+        LocationEntity.create(cityParams.location)
       );
     });
 
@@ -36,10 +36,10 @@ describe(`City entity`, () => {
   });
 
   describe(`create method`, () => {
-    let city: City;
+    let city: CityEntity;
 
     beforeAll(() => {
-      city = City.create(cityParams);
+      city = CityEntity.create(cityParams);
     });
 
     it.each([`location`])(`should create a new City instance with %p property`, (property) => {

@@ -1,2 +1,2 @@
 export { ILocation } from './location.interface';
-export { Location } from './location';
+export { LocationEntity } from './location.entity';

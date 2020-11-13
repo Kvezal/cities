@@ -1,2 +1,2 @@
 export { IComment } from './comment.interface';
-export { Comment } from './comment';
+export { CommentEntity } from './comment.entity';

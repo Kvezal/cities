@@ -1,2 +1,2 @@
 export { IUser } from './user.interface';
-export { User } from './user';
+export { UserEntity } from './user.entity';

@@ -1,6 +1,7 @@
-import { User } from '../user';
-import { Hotel } from '../hotel';
-import { Comment } from './comment';
+import { CommentEntity } from './comment.entity';
+import { HotelEntity } from '../hotel';
+import { RatingEntity } from '../rating';
+import { UserEntity } from '../user';
 import { IComment } from './comment.interface';
 
 
@@ -91,37 +92,43 @@ const commentParams: IComment = {
 
 describe(`Comment entity`, () => {
   describe(`constructor`, () => {
-    let comment: Comment;
+    let comment: CommentEntity;
 
     beforeAll(() => {
-      comment = new Comment(
+      const ratingParams = {
+        value: commentParams.rating,
+        userId: commentParams.user.id,
+        hotelId: commentParams.hotel.id,
+      };
+
+      comment = new CommentEntity(
         commentParams.id,
         commentParams.text,
         commentParams.date,
-        commentParams.rating,
-        Hotel.create(commentParams.hotel),
-        User.create(commentParams.user)
+        RatingEntity.create(ratingParams),
+        HotelEntity.create(commentParams.hotel),
+        UserEntity.create(commentParams.user)
       );
     });
 
     it.each(
-      [`hotel`, `user`],
+      [`hotel`, `user`, `rating`],
     )(`should create a new Comment instance with %p property`, (property) => {
       expect(comment).toHaveProperty(property);
     });
 
     it.each(
-      [`id`, `text`, `date`, `rating`],
+      [`id`, `text`, `date`],
     )(`should create a new Comment instance with correct %p property`, (property) => {
       expect(comment[property]).toBe(commentParams[property]);
     });
   });
 
   describe(`create method`, () => {
-    let comment: Comment;
+    let comment: CommentEntity;
 
     beforeAll(() => {
-      comment = Comment.create(commentParams);
+      comment = CommentEntity.create(commentParams);
     });
 
     it.each(

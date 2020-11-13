@@ -1,10 +1,10 @@
-import { City } from '../city';
-import { Feature } from '../feature';
-import { HotelType } from '../hotel-type';
-import { Image } from '../image';
-import { Location } from '../location';
-import { User } from '../user';
-import { Hotel } from './hotel';
+import { CityEntity } from '../city';
+import { FeatureEntity } from '../feature';
+import { HotelTypeEntity } from '../hotel-type';
+import { ImageEntity } from '../image';
+import { ILocation, LocationEntity } from '../location';
+import { UserEntity } from '../user';
+import { HotelEntity } from './hotel.entity';
 import { IHotel } from './hotel.interface';
 
 
@@ -73,12 +73,63 @@ const hotelParams: IHotel = {
   ],
 };
 
+const hotelLocations = [
+  {
+    id: 1,
+    latitude: 52.370216,
+    longitude: 4.895168,
+    zoom: 10,
+  },
+  {
+    id: 2,
+    latitude: 52.366992,
+    longitude: 4.898267,
+    zoom: 10,
+  },
+  {
+    id: 3,
+    latitude: 52.363670,
+    longitude: 4.899662,
+    zoom: 10,
+  },
+  {
+    id: 4,
+    latitude: 52.363290,
+    longitude: 4.899823,
+    zoom: 10,
+  },
+  {
+    id: 5,
+    latitude: 52.362045,
+    longitude: 4.901110,
+    zoom: 10,
+  },
+  {
+    id: 6,
+    latitude: 52.357876,
+    longitude: 4.903161,
+    zoom: 10,
+  },
+  {
+    id: 7,
+    latitude: 52.370508,
+    longitude: 4.894957,
+    zoom: 10,
+  },
+  {
+    id: 8,
+    latitude: 52.370642,
+    longitude: 4.894844,
+    zoom: 10,
+  }
+];
+
 describe(`Hotel entity`, () => {
   describe(`constructor`, () => {
-    let hotel: Hotel;
+    let hotel: HotelEntity;
 
     beforeAll(() => {
-      hotel = new Hotel(
+      hotel = new HotelEntity(
         hotelParams.id,
         hotelParams.title,
         hotelParams.description,
@@ -87,12 +138,12 @@ describe(`Hotel entity`, () => {
         hotelParams.price,
         hotelParams.isPremium,
         hotelParams.rating,
-        hotelParams.features.map(Feature.create),
-        HotelType.create(hotelParams.type),
-        City.create(hotelParams.city),
-        Location.create(hotelParams.location),
-        User.create(hotelParams.host),
-        hotelParams.images.map(Image.create),
+        hotelParams.features.map(FeatureEntity.create),
+        HotelTypeEntity.create(hotelParams.type),
+        CityEntity.create(hotelParams.city),
+        LocationEntity.create(hotelParams.location),
+        UserEntity.create(hotelParams.host),
+        hotelParams.images.map(ImageEntity.create),
       );
     });
 
@@ -110,10 +161,10 @@ describe(`Hotel entity`, () => {
   });
 
   describe(`create method`, () => {
-    let hotel: Hotel;
+    let hotel: HotelEntity;
 
     beforeAll(() => {
-      hotel = Hotel.create(hotelParams);
+      hotel = HotelEntity.create(hotelParams);
     });
 
     it.each(
@@ -126,6 +177,24 @@ describe(`Hotel entity`, () => {
       [`id`, `title`, `description`, `bedroomCount`, `maxAdultCount`, `price`, `isPremium`],
     )(`should create a new Hotel instance with correct %p property`, (property) => {
       expect(hotel[property]).toBe(hotelParams[property]);
+    });
+  });
+
+  describe(`getNearbyHotels method`, () => {
+    const hotel = HotelEntity.create(hotelParams);
+    const hotelList: HotelEntity[] = hotelLocations.map(
+      (location: ILocation) => HotelEntity.create({...hotelParams, location})
+    );
+
+    it(`should return 3 hotels`, () => {
+      const nearbyHotels = hotel.getNearbyHotelList(hotelList);
+      expect(nearbyHotels).toHaveLength(3);
+    });
+
+    it(`should return nearest hotel`, () => {
+      const nearbyHotels = hotel.getNearbyHotelList(hotelList);
+      const nearestLocationIds = nearbyHotels.map((hotel) => hotel.location.id);
+      expect(nearestLocationIds).toEqual([7, 8, 2]);
     });
   });
 });

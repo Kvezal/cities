@@ -1,4 +1,4 @@
-import {Image} from './image';
+import {ImageEntity} from './image.entity';
 import { IImage } from './image.interface';
 
 
@@ -9,10 +9,10 @@ const imageParams: IImage = {
 
 describe(`Image entity`, () => {
   describe(`constructor`, () => {
-    let image: Image;
+    let image: ImageEntity;
 
     beforeAll(() => {
-      image = new Image(
+      image = new ImageEntity(
         imageParams.id,
         imageParams.title,
       );
@@ -24,14 +24,14 @@ describe(`Image entity`, () => {
   });
 
   describe(`create method`, () => {
-    let image: Image;
+    let image: ImageEntity;
 
     beforeAll(() => {
-      image = Image.create(imageParams);
+      image = ImageEntity.create(imageParams);
     });
 
     it(`should create a new Image instance`, () => {
-      expect(image).toBeInstanceOf(Image);
+      expect(image).toBeInstanceOf(ImageEntity);
     });
 
     it.each([`id`, `title`])(`should create a new Image instance with correct %p property`, (property) => {

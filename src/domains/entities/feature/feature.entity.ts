@@ -1,7 +1,7 @@
-import { IUserType } from './user-type.interface';
+import { IFeature } from './feature.interface';
 
 
-export class UserType {
+export class FeatureEntity {
   constructor(
     private readonly _id: number,
     private readonly _title: string
@@ -15,8 +15,8 @@ export class UserType {
     return this._title;
   }
 
-  static create(params: IUserType): UserType {
-    return new UserType(
+  static create(params: IFeature): FeatureEntity {
+    return new FeatureEntity(
       params.id,
       params.title
     );

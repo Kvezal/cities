@@ -1,7 +1,7 @@
-import { IFeature } from './feature.interface';
+import { IHotelType } from './hotel-type.interface';
 
 
-export class Feature {
+export class HotelTypeEntity {
   constructor(
     private readonly _id: number,
     private readonly _title: string
@@ -15,8 +15,8 @@ export class Feature {
     return this._title;
   }
 
-  static create(params: IFeature): Feature {
-    return new Feature(
+  static create(params: IHotelType): HotelTypeEntity {
+    return new HotelTypeEntity(
       params.id,
       params.title
     );

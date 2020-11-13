@@ -1,4 +1,4 @@
-import { Feature } from './feature';
+import { FeatureEntity } from './feature.entity';
 import { IFeature } from './feature.interface';
 
 
@@ -9,10 +9,10 @@ const featureParams: IFeature = {
 
 describe(`Feature entity`, () => {
   describe(`constructor`, () => {
-    let feature: Feature;
+    let feature: FeatureEntity;
 
     beforeAll(() => {
-      feature = new Feature(
+      feature = new FeatureEntity(
         featureParams.id,
         featureParams.title
       );
@@ -24,14 +24,14 @@ describe(`Feature entity`, () => {
   });
 
   describe(`create method`, () => {
-    let feature: Feature;
+    let feature: FeatureEntity;
 
     beforeAll(() => {
-      feature = Feature.create(featureParams);
+      feature = FeatureEntity.create(featureParams);
     });
 
     it(`should create a new Feature instance`, () => {
-      expect(feature).toBeInstanceOf(Feature);
+      expect(feature).toBeInstanceOf(FeatureEntity);
     });
 
     it.each([`id`, `title`])(`should create a new Feature instance with correct %p property`, (property) => {

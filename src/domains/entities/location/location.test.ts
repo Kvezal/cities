@@ -1,20 +1,27 @@
-import { Location } from './location';
+import { LocationEntity } from './location.entity';
 import { ILocation } from './location.interface';
 
 
 const locationParams: ILocation = {
   id: 1,
-  latitude: 52.370216,
-  longitude: 4.895168,
+  latitude: 0.000012,
+  longitude: 0.000013,
+  zoom: 10,
+};
+
+const otherLocationParams: ILocation = {
+  id: 1,
+  latitude: 0.000009,
+  longitude: 0.000009,
   zoom: 10,
 };
 
 describe(`Feature entity`, () => {
   describe(`constructor`, () => {
-    let location: Location = null;
+    let location: LocationEntity = null;
 
     beforeAll(() => {
-      location = new Location(
+      location = new LocationEntity(
         locationParams.id,
         locationParams.latitude,
         locationParams.longitude,
@@ -30,20 +37,30 @@ describe(`Feature entity`, () => {
   });
 
   describe(`create method`, () => {
-    let location: Location = null;
+    let location: LocationEntity = null;
 
     beforeAll(() => {
-      location = Location.create(locationParams);
+      location = LocationEntity.create(locationParams);
     });
 
     it(`should create a new Feature instance`, () => {
-      expect(location).toBeInstanceOf(Location);
+      expect(location).toBeInstanceOf(LocationEntity);
     });
 
     it.each(
       [`id`, `latitude`, `longitude`, `zoom`]
     )(`should create a new Feature instance with correct %p property`, (property) => {
       expect(location[property]).toBe(locationParams[property]);
+    });
+  });
+
+  describe(`calculateDistance method`, () => {
+    const location: LocationEntity = LocationEntity.create(locationParams);
+    const otherLocation: LocationEntity = LocationEntity.create(otherLocationParams);
+
+    it(`should calculate distance`, () => {
+      const distance = location.calculateDistance(otherLocation);
+      expect(distance).toBe(0.000005);
     });
   })
 });
