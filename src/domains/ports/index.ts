@@ -1,4 +1,4 @@
-export { CreateUserPort } from './create-user.port';
+export { SaveUserPort } from './save-user.port';
 export { DeleteJsonWebTokenPort } from './delete-json-web-token.port';
 export { LoadCityByIdPort } from './load-city-by-id.port';
 export { LoadCityListPort } from './load-city-list.port';

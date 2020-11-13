@@ -1,6 +1,6 @@
 import { UserEntity } from '../entities';
 
 
-export interface CreateUserPort {
+export interface SaveUserPort {
   createUser(userEntity: UserEntity): Promise<UserEntity>;
 }

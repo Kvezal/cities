@@ -2,7 +2,7 @@ import { hash } from 'bcrypt';
 
 import { SALT_ROUND } from '../../constants';
 import { IUser, UserEntity } from '../../entities';
-import { CreateUserPort, LoadUserByIdPort } from '../../ports';
+import { SaveUserPort, LoadUserByIdPort } from '../../ports';
 import { GetUserByIdQuery } from '../../queries';
 import { CreateUserUseCase } from '../../use-cases';
 
@@ -12,7 +12,7 @@ export class UserService implements
   CreateUserUseCase {
   constructor(
     private readonly _userLoaderService: LoadUserByIdPort,
-    private readonly _userCreatorService: CreateUserPort
+    private readonly _userCreatorService: SaveUserPort
   ) {}
 
   public async getUserById(userId: number): Promise<UserEntity> {
