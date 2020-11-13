@@ -7,6 +7,8 @@ import { UserEntity } from '../user';
 import { IHotel } from './hotel.interface';
 
 
+const NEARBY_HOTEL_LIMIT = 3;
+
 export class HotelEntity {
   constructor(
     private readonly _id: number,
@@ -108,7 +110,6 @@ export class HotelEntity {
   }
 
   public getNearbyHotelList(hotels: HotelEntity[]): HotelEntity[] {
-    const NEARBY_HOTEL_LIMIT = 3;
     return hotels
       .filter((hotel) => this.location.id !== hotel.location.id)
       .sort((left: HotelEntity, right: HotelEntity): number => {
