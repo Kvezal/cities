@@ -14,11 +14,11 @@ describe(`Auth service`, () => {
   };
 
   const jsonWebTokenEntityParams: IJsonWebTokenParams = {
-    id: 1,
+    id: `1`,
     name: `name`,
     email: `email@gmail.com`,
     image: {
-      id: 1,
+      id: `1`,
       title: `title`,
     },
   };
@@ -27,7 +27,7 @@ describe(`Auth service`, () => {
     ...jsonWebTokenEntityParams,
     password: `password`,
     type: {
-      id: 1,
+      id: `1`,
       title: `title`,
     },
   };

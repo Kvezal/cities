@@ -4,10 +4,10 @@ import { CityService } from './city.service';
 
 
 const cityParams: ICity = {
-  id: 1,
+  id: `1`,
   title: `title`,
   location: {
-    id: 1,
+    id: `1`,
     latitude: 52.370216,
     longitude: 4.895168,
     zoom: 10,

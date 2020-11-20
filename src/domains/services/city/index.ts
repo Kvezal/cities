@@ -1,2 +1,2 @@
-export { citeServiceSymbol } from './city.interface';
+export { cityServiceSymbol } from './city.interface';
 export { CityService } from './city.service';

@@ -2,5 +2,5 @@ import { FavoriteEntity } from 'domains/entities';
 
 
 export interface LoadUserStateOfHotelPort {
-  loadUserStateOfHotel(userId: number, hotelId: number): Promise<FavoriteEntity>;
+  loadUserStateOfHotel(userId: string, hotelId: string): Promise<FavoriteEntity>;
 }

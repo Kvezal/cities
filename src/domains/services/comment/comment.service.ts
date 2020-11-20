@@ -31,7 +31,7 @@ export class CommentService implements
     const commentEntity = CommentEntity.create({
       id: commentParams.id,
       text: commentParams.text,
-      date: commentParams.date,
+      createdAt: commentParams.createdAt,
       rating: commentParams.rating,
       hotel,
       user

@@ -3,7 +3,7 @@ import { IFeature } from './feature.interface';
 
 
 const featureParams: IFeature = {
-  id: 1,
+  id: `1`,
   title: `title`,
 };
 

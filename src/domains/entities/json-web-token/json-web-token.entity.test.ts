@@ -9,11 +9,11 @@ describe(`Json Web Token entity`, () => {
   };
 
   const jsonWebTokenParams: IJsonWebTokenParams = {
-    id: 1,
+    id: `1`,
     name: `name`,
     email: `email@gmail.com`,
     image: {
-      id: 1,
+      id: `1`,
       title: `title`,
     },
   };

@@ -4,8 +4,8 @@ import { RatingEntity } from './rating.entity';
 
 const ratingParams: IRating = {
   value: 4,
-  userId: 1,
-  hotelId: 1,
+  userId: `1`,
+  hotelId: `1`,
 };
 
 describe(`Rating entity`, () => {

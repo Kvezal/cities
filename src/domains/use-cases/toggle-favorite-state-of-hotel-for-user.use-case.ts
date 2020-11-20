@@ -2,5 +2,5 @@ import { FavoriteEntity } from 'domains/entities';
 
 
 export interface ToggleFavoriteStateOfHotelForUserUseCase {
-  toggleFavoriteStateOfHotelForUser(userId: number, hotelId: number): Promise<FavoriteEntity>;
+  toggleFavoriteStateOfHotelForUser(userId: string, hotelId: string): Promise<FavoriteEntity>;
 }

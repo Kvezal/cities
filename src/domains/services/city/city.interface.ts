@@ -1,1 +1,1 @@
-export const citeServiceSymbol = Symbol(`citeService`);
+export const cityServiceSymbol = Symbol(`cityService`);

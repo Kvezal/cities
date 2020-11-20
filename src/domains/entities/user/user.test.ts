@@ -1,22 +1,24 @@
 import { ImageEntity, UserTypeEntity } from 'domains/entities';
-import { IUser } from './user.interface';
+
 import { UserEntity } from './user.entity';
+import { IUser } from './user.interface';
 
 
 const userParams: IUser = {
-  id: 1,
+  id: `1`,
   name: `name`,
   email: `email@gmail.com`,
   password: `password`,
   type: {
-    id: 1,
+    id: `1`,
     title: `title`,
   },
   image: {
-    id: 1,
+    id: `1`,
     title: `title`,
   },
 };
+
 describe(`User entity`, () => {
   describe(`constructor`, () => {
     let user: UserEntity;
@@ -27,8 +29,8 @@ describe(`User entity`, () => {
         userParams.name,
         userParams.email,
         userParams.password,
-        UserTypeEntity.create(userParams.type),
-        ImageEntity.create(userParams.image)
+        ImageEntity.create(userParams.image),
+        UserTypeEntity.create(userParams.type)
       );
     });
 

@@ -15,7 +15,7 @@ export class CityService implements
     return this._cityListLoaderService.loadCityList();
   }
 
-  public async getCityById(cityId: number): Promise<CityEntity> {
+  public async getCityById(cityId: string): Promise<CityEntity> {
     return this._cityLoaderService.loadCityById(cityId);
   }
 }

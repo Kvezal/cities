@@ -5,16 +5,16 @@ import { UserService } from './user.service';
 
 describe(`User service`, () => {
   const userParams: IUser = {
-    id: 1,
+    id: `1`,
     name: `name`,
     email: `email@gmail.com`,
     password: `password`,
-    type: {
-      id: 1,
+    image: {
+      id: `1`,
       title: `title`,
     },
-    image: {
-      id: 1,
+    type: {
+      id: `1`,
       title: `title`,
     },
   };
@@ -57,7 +57,7 @@ describe(`User service`, () => {
       const createUser = jest.fn();
       const userService = new UserService(
         null,
-        {createUser}
+        {saveUser: createUser}
       );
       await userService.createUser(userParams);
       expect(createUser).toHaveBeenCalledTimes(1);
@@ -67,7 +67,7 @@ describe(`User service`, () => {
       UserEntity.create = jest.fn(UserEntity.create);
       const userService = new UserService(
         null,
-        {createUser: () => null}
+        {saveUser: () => null}
       );
       await userService.createUser(userParams);
       expect(UserEntity.create).toHaveBeenCalledTimes(1);
@@ -77,7 +77,7 @@ describe(`User service`, () => {
       UserEntity.create = jest.fn(UserEntity.create);
       const userService = new UserService(
         null,
-        {createUser: () => null}
+        {saveUser: () => null}
       );
       await userService.createUser(userParams);
       expect(UserEntity.create).toHaveBeenCalledWith(userParams);
@@ -90,7 +90,7 @@ describe(`User service`, () => {
 
       const userService = new UserService(
         null,
-        {createUser}
+        {saveUser: createUser}
       );
       await userService.createUser(userParams);
       expect(createUser).toHaveBeenCalledWith(userEntity);
@@ -102,7 +102,7 @@ describe(`User service`, () => {
 
       const userService = new UserService(
         null,
-        {createUser}
+        {saveUser: createUser}
       );
       const result = await userService.createUser(userParams);
       expect(result).toEqual(userEntity);

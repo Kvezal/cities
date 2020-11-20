@@ -2,5 +2,5 @@ import { HotelEntity } from 'domains/entities';
 
 
 export interface GetNearbyHotelListQuery {
-  getNearbyHotelList(hotelId: number): Promise<HotelEntity[]>;
+  getNearbyHotelList(hotelId: string): Promise<HotelEntity[]>;
 }

@@ -1,0 +1,13 @@
+export { CityOrmEntity } from './city.orm-entity';
+export { CommentOrmEntity } from './comment.orm-entity';
+export { FavoriteOrmEntity } from './favorite.orm-entity';
+export { FeatureOrmEntity } from './feature.orm-entity';
+export { HotelOrmEntity } from './hotel.orm-entity';
+export { HotelTypeOrmEntity } from './hotel-type.orm-entity';
+export { ImageOrmEntity } from './image.orm-entity';
+export { JsonWebTokenOrmEntity } from './json-web-token.orm-entity';
+export { LocationOrmEntity } from './location.orm-entity';
+export { RatingOrmEntity } from './rating.orm-entity';
+export { UserOrmEntity } from './user.orm-entity';
+export { UserTypeOrmEntity } from './user-type.orm-entity';
+export { OrmEntitiesModule } from './orm-entities.module'

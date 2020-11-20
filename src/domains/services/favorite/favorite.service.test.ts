@@ -6,8 +6,8 @@ import { FavoriteService } from './favorite.service';
 describe(`Favorite Service`, () => {
   const favoriteParams: IFavorite = {
     value: true,
-    userId: 1,
-    hotelId: 1,
+    userId: `1`,
+    hotelId: `1`,
   };
   const favoriteEntity = FavoriteEntity.create(favoriteParams);
 
@@ -51,7 +51,7 @@ describe(`Favorite Service`, () => {
       const hotelService = new FavoriteService(
         null,
         {loadUserStateOfHotel},
-        null
+        {saveUserHotelState: () => null}
       );
       await hotelService.toggleFavoriteStateOfHotelForUser(favoriteParams.userId, favoriteParams.hotelId);
       expect(loadUserStateOfHotel).toHaveBeenCalledTimes(1);
@@ -62,7 +62,7 @@ describe(`Favorite Service`, () => {
       const hotelService = new FavoriteService(
         null,
         {loadUserStateOfHotel},
-        null
+        {saveUserHotelState: () => null}
       );
       await hotelService.toggleFavoriteStateOfHotelForUser(favoriteParams.userId, favoriteParams.hotelId);
       expect(loadUserStateOfHotel).toHaveBeenCalledWith(favoriteParams.userId, favoriteParams.hotelId);

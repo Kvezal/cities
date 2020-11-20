@@ -3,11 +3,11 @@ import { IFeature } from './feature.interface';
 
 export class FeatureEntity {
   constructor(
-    private readonly _id: number,
+    private readonly _id: string,
     private readonly _title: string
   ) {}
 
-  get id(): number {
+  get id(): string {
     return this._id;
   }
 

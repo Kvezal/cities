@@ -3,7 +3,7 @@ import { IHotelType } from './hotel-type.interface';
 
 
 const hotelTypeParams: IHotelType = {
-  id: 1,
+  id: `1`,
   title: `title`,
 };
 

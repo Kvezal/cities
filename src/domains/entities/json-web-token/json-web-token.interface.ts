@@ -7,7 +7,7 @@ export interface IJsonWebToken {
 }
 
 export interface IJsonWebTokenParams {
-  id: number;
+  id: string;
   name: string;
   email: string;
   image: IImage;

@@ -2,5 +2,5 @@ import { CityEntity } from 'domains/entities';
 
 
 export interface LoadCityByIdPort {
-  loadCityById(id: number): Promise<CityEntity>;
+  loadCityById(id: string): Promise<CityEntity>;
 }

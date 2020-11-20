@@ -5,12 +5,12 @@ import { CommentService } from './comment.service';
 
 
 const commentParams: IComment = {
-  id: 1,
+  id: `1`,
   text: `text`,
-  date: new Date(),
+  createdAt: new Date(),
   rating: 4,
   hotel: {
-    id: 1,
+    id: `1`,
     title: `title`,
     description: `description`,
     bedroomCount: 4,
@@ -20,70 +20,70 @@ const commentParams: IComment = {
     rating: 3,
     features: [
       {
-        id: 1,
+        id: `1`,
         title: `title`,
       },
       {
-        id: 1,
+        id: `1`,
         title: `title`,
       }
     ],
     type: {
-      id: 1,
+      id: `1`,
       title: `title`,
     },
     city: {
-      id: 1,
+      id: `1`,
       title: `title`,
       location: {
-        id: 1,
+        id: `1`,
         latitude: 52.370216,
         longitude: 4.895168,
         zoom: 10,
       },
     },
     location: {
-      id: 1,
+      id: `1`,
       latitude: 52.370216,
       longitude: 4.895168,
       zoom: 10,
     },
     host: {
-      id: 1,
+      id: `1`,
       name: `name`,
       email: `email@gmail.com`,
       password: `password`,
       type: {
-        id: 1,
+        id: `1`,
         title: `title`,
       },
       image: {
-        id: 1,
+        id: `1`,
         title: `title`,
       },
     },
     images: [
       {
-        id: 1,
+        id: `1`,
         title: `title`,
       },
       {
-        id: 2,
+        id: `2`,
         title: `title`,
       }
     ],
   },
   user: {
-    id: 1,
+    id: `1`,
     name: `name`,
     email: `email@gmail.com`,
     password: `password`,
     type: {
-      id: 1,
+      id: `1`,
       title: `title`,
     },
     image: {
-      id: 1,
+      id: `1`,
       title: `title`,
     },
   },
@@ -92,14 +92,14 @@ const commentParams: IComment = {
 const hotelCommentParams: IHotelCommentParams = {
   id: commentParams.id,
   text: commentParams.text,
-  date: commentParams.date,
+  createdAt: commentParams.createdAt,
   rating: commentParams.rating,
   hotelId: commentParams.hotel.id,
   userId: commentParams.user.id,
 };
 
 const hotelParams: IHotel = {
-  id: 1,
+  id: `1`,
   title: `title`,
   description: `description`,
   bedroomCount: 4,
@@ -109,55 +109,55 @@ const hotelParams: IHotel = {
   rating: 3,
   features: [
     {
-      id: 1,
+      id: `1`,
       title: `title`,
     },
     {
-      id: 2,
+      id: `2`,
       title: `title`,
     }
   ],
   type: {
-    id: 1,
+    id: `1`,
     title: `title`,
   },
   city: {
-    id: 1,
+    id: `1`,
     title: `title`,
     location: {
-      id: 1,
+      id: `1`,
       latitude: 52.370216,
       longitude: 4.895168,
       zoom: 10,
     },
   },
   location: {
-    id: 1,
+    id: `1`,
     latitude: 52.370216,
     longitude: 4.895168,
     zoom: 10,
   },
   host: {
-    id: 1,
+    id: `1`,
     name: `name`,
     email: `email@gmail.com`,
     password: `password`,
     type: {
-      id: 1,
+      id: `1`,
       title: `title`,
     },
     image: {
-      id: 1,
+      id: `1`,
       title: `title`,
     },
   },
   images: [
     {
-      id: 1,
+      id: `1`,
       title: `title`,
     },
     {
-      id: 2,
+      id: `2`,
       title: `title`,
     }
   ],
@@ -284,7 +284,7 @@ describe(`Comment Service`, () => {
       const params: IComment = {
         id: commentParams.id,
         text: commentParams.text,
-        date: commentParams.date,
+        createdAt: commentParams.createdAt,
         rating: commentParams.rating,
         hotel: hotelEntity,
         user: userEntity,

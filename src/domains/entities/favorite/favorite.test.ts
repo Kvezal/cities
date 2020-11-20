@@ -4,8 +4,8 @@ import { IFavorite } from './favorite.interface';
 
 const favoriteParams: IFavorite = {
   value: true,
-  userId: 1,
-  hotelId: 1,
+  userId: `1`,
+  hotelId: `1`,
 };
 
 describe(`Favorite entity`, () => {

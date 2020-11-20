@@ -15,13 +15,13 @@ export class UserService implements
     private readonly _userCreatorService: SaveUserPort
   ) {}
 
-  public async getUserById(userId: number): Promise<UserEntity> {
+  public async getUserById(userId: string): Promise<UserEntity> {
     return this._userLoaderService.loadUserById(userId);
   }
 
   public async createUser(userParams: IUser): Promise<UserEntity> {
     userParams.password = await hash(userParams.password, SALT_ROUND);
     const userEntity = UserEntity.create(userParams);
-    return this._userCreatorService.createUser(userEntity);
+    return this._userCreatorService.saveUser(userEntity);
   }
 }

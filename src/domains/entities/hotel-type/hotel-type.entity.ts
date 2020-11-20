@@ -3,11 +3,11 @@ import { IHotelType } from './hotel-type.interface';
 
 export class HotelTypeEntity {
   constructor(
-    private readonly _id: number,
+    private readonly _id: string,
     private readonly _title: string
   ) {}
 
-  get id(): number {
+  get id(): string {
     return this._id;
   }
 

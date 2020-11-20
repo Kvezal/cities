@@ -17,11 +17,11 @@ export class HotelService implements
     return this._hotelListLoaderService.loadHotelList(sortParams);
   }
 
-  public async getHotelById(hotelId: number): Promise<HotelEntity> {
+  public async getHotelById(hotelId: string): Promise<HotelEntity> {
     return this._hotelLoaderService.loadHotelById(hotelId);
   }
 
-  public async getNearbyHotelList(hotelId: number): Promise<HotelEntity[]> {
+  public async getNearbyHotelList(hotelId: string): Promise<HotelEntity[]> {
     const hotelEntity = await this.getHotelById(hotelId);
     if (!hotelEntity) {
       return;

@@ -5,15 +5,15 @@ import { IComment } from './comment.interface';
 
 export class CommentEntity {
   constructor(
-    private readonly _id: number,
+    private readonly _id: string,
     private readonly _text: string,
-    private readonly _date: Date,
+    private readonly _createdAt: Date,
     private readonly _rating: RatingEntity,
     private readonly _hotel: HotelEntity,
     private readonly _user: UserEntity,
   ) {}
 
-  get id(): number {
+  get id(): string {
     return this._id;
   }
 
@@ -21,8 +21,8 @@ export class CommentEntity {
     return this._text;
   }
 
-  get date(): Date {
-    return this._date;
+  get createdAt(): Date {
+    return this._createdAt;
   }
 
   get rating(): RatingEntity {
@@ -52,7 +52,7 @@ export class CommentEntity {
     return new CommentEntity(
       params.id,
       params.text,
-      params.date,
+      params.createdAt,
       ratingEntity,
       params.hotel instanceof HotelEntity ? params.hotel : HotelEntity.create(params.hotel),
       params.user instanceof UserEntity ? params.user : UserEntity.create(params.user)

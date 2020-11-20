@@ -2,10 +2,10 @@ import { RatingEntity } from 'domains/entities';
 
 
 export interface IHotelCommentParams {
-  id: number;
+  id: string;
   text: string;
-  date: Date;
+  createdAt: Date;
   rating: number | RatingEntity;
-  hotelId: number;
-  userId: number;
+  hotelId: string;
+  userId: string;
 }

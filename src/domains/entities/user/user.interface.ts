@@ -2,10 +2,10 @@ import { IImage, ImageEntity, IUserType, UserTypeEntity } from 'domains/entities
 
 
 export interface IUser {
-  id: number;
+  id: string;
   name: string;
   email: string;
   password: string;
-  type: IUserType | UserTypeEntity;
   image: IImage | ImageEntity;
+  type: IUserType | UserTypeEntity;
 }

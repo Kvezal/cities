@@ -5,13 +5,13 @@ import { ILocation } from './location.interface';
 
 export class LocationEntity {
   constructor(
-    private readonly _id: number,
+    private readonly _id: string,
     private readonly _latitude: number,
     private readonly _longitude: number,
     private readonly _zoom: number,
   ) {}
 
-  get id(): number {
+  get id(): string {
     return this._id;
   }
 

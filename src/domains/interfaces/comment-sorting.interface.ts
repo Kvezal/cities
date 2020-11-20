@@ -1,3 +1,3 @@
 export interface ICommentSorting {
-  hotelId: number;
+  hotelId: string;
 }
