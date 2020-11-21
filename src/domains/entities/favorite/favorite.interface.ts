@@ -1,5 +1,5 @@
 export interface IFavorite {
-  value: boolean,
+  value: boolean;
   userId: string;
   hotelId: string;
 }

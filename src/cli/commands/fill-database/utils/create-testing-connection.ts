@@ -12,7 +12,9 @@ import { PostgresDriver } from 'typeorm/driver/postgres/PostgresDriver';
 import * as entities from '../../../../modules/orm-entities';
 
 class myFakeDBDriver extends PostgresDriver {
-  async connect(): Promise<void> {}
+  async connect(): Promise<void> {
+    return;
+  }
 }
 
 class myDriverFactory extends DriverFactory {

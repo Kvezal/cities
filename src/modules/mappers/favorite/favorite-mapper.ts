@@ -6,16 +6,16 @@ export class FavoriteMapper {
   static mapToDomain(ormEntity: FavoriteOrmEntity): FavoriteEntity {
     return FavoriteEntity.create({
       value: ormEntity.value,
-      userId: ormEntity.user,
-      hotelId: ormEntity.hotel,
+      userId: ormEntity.userId,
+      hotelId: ormEntity.hotelId,
     });
   }
 
   static mapToOrmEntity(domain: FavoriteEntity): FavoriteOrmEntity {
     const ormEntity = new FavoriteOrmEntity();
     ormEntity.value = domain.value;
-    ormEntity.user = domain.userId;
-    ormEntity.hotel = domain.hotelId;
+    ormEntity.userId = domain.userId;
+    ormEntity.hotelId = domain.hotelId;
     return ormEntity;
   }
 }

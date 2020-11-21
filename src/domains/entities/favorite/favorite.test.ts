@@ -20,7 +20,11 @@ describe(`Favorite entity`, () => {
       );
     });
 
-    it.each([`value`, `userId`, `hotelId`])(`should create a new Favorite instance with correct %p property`, (property) => {
+    it.each([
+      `value`,
+      `userId`,
+      `hotelId`
+    ])(`should create a new Favorite instance with correct %p property`, (property: string) => {
       expect(favorite[property]).toBe(favoriteParams[property]);
     });
   });
@@ -32,7 +36,11 @@ describe(`Favorite entity`, () => {
       favorite = FavoriteEntity.create(favoriteParams);
     });
 
-    it.each([`value`, `userId`, `hotelId`])(`should create a new Favorite instance with correct %p property`, (property) => {
+    it.each([
+      `value`,
+      `userId`,
+      `hotelId`
+    ])(`should create a new Favorite instance with correct %p property`, (property: string) => {
       expect(favorite[property]).toBe(favoriteParams[property]);
     });
   });

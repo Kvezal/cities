@@ -1,14 +1,5 @@
-import { Controller, Get, Inject } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
-import {
-  CityService,
-  cityServiceSymbol,
-  FavoriteService,
-  favoriteServiceSymbol,
-  HotelService,
-  hotelServiceSymbol,
-} from 'domains/services';
-import { HotelMapper } from 'modules/mappers';
 
 
 @Controller()
@@ -17,7 +8,7 @@ export class AppController {
     private readonly appService: AppService,
     // @Inject(cityServiceSymbol) private readonly _cityService: CityService,
     // @Inject(hotelServiceSymbol) private readonly _hotelService: HotelService
-    @Inject(favoriteServiceSymbol) private readonly _favoriteService: FavoriteService
+    // @Inject(favoriteServiceSymbol) private readonly _favoriteService: FavoriteService
   ) {}
 
   @Get()
@@ -27,7 +18,7 @@ export class AppController {
 
   @Get(`test`)
   async getCity() {
-    await this._favoriteService.toggleFavoriteStateOfHotelForUser(`239e3a9c-75f7-44ea-9e1a-b6a81310793f`, `2037c09e-c6b1-4a89-b9b9-a6bfab934fd7`);
+    // await this._favoriteService.getFavoriteHotelList(`232d6b86-070c-48f9-9fbb-5805cd54cdd5`);
     // const cityEntityList = await this._cityService.getCityList();
     // return cityEntityList.map(CityMapper.mapToOrmEntity);
     // const hotelEntityList = await this._hotelService.getHotelList({

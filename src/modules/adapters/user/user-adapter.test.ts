@@ -105,10 +105,6 @@ describe(`User Adapter Service`, () => {
   });
 
   describe(`saveUser method`, () => {
-    beforeAll(() => {
-
-    });
-
     it(`should call mapToOrmEntity method of UserMapper`, async () => {
       UserMapper.mapToOrmEntity = jest.fn(UserMapper.mapToOrmEntity);
       jest.spyOn(repository, `create`).mockReturnValue(userOrmEntity);

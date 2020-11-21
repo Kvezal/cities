@@ -29,12 +29,12 @@ export class FavoriteEntity {
   }
 
   public toggleFavoriteStateOfHotel(): FavoriteEntity {
-    const params = this._getParams();
+    const params: IFavorite = this._getParams();
     params.value = !params.value;
     return FavoriteEntity.create(params);
   }
 
-  private _getParams() {
+  private _getParams(): IFavorite {
     return {
       value: this.value,
       userId: this.userId,

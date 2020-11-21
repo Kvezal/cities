@@ -1,6 +1,5 @@
 import { getRandomInt } from '../get-random-int';
 import { getRandomString } from '../get-random-string';
-import { throwError } from 'rxjs';
 
 
 const MIN_COUNT_OF_DOMAIN_PART_SPECIAL_SYMBOLS = 2;

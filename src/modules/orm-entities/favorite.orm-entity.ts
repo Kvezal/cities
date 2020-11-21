@@ -8,21 +8,32 @@ import { UserOrmEntity } from './user.orm-entity';
 export class FavoriteOrmEntity {
   @ManyToOne(
     () => UserOrmEntity,
+    (userOrmEntity: UserOrmEntity) => userOrmEntity.id,
     {
       primary: true,
+      eager: true,
+      cascade: [`update`, `remove`],
     }
   )
-  @JoinColumn()
-  public user: string;
+  @JoinColumn({
+    name: `userId`,
+    referencedColumnName: `id`,
+  })
+  public userId: string;
 
   @ManyToOne(
     () => HotelOrmEntity,
     {
       primary: true,
+      eager: true,
+      cascade: [`update`, `remove`],
     }
   )
-  @JoinColumn()
-  public hotel: string;
+  @JoinColumn({
+    name: `hotelId`,
+    referencedColumnName: `id`,
+  })
+  public hotelId: string;
 
   public value = true;
 }
