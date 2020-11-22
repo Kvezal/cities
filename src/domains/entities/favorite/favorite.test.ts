@@ -44,4 +44,23 @@ describe(`Favorite entity`, () => {
       expect(favorite[property]).toBe(favoriteParams[property]);
     });
   });
+
+  describe(`toggleFavoriteStateOfHotel method`, () => {
+    let favorite: FavoriteEntity;
+
+    beforeAll(() => {
+      favorite = FavoriteEntity.create(favoriteParams);
+    });
+
+    it.each([
+      `userId`,
+      `hotelId`
+    ])(`should create a new Favorite instance with correct %p property`, (property: string) => {
+      expect(favorite.toggleFavoriteStateOfHotel()[property]).toBe(favorite[property]);
+    });
+
+    it(`should create a new Favorite instance with other value`, () => {
+      expect(favorite.toggleFavoriteStateOfHotel().value).toBe(!favorite.value);
+    });
+  });
 });
