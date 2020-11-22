@@ -5,8 +5,10 @@ import { LoadFavoriteHotelListPort, LoadUserStateOfHotelPort, SaveUserHotelState
 import { FavoriteEntity, HotelEntity } from 'domains/entities';
 import { FavoriteOrmEntity, HotelOrmEntity } from 'modules/orm-entities';
 import { FavoriteMapper, HotelMapper } from 'modules/mappers';
+import { Injectable } from '@nestjs/common';
 
 
+@Injectable()
 export class FavoriteAdapterService implements
   LoadFavoriteHotelListPort,
   LoadUserStateOfHotelPort,

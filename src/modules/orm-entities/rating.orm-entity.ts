@@ -10,21 +10,29 @@ export class RatingOrmEntity {
     () => UserOrmEntity,
     {
       primary: true,
+      eager: true,
       cascade: [`remove`],
     }
   )
-  @JoinColumn()
-  public user: UserOrmEntity;
+  @JoinColumn({
+    name: `userId`,
+    referencedColumnName: `id`,
+  })
+  public userId: string;
 
   @ManyToOne(
     () => HotelOrmEntity,
     {
       primary: true,
+      eager: true,
       cascade: [`remove`],
     }
   )
-  @JoinColumn()
-  public hotel: HotelOrmEntity;
+  @JoinColumn({
+    name: `hotelId`,
+    referencedColumnName: `id`,
+  })
+  public hotelId: string;
 
   @Column()
   public value: number;

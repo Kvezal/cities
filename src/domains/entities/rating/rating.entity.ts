@@ -20,7 +20,7 @@ export class RatingEntity {
     return this._hotelId;
   }
 
-  static create(params: IRating): RatingEntity {
+  static create(params: IRating | RatingEntity): RatingEntity {
     return new RatingEntity(
       params.value,
       params.userId,

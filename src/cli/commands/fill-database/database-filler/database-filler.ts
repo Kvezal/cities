@@ -162,8 +162,8 @@ export class DatabaseFiller {
         .slice(0, getRandomInt[this._hotelOrmEntities.length - 1])
         .map((hotel: HotelOrmEntity): RatingOrmEntity => ({
           value: getRandomInt(1, 5),
-          hotel,
-          user,
+          hotelId: hotel.id,
+          userId: user.id,
         }));
       acc.push(...ratingEntities);
       return acc;

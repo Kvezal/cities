@@ -21,6 +21,7 @@ export class CommentOrmEntity {
   @ManyToOne(
     () => RatingOrmEntity,
     {
+      eager: true,
       cascade: [`remove`],
     }
   )
@@ -30,6 +31,7 @@ export class CommentOrmEntity {
   @ManyToOne(
     () => UserOrmEntity,
     {
+      eager: true,
       cascade: [`remove`],
     }
   )
@@ -39,6 +41,7 @@ export class CommentOrmEntity {
   @ManyToOne(
     () => HotelOrmEntity,
     {
+      eager: true,
       cascade: [`remove`],
     }
   )

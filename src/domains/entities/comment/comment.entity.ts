@@ -38,22 +38,11 @@ export class CommentEntity {
   }
 
   static create(params: IComment): CommentEntity {
-    let ratingEntity: RatingEntity;
-    if (params.rating instanceof RatingEntity) {
-      ratingEntity = params.rating;
-    } else {
-      ratingEntity = RatingEntity.create({
-        value: params.rating,
-        userId: params.user.id,
-        hotelId: params.hotel.id,
-      })
-    }
-
     return new CommentEntity(
       params.id,
       params.text,
       params.createdAt,
-      ratingEntity,
+      params.rating instanceof RatingEntity ? params.rating : RatingEntity.create(params.rating),
       params.hotel instanceof HotelEntity ? params.hotel : HotelEntity.create(params.hotel),
       params.user instanceof UserEntity ? params.user : UserEntity.create(params.user)
     );

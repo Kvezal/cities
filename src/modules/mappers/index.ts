@@ -1,4 +1,5 @@
 export { CityMapper } from './city';
+export { CommentMapper } from './comment';
 export { FavoriteMapper } from './favorite';
 export { FeatureMapper } from './feature';
 export { HotelMapper } from './hotel';
