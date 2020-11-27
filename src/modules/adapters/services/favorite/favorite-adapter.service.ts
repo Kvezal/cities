@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -8,9 +9,8 @@ import {
   SaveUserHotelStatePort,
 } from 'domains/ports';
 import { FavoriteEntity, HotelEntity } from 'domains/entities';
-import {FavoriteOrmEntity} from 'modules/orm-entities';
-import { FavoriteMapper } from 'modules/mappers';
-import { Injectable } from '@nestjs/common';
+import { FavoriteMapper, FavoriteOrmEntity } from 'modules/adapters';
+
 import { HotelAdapterService } from '../hotel';
 
 

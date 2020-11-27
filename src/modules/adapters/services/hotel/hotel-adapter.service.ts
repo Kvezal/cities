@@ -5,8 +5,8 @@ import { Repository } from 'typeorm';
 import { HotelEntity } from 'domains/entities';
 import { IHotelSortingParams } from 'domains/interfaces';
 import { LoadHotelByIdPort, LoadHotelListPort } from 'domains/ports';
-import { HotelOrmEntity, RatingOrmEntity } from 'modules/orm-entities';
-import { HotelMapper } from 'modules/mappers';
+import { HotelMapper } from 'modules/adapters/mappers';
+import { HotelOrmEntity, RatingOrmEntity } from 'modules/adapters/orm-entities';
 
 
 @Injectable()

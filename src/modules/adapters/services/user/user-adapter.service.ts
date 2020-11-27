@@ -4,8 +4,8 @@ import { Repository } from 'typeorm';
 
 import { UserEntity } from 'domains/entities';
 import { LoadUserByEmailPort, LoadUserByIdPort, SaveUserPort } from 'domains/ports';
-import { UserOrmEntity } from 'modules/orm-entities';
-import { UserMapper } from 'modules/mappers';
+import { UserMapper } from 'modules/adapters/mappers';
+import { UserOrmEntity } from 'modules/adapters/orm-entities';
 
 
 @Injectable()

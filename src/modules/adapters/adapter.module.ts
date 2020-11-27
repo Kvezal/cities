@@ -3,6 +3,8 @@ import { Module } from '@nestjs/common';
 import {
   CityService,
   cityServiceSymbol,
+  CommentService,
+  commentServiceSymbol,
   FavoriteService,
   favoriteServiceSymbol,
   HotelService,
@@ -11,11 +13,14 @@ import {
   userServiceSymbol,
 } from 'domains/services';
 
-import { CommonAdapterModule } from './services';
-import { CityAdapterService } from './services/city';
-import { FavoriteAdapterService } from './services/favorite';
-import { HotelAdapterService } from './services/hotel';
-import { UserAdapterService } from './services/user';
+import {
+  CommonAdapterModule,
+  CityAdapterService,
+  FavoriteAdapterService,
+  HotelAdapterService,
+  UserAdapterService,
+  CommentAdapterService,
+} from './services';
 
 
 @Module({
@@ -27,6 +32,25 @@ import { UserAdapterService } from './services/user';
       provide: cityServiceSymbol,
       useFactory: (cityAdapterService: CityAdapterService) => new CityService(cityAdapterService, cityAdapterService),
       inject: [CityAdapterService],
+    },
+    {
+      provide: commentServiceSymbol,
+      useFactory: (
+        commentAdapterService: CommentAdapterService,
+        userAdapterService: UserAdapterService,
+        hotelAdapterService: HotelAdapterService
+      ) => new CommentService(
+        commentAdapterService,
+        commentAdapterService,
+        commentAdapterService,
+        userAdapterService,
+        hotelAdapterService
+      ),
+      inject: [
+        CommentAdapterService,
+        UserAdapterService,
+        HotelAdapterService,
+      ]
     },
     {
       provide: favoriteServiceSymbol,
@@ -51,6 +75,7 @@ import { UserAdapterService } from './services/user';
   ],
   exports: [
     cityServiceSymbol,
+    commentServiceSymbol,
     hotelServiceSymbol,
     userServiceSymbol,
     favoriteServiceSymbol,

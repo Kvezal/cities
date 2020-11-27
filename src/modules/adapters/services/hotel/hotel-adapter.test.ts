@@ -3,8 +3,8 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { HotelEntity, IHotel } from 'domains/entities';
-import { HotelMapper } from 'modules/mappers';
-import { HotelOrmEntity, RatingOrmEntity } from 'modules/orm-entities';
+import { HotelMapper } from 'modules/adapters/mappers';
+import { HotelOrmEntity, RatingOrmEntity } from 'modules/adapters/orm-entities';
 
 import { HotelAdapterService } from './hotel-adapter.service';
 

@@ -4,8 +4,8 @@ import { Repository } from 'typeorm';
 
 import { CityEntity } from 'domains/entities';
 import { LoadCityByIdPort, LoadCityListPort } from 'domains/ports';
-import { CityMapper } from 'modules/mappers';
-import { CityOrmEntity } from 'modules/orm-entities';
+import { CityMapper } from 'modules/adapters/mappers';
+import { CityOrmEntity } from 'modules/adapters/orm-entities';
 
 
 @Injectable()

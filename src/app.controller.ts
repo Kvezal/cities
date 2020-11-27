@@ -1,4 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
+
 import { AppService } from './app.service';
 
 
@@ -20,18 +21,18 @@ export class AppController {
   @Get(`test`)
   async getCity() {
     // const commentParams = {
-    //   id: `08cb567b-15ec-4e7c-bb44-123a590f9857`,
+    //   id: `08cb567b-15ec-4e7c-bb44-123a590f9858`,
     //   text: `aaaaaaaaaaaaaaaaaaa`,
     //   createdAt: new Date(),
-    //   hotelId: `fd68a25a-8095-4bfc-b686-537aa4b33204`,
+    //   hotelId: `db27a120-bbfd-4878-8f4f-a1121423b068`,
     //   userId: `f0c36cc1-a787-429a-bea0-c0b537de4b33`,
-    //   rating: 5,
+    //   rating: 4,
     // };
     // const commentEntity = await this._commentService.createHotelComment(commentParams);
     // return CommentViewMapper.mapToOrmEntity(commentEntity);
 
     // const commentEntities = await this._commentService.getHotelCommentList({
-    //   hotelId: `008184a4-15e3-42fe-9292-867e5053dfa4`,
+    //   hotelId: `db27a120-bbfd-4878-8f4f-a1121423b068`,
     // });
     // console.log(commentEntities);
     // return commentEntities.map((commentEntity) => CommentViewMapper.mapToOrmEntity(commentEntity));

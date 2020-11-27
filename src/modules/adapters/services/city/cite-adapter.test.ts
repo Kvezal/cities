@@ -3,9 +3,10 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { CityEntity } from 'domains/entities';
-import { CityAdapterService } from 'modules/adapters';
-import { CityOrmEntity } from 'modules/orm-entities';
-import { CityMapper } from 'modules/mappers';
+import { CityMapper } from 'modules/adapters/mappers';
+import { CityOrmEntity } from 'modules/adapters/orm-entities';
+
+import { CityAdapterService } from './city-adapter.service';
 
 
 const cityOrmEntity = {

@@ -13,7 +13,7 @@ import {
   RatingOrmEntity,
   UserOrmEntity,
   UserTypeOrmEntity,
-} from '../../../../modules/orm-entities';
+} from '../../../../modules/adapters/orm-entities';
 import { IDatabaseFillerParams, ICityParam } from './database-filler.interface';
 import { getRandomEmail, getRandomInt, getRandomString, shuffle } from '../utils';
 import { userParams } from '../data';

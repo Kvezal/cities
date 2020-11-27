@@ -1,6 +1,6 @@
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 
-import * as entities from '../../../modules/orm-entities';
+import * as entities from '../../../modules/adapters/orm-entities';
 
 
 const {

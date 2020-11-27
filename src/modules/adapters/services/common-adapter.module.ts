@@ -1,22 +1,9 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 
-import {
-  CityOrmEntity,
-  CommentOrmEntity,
-  FavoriteOrmEntity,
-  FeatureOrmEntity,
-  HotelOrmEntity,
-  HotelTypeOrmEntity,
-  ImageOrmEntity,
-  // JsonWebTokenOrmEntity,
-  LocationOrmEntity,
-  RatingOrmEntity,
-  UserOrmEntity,
-  UserTypeOrmEntity,
-} from 'modules/orm-entities';
-
+import { OrmEntitiesModule } from '../orm-entities';
+import { ViewOrmEntitiesModule } from '../view-orm-entities';
 import { CityAdapterService } from './city';
+import { CommentAdapterService } from './comment';
 import { HotelAdapterService } from './hotel';
 import { UserAdapterService } from './user';
 import { FavoriteAdapterService } from './favorite';
@@ -24,32 +11,22 @@ import { FavoriteAdapterService } from './favorite';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      CityOrmEntity,
-      CommentOrmEntity,
-      FavoriteOrmEntity,
-      FeatureOrmEntity,
-      HotelOrmEntity,
-      HotelTypeOrmEntity,
-      ImageOrmEntity,
-      // JsonWebTokenOrmEntity,
-      LocationOrmEntity,
-      RatingOrmEntity,
-      UserOrmEntity,
-      UserTypeOrmEntity,
-    ])
+    OrmEntitiesModule,
+    ViewOrmEntitiesModule,
   ],
   providers: [
     CityAdapterService,
     FavoriteAdapterService,
     HotelAdapterService,
     UserAdapterService,
+    CommentAdapterService,
   ],
   exports: [
     CityAdapterService,
     FavoriteAdapterService,
     HotelAdapterService,
     UserAdapterService,
+    CommentAdapterService,
   ],
 })
 export class CommonAdapterModule {}

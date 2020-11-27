@@ -3,9 +3,10 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { IUser, UserEntity } from 'domains/entities';
-import { UserAdapterService } from 'modules/adapters';
-import { UserMapper } from 'modules/mappers';
-import { UserOrmEntity } from 'modules/orm-entities';
+import { UserMapper } from 'modules/adapters/mappers';
+import { UserOrmEntity } from 'modules/adapters/orm-entities';
+
+import { UserAdapterService } from './user-adapter.service';
 
 
 const userOrmEntity: IUser = {

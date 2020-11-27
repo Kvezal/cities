@@ -1,7 +1,7 @@
 import { createConnection, Connection } from 'typeorm';
 
+import * as entities from '../../../modules/adapters/orm-entities';
 import { ICli } from '../../cli.interface';
-import * as entities from '../../../modules/orm-entities';
 
 
 const {

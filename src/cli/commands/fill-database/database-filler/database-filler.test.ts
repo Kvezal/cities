@@ -10,8 +10,7 @@ import {
   RatingOrmEntity,
   UserOrmEntity,
   UserTypeOrmEntity,
-} from '../../../../modules/orm-entities';
-
+} from '../../../../modules/adapters/orm-entities';
 import { createTestingConnection } from '../utils/create-testing-connection';
 import { DatabaseFiller } from './database-filler';
 import { IDatabaseFillerParams } from './database-filler.interface';

@@ -3,9 +3,9 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { FavoriteEntity, HotelEntity, IFavorite, IHotel } from 'domains/entities';
-import { HotelAdapterService } from 'modules/adapters';
-import { FavoriteMapper } from 'modules/mappers';
-import { FavoriteOrmEntity } from 'modules/orm-entities';
+import { FavoriteMapper } from 'modules/adapters/mappers';
+import { FavoriteOrmEntity } from 'modules/adapters/orm-entities';
+import { HotelAdapterService } from 'modules/adapters/services';
 
 import { FavoriteAdapterService } from './favorite-adapter.service';
 
