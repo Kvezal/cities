@@ -1,8 +1,14 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryColumn,
+} from 'typeorm';
 
 import { UserOrmEntity } from './user.orm-entity';
 import { HotelOrmEntity } from './hotel.orm-entity';
-import { RatingOrmEntity } from './rating.orm-entity';
 
 
 @Entity(`comments`)
@@ -19,23 +25,15 @@ export class CommentOrmEntity {
   public createdAt?: Date;
 
   @ManyToOne(
-    () => RatingOrmEntity,
-    {
-      eager: true,
-      cascade: [`remove`],
-    }
-  )
-  @JoinColumn()
-  public rating: RatingOrmEntity;
-
-  @ManyToOne(
     () => UserOrmEntity,
     {
       eager: true,
       cascade: [`remove`],
     }
   )
-  @JoinColumn()
+  @JoinColumn({
+    name: `userId`,
+  })
   public user: UserOrmEntity;
 
   @ManyToOne(
@@ -45,6 +43,8 @@ export class CommentOrmEntity {
       cascade: [`remove`],
     }
   )
-  @JoinColumn()
+  @JoinColumn({
+    name: `hotelId`,
+  })
   public hotel: HotelOrmEntity;
 }

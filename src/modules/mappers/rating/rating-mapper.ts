@@ -5,17 +5,17 @@ import { RatingOrmEntity } from 'modules/orm-entities';
 export class RatingMapper {
   static mapToDomain(ormEntity: RatingOrmEntity): RatingEntity {
     return RatingEntity.create({
+      value: ormEntity.value,
       userId: ormEntity.userId,
       hotelId: ormEntity.hotelId,
-      value: ormEntity.value,
     });
   }
 
   static mapToOrmEntity(domain: RatingEntity): RatingOrmEntity {
     const ormEntity = new RatingOrmEntity();
+    ormEntity.value = domain.value;
     ormEntity.userId = domain.userId;
     ormEntity.hotelId = domain.hotelId;
-    ormEntity.value = domain.value;
     return ormEntity;
   }
 }

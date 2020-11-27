@@ -1,5 +1,5 @@
 import { FavoriteEntity, HotelEntity } from 'domains/entities';
-import { LoadFavoriteHotelListPort, LoadUserStateOfHotelPort, SaveUserHotelStatePort } from 'domains/ports';
+import { DeleteUserHotelStatePort, LoadFavoriteHotelListPort, LoadUserStateOfHotelPort, SaveUserHotelStatePort } from 'domains/ports';
 import { GetFavoriteHotelListQuery } from 'domains/queries';
 import { ToggleFavoriteStateOfHotelForUserUseCase } from 'domains/use-cases';
 
@@ -10,7 +10,8 @@ export class FavoriteService implements
   constructor(
     private readonly _favoriteHotelLoaderService: LoadFavoriteHotelListPort,
     private readonly _favoriteHotelStateLoaderService: LoadUserStateOfHotelPort,
-    private readonly _favoriteHotelStateUpdaterService: SaveUserHotelStatePort
+    private readonly _favoriteHotelStateUpdaterService: SaveUserHotelStatePort,
+    private readonly _favoriteHotelStateDeleterService: DeleteUserHotelStatePort
   ) {}
 
   public async getFavoriteHotelList(userId: string): Promise<HotelEntity[]> {
@@ -26,7 +27,11 @@ export class FavoriteService implements
         hotelId,
       });
     }
-    const updatedHotelFavoriteState = await hotelUserState.toggleFavoriteStateOfHotel();
-    return this._favoriteHotelStateUpdaterService.saveUserHotelState(updatedHotelFavoriteState);
+    const toggledHotelFavoriteState = hotelUserState.toggleFavoriteStateOfHotel();
+    if (toggledHotelFavoriteState.value) {
+      return this._favoriteHotelStateUpdaterService.saveUserHotelState(toggledHotelFavoriteState);
+    }
+    await this._favoriteHotelStateDeleterService.deleteUserHotelState(toggledHotelFavoriteState);
+    return toggledHotelFavoriteState;
   }
 }

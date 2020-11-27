@@ -10,4 +10,3 @@ export { LocationOrmEntity } from './location.orm-entity';
 export { RatingOrmEntity } from './rating.orm-entity';
 export { UserOrmEntity } from './user.orm-entity';
 export { UserTypeOrmEntity } from './user-type.orm-entity';
-export { OrmEntitiesModule } from './orm-entities.module'

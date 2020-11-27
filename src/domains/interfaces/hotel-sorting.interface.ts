@@ -6,6 +6,7 @@ export enum ESortingType {
 }
 
 export interface IHotelSortingParams {
-  cityId: string,
+  cityId?: string,
+  userId?: string,
   type?: ESortingType,
 }

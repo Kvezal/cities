@@ -6,11 +6,13 @@ import { HotelOrmEntity } from './hotel.orm-entity';
 
 @Entity(`ratings`)
 export class RatingOrmEntity {
+  @Column()
+  public value: number;
+
   @ManyToOne(
     () => UserOrmEntity,
     {
       primary: true,
-      eager: true,
       cascade: [`remove`],
     }
   )
@@ -24,7 +26,6 @@ export class RatingOrmEntity {
     () => HotelOrmEntity,
     {
       primary: true,
-      eager: true,
       cascade: [`remove`],
     }
   )
@@ -33,7 +34,4 @@ export class RatingOrmEntity {
     referencedColumnName: `id`,
   })
   public hotelId: string;
-
-  @Column()
-  public value: number;
 }

@@ -9,10 +9,12 @@ import { CityAdapterService } from './city-adapter.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([CityOrmEntity, LocationOrmEntity])
+    TypeOrmModule.forFeature([
+      CityOrmEntity,
+      LocationOrmEntity,
+    ])
   ],
   providers: [
-    CityAdapterService,
     {
       provide: cityServiceSymbol,
       useFactory: (cityAdapterService: CityAdapterService) => new CityService(cityAdapterService, cityAdapterService),

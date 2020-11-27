@@ -3,22 +3,22 @@ import { IUser, UserEntity } from 'domains/entities';
 import { UserService } from './user.service';
 
 
-describe(`User service`, () => {
-  const userParams: IUser = {
+const userParams: IUser = {
+  id: `1`,
+  name: `name`,
+  email: `email@gmail.com`,
+  password: `password`,
+  image: {
     id: `1`,
-    name: `name`,
-    email: `email@gmail.com`,
-    password: `password`,
-    image: {
-      id: `1`,
-      title: `title`,
-    },
-    type: {
-      id: `1`,
-      title: `title`,
-    },
-  };
+    title: `title`,
+  },
+  type: {
+    id: `1`,
+    title: `title`,
+  },
+};
 
+describe(`User service`, () => {
   describe(`getUserById`, () => {
     it(`should call loadUserById method`, async () => {
       const loadUserById = jest.fn();

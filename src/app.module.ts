@@ -1,21 +1,16 @@
 import { Module } from '@nestjs/common';
 
-import { CityAdapterModule, FavoriteAdapterModule, HotelAdapterModule, UserAdapterModule } from 'modules/adapters';
 import { ConfigModule } from 'modules/config';
-import { OrmEntitiesModule } from 'modules/orm-entities';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AdapterModule } from 'modules/adapters/adapter.module';
 
 
 @Module({
   imports: [
     ConfigModule,
-    OrmEntitiesModule,
-    CityAdapterModule,
-    UserAdapterModule,
-    HotelAdapterModule,
-    FavoriteAdapterModule,
+    AdapterModule,
   ],
   controllers: [AppController],
   providers: [AppService],

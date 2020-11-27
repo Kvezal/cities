@@ -20,7 +20,7 @@ describe(`Rating entity`, () => {
       );
     });
 
-    it.each([`value`, `userId`, `hotelId`])(`should create a new Rating instance with correct %p property`, (property) => {
+    it.each([`value`, `userId`, `hotelId`])(`should create a new Rating instance with correct %p property`, (property: string) => {
       expect(rating[property]).toBe(ratingParams[property]);
     });
   });
@@ -32,7 +32,7 @@ describe(`Rating entity`, () => {
       rating = RatingEntity.create(ratingParams);
     });
 
-    it.each([`value`, `userId`, `hotelId`])(`should create a new Rating instance with correct %p property`, (property) => {
+    it.each([`value`, `userId`, `hotelId`])(`should create a new Rating instance with correct %p property`, (property: string) => {
       expect(rating[property]).toBe(ratingParams[property]);
     });
   });
