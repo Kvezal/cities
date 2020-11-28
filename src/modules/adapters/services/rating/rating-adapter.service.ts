@@ -28,8 +28,12 @@ export class RatingAdapterService implements
   }
 
   public async updateRating(entity: RatingEntity): Promise<RatingEntity> {
-    const ormEntity: RatingOrmEntity = RatingMapper.mapToOrmEntity(entity);
-    await this._ratingRepository.update(ormEntity, ormEntity);
+    await this._ratingRepository.update({
+      hotelId: entity.hotelId,
+      userId: entity.userId,
+    }, {
+      value: entity.value,
+    });
     return entity;
   }
 }

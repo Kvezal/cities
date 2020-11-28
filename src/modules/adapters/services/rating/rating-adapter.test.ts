@@ -135,20 +135,6 @@ describe(`Rating Adapter Service`, () => {
       jest.spyOn(repository, `update`).mockImplementation(async () => null);
     });
 
-    describe(`mapToOrmEntity method of RatingMapper`, () => {
-      it('should call', async () => {
-        RatingMapper.mapToOrmEntity = jest.fn(RatingMapper.mapToOrmEntity);
-        await service.updateRating(ratingEntity);
-        expect(RatingMapper.mapToOrmEntity).toHaveBeenCalledTimes(1);
-      });
-
-      it('should call with params', async () => {
-        RatingMapper.mapToOrmEntity = jest.fn(RatingMapper.mapToOrmEntity);
-        await service.updateRating(ratingEntity);
-        expect(RatingMapper.mapToOrmEntity).toHaveBeenCalledWith(ratingEntity);
-      });
-    });
-
     describe(`update method of RatingRepository`, () => {
       it('should call', async () => {
         const update = jest.spyOn(repository, `update`).mockImplementation(async () => null);
@@ -159,7 +145,13 @@ describe(`Rating Adapter Service`, () => {
       it('should call with params', async () => {
         const update = jest.spyOn(repository, `update`).mockImplementation(async () => null);
         await service.updateRating(ratingEntity);
-        expect(update).toHaveBeenCalledWith(ratingOrmEntity, ratingOrmEntity);
+        expect(update).toHaveBeenCalledWith(
+          {
+            userId: ratingEntity.userId,
+            hotelId: ratingEntity.hotelId,
+          },
+          { value: ratingEntity.value }
+        );
       });
     });
 

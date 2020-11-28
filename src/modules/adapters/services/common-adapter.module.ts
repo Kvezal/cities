@@ -7,6 +7,7 @@ import { CommentAdapterService } from './comment';
 import { HotelAdapterService } from './hotel';
 import { UserAdapterService } from './user';
 import { FavoriteAdapterService } from './favorite';
+import { RatingAdapterService } from './rating';
 
 
 @Module({
@@ -19,6 +20,7 @@ import { FavoriteAdapterService } from './favorite';
     FavoriteAdapterService,
     HotelAdapterService,
     UserAdapterService,
+    RatingAdapterService,
     CommentAdapterService,
   ],
   exports: [
@@ -26,6 +28,7 @@ import { FavoriteAdapterService } from './favorite';
     FavoriteAdapterService,
     HotelAdapterService,
     UserAdapterService,
+    RatingAdapterService,
     CommentAdapterService,
   ],
 })

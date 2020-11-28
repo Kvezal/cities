@@ -21,6 +21,7 @@ import {
   UserAdapterService,
   CommentAdapterService,
 } from './services';
+import { RatingAdapterService } from 'modules/adapters/services/rating/rating-adapter.service';
 
 
 @Module({
@@ -38,18 +39,22 @@ import {
       useFactory: (
         commentAdapterService: CommentAdapterService,
         userAdapterService: UserAdapterService,
-        hotelAdapterService: HotelAdapterService
+        hotelAdapterService: HotelAdapterService,
+        ratingAdapterService: RatingAdapterService,
       ) => new CommentService(
         commentAdapterService,
         commentAdapterService,
-        commentAdapterService,
         userAdapterService,
-        hotelAdapterService
+        hotelAdapterService,
+        ratingAdapterService,
+        ratingAdapterService,
+        ratingAdapterService
       ),
       inject: [
         CommentAdapterService,
         UserAdapterService,
         HotelAdapterService,
+        RatingAdapterService,
       ]
     },
     {
