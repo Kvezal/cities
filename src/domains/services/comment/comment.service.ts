@@ -47,7 +47,7 @@ export class CommentService implements
       hotelId: commentParams.hotelId,
       value: commentParams.rating,
     });
-    const hasRating = await this._ratingCheckerService.checkRating(commentParams.userId, commentParams.hotelId);
+    const hasRating = await this._ratingCheckerService.checkRating(ratingEntity);
     if (hasRating) {
       await this._ratingUpdaterService.updateRating(ratingEntity);
     } else {

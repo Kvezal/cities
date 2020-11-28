@@ -311,7 +311,7 @@ describe(`Comment Service`, () => {
           {checkRating}
         );
         await commentService.createHotelComment(commentParams);
-        expect(checkRating).toHaveBeenCalledWith(commentParams.userId, commentParams.hotelId);
+        expect(checkRating).toHaveBeenCalledWith(ratingEntity);
       });
 
       describe(`if result equal "true`, () => {

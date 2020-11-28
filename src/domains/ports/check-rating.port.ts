@@ -1,3 +1,6 @@
+import { RatingEntity } from 'domains/entities';
+
+
 export interface CheckRatingPort {
-  checkRating(userId: string, hotelId: string): Promise<boolean>;
+  checkRating(entity: RatingEntity): Promise<boolean>;
 }
