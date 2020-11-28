@@ -107,6 +107,8 @@ describe(`Comment Service`, () => {
         null,
         null,
         null,
+        null,
+        null,
       );
       await commentService.getHotelCommentList(commentSortingParams);
       expect(loadHotelCommentList).toHaveBeenCalledTimes(1);
@@ -116,6 +118,8 @@ describe(`Comment Service`, () => {
       const loadHotelCommentList = jest.fn();
       const commentService = new CommentService(
         {loadHotelCommentList},
+        null,
+        null,
         null,
         null,
         null,
@@ -130,6 +134,8 @@ describe(`Comment Service`, () => {
       const loadHotelCommentList = jest.fn().mockReturnValue([hotelEntity]);
       const commentService = new CommentService(
         {loadHotelCommentList},
+        null,
+        null,
         null,
         null,
         null,
@@ -155,9 +161,11 @@ describe(`Comment Service`, () => {
         const commentService = new CommentService(
           null,
           {saveHotelComment: async () => null},
-          {saveRating: async () => ratingEntity},
           {loadUserById},
-          {loadHotelById: async () => hotelEntity}
+          {loadHotelById: async () => hotelEntity},
+          {saveRating: async () => ratingEntity},
+          null,
+          {checkRating: async () => false}
         );
         await commentService.createHotelComment(commentParams);
         expect(loadUserById).toHaveBeenCalledTimes(1);
@@ -168,9 +176,11 @@ describe(`Comment Service`, () => {
         const commentService = new CommentService(
           null,
           {saveHotelComment: async () => null},
-          {saveRating: async () => ratingEntity},
           {loadUserById},
-          {loadHotelById: async () => hotelEntity}
+          {loadHotelById: async () => hotelEntity},
+          {saveRating: async () => ratingEntity},
+          null,
+          {checkRating: async () => false}
         );
         await commentService.createHotelComment(commentParams);
         expect(loadUserById).toHaveBeenCalledWith(commentParams.userId);
@@ -180,9 +190,11 @@ describe(`Comment Service`, () => {
         const commentService = new CommentService(
           null,
           {saveHotelComment: async () => null},
-          {saveRating: async () => null},
           {loadUserById: async () => null},
-          {loadHotelById: async () => null}
+          null,
+          null,
+          null,
+          null
         );
         expect(commentService.createHotelComment(commentParams)).rejects
           .toThrowError(`user with ${commentParams.userId} id is not existed`);
@@ -190,15 +202,16 @@ describe(`Comment Service`, () => {
     });
 
     describe(`loadHotelById method of HotelLoaderService`, () => {
-
       it(`should call`, async () => {
         const loadHotelById = jest.fn().mockReturnValueOnce(hotelEntity);
         const commentService = new CommentService(
           null,
           {saveHotelComment: async () => null},
-          {saveRating: async () => ratingEntity},
           {loadUserById: async () => userEntity},
-          {loadHotelById}
+          {loadHotelById},
+          {saveRating: async () => ratingEntity},
+          null,
+          {checkRating: async () => false}
         );
         await commentService.createHotelComment(commentParams);
         expect(loadHotelById).toHaveBeenCalledTimes(1);
@@ -209,9 +222,11 @@ describe(`Comment Service`, () => {
         const commentService = new CommentService(
           null,
           {saveHotelComment: async () => null},
-          {saveRating: async () => ratingEntity},
           {loadUserById: async () => userEntity},
-          {loadHotelById}
+          {loadHotelById},
+          {saveRating: async () => ratingEntity},
+          null,
+          {checkRating: async () => false}
         );
         await commentService.createHotelComment(commentParams);
         expect(loadHotelById).toHaveBeenCalledWith(commentParams.hotelId);
@@ -221,67 +236,213 @@ describe(`Comment Service`, () => {
         const commentService = new CommentService(
           null,
           {saveHotelComment: async () => null},
-          {saveRating: async () => null},
           {loadUserById: async () => userEntity},
-          {loadHotelById: async () => null}
+          {loadHotelById: async () => null},
+          null,
+          null,
+          {checkRating: async () => false}
         );
         expect(commentService.createHotelComment(commentParams)).rejects
           .toThrowError(`hotel with ${commentParams.hotelId} id is not existed`);
       });
     });
 
-    it(`should call CommentEntity.create method`, async () => {
-      CommentEntity.create = jest.fn(CommentEntity.create);
-      const commentService = new CommentService(
-        null,
-        {saveHotelComment: async () => null},
-        {saveRating: async () => ratingEntity},
-        {loadUserById: async () => userEntity},
-        {loadHotelById: async () => hotelEntity}
-      );
-      await commentService.createHotelComment(commentParams);
-      expect(CommentEntity.create).toHaveBeenCalledTimes(1);
+    describe(`create method of RatingEntity`, () => {
+      it(`should call`, async () => {
+        RatingEntity.create = jest.fn(RatingEntity.create);
+        const commentService = new CommentService(
+          null,
+          {saveHotelComment: async () => null},
+          {loadUserById: async () => userEntity},
+          {loadHotelById: async () => hotelEntity},
+          {saveRating: async () => ratingEntity},
+          null,
+          {checkRating: async () => false}
+        );
+        await commentService.createHotelComment(commentParams);
+        expect(RatingEntity.create).toHaveBeenCalledTimes(1);
+      });
+
+      it(`should call with correct params`, async () => {
+        RatingEntity.create = jest.fn(RatingEntity.create);
+        const commentService = new CommentService(
+          null,
+          {saveHotelComment: async () => null},
+          {loadUserById: async () => userEntity},
+          {loadHotelById: async () => hotelEntity},
+          {saveRating: async () => ratingEntity},
+          null,
+          {checkRating: async () => false}
+        );
+        await commentService.createHotelComment(commentParams);
+        expect(RatingEntity.create).toHaveBeenCalledWith({
+          userId: commentParams.userId,
+          hotelId: commentParams.hotelId,
+          value: commentParams.rating,
+        });
+      });
     });
 
-    it(`should call CommentEntity.create method with params`, async () => {
-      CommentEntity.create = jest
-        .fn(CommentEntity.create);
-      const commentService = new CommentService(
-        null,
-        {saveHotelComment: async () => null},
-        {saveRating: async () => ratingEntity},
-        {loadUserById: async () => userEntity},
-        {loadHotelById: async () => hotelEntity}
-      );
-      await commentService.createHotelComment(commentParams);
-      expect(CommentEntity.create).toHaveBeenCalledWith(commentParams);
+    describe(`checkRating method of RatingCheckerService`, () => {
+      it('should call', async () => {
+        const checkRating = jest.fn().mockResolvedValueOnce(false);
+        const commentService = new CommentService(
+          null,
+          {saveHotelComment: async () => null},
+          {loadUserById: async () => userEntity},
+          {loadHotelById: async () => hotelEntity},
+          {saveRating: async () => ratingEntity},
+          null,
+          {checkRating}
+        );
+        await commentService.createHotelComment(commentParams);
+        expect(checkRating).toHaveBeenCalledTimes(1);
+      });
+
+      it('should call with correct params', async () => {
+        const checkRating = jest.fn().mockResolvedValueOnce(false);
+        const commentService = new CommentService(
+          null,
+          {saveHotelComment: async () => null},
+          {loadUserById: async () => userEntity},
+          {loadHotelById: async () => hotelEntity},
+          {saveRating: async () => ratingEntity},
+          null,
+          {checkRating}
+        );
+        await commentService.createHotelComment(commentParams);
+        expect(checkRating).toHaveBeenCalledWith(commentParams.userId, commentParams.hotelId);
+      });
+
+      describe(`if result equal "true`, () => {
+        it(`should call saveRating of RatingSaverService`, async () => {
+          const updateRating = jest.fn();
+          const commentService = new CommentService(
+            null,
+            {saveHotelComment: async () => null},
+            {loadUserById: async () => userEntity},
+            {loadHotelById: async () => hotelEntity},
+            null,
+            {updateRating},
+            {checkRating: async () => true}
+          );
+          await commentService.createHotelComment(commentParams);
+          expect(updateRating).toHaveBeenCalledTimes(1);
+        });
+
+        it(`should call saveRating of RatingSaverService with correct params`, async () => {
+          const updateRating = jest.fn();
+          const commentService = new CommentService(
+            null,
+            {saveHotelComment: async () => null},
+            {loadUserById: async () => userEntity},
+            {loadHotelById: async () => hotelEntity},
+            null,
+            {updateRating},
+            {checkRating: async () => true}
+          );
+          await commentService.createHotelComment(commentParams);
+          expect(updateRating).toHaveBeenCalledWith(ratingEntity);
+        });
+      });
+
+      describe(`if result equal "false`, () => {
+        it(`should call saveRating of RatingSaverService`, async () => {
+          const saveRating = jest.fn();
+          const commentService = new CommentService(
+            null,
+            {saveHotelComment: async () => null},
+            {loadUserById: async () => userEntity},
+            {loadHotelById: async () => hotelEntity},
+            {saveRating},
+            null,
+            {checkRating: async () => false}
+          );
+          await commentService.createHotelComment(commentParams);
+          expect(saveRating).toHaveBeenCalledTimes(1);
+        });
+
+        it(`should call saveRating of RatingSaverService with correct params`, async () => {
+          const saveRating = jest.fn();
+          const commentService = new CommentService(
+            null,
+            {saveHotelComment: async () => null},
+            {loadUserById: async () => userEntity},
+            {loadHotelById: async () => hotelEntity},
+            {saveRating},
+            null,
+            {checkRating: async () => false}
+          );
+          await commentService.createHotelComment(commentParams);
+          expect(saveRating).toHaveBeenCalledWith(ratingEntity);
+        });
+      });
     });
 
-    it(`should call saveHotelComment method`, async () => {
-      const saveHotelComment = jest.fn();
-      const commentService = new CommentService(
-        null,
-        {saveHotelComment},
-        {saveRating: async () => ratingEntity},
-        {loadUserById: async () => userEntity},
-        {loadHotelById: async () => hotelEntity}
-      );
-      await commentService.createHotelComment(commentParams);
-      expect(saveHotelComment).toHaveBeenCalledTimes(1);
+    describe(`create method of CommentEntity`, () => {
+      it(`should call`, async () => {
+        CommentEntity.create = jest.fn(CommentEntity.create);
+        const commentService = new CommentService(
+          null,
+          {saveHotelComment: async () => null},
+          {loadUserById: async () => userEntity},
+          {loadHotelById: async () => hotelEntity},
+          {saveRating: async () => ratingEntity},
+          null,
+          {checkRating: async () => false}
+        );
+        await commentService.createHotelComment(commentParams);
+        expect(CommentEntity.create).toHaveBeenCalledTimes(1);
+      });
+
+      it(`should call with params`, async () => {
+        CommentEntity.create = jest
+          .fn(CommentEntity.create);
+        const commentService = new CommentService(
+          null,
+          {saveHotelComment: async () => null},
+          {loadUserById: async () => userEntity},
+          {loadHotelById: async () => hotelEntity},
+          {saveRating: async () => ratingEntity},
+          null,
+          {checkRating: async () => false}
+        );
+        await commentService.createHotelComment(commentParams);
+        expect(CommentEntity.create).toHaveBeenCalledWith(commentParams);
+      });
     });
 
-    it(`should call saveHotelComment method with params`, async () => {
-      const commentEntity = CommentEntity.create(commentParams);
-      const saveHotelComment = jest.fn().mockReturnValue(commentEntity);
-      const commentService = new CommentService(
-        null,
-        {saveHotelComment},
-        {saveRating: async () => ratingEntity},
-        {loadUserById: async () => userEntity},
-        {loadHotelById: async () => hotelEntity}
-      );
-      await commentService.createHotelComment(commentParams);
-      expect(saveHotelComment).toHaveBeenCalledWith(commentEntity);
+    describe(`saveHotelComment method of HotelCommentSaverService`, () => {
+      it(`should call`, async () => {
+        const saveHotelComment = jest.fn();
+        const commentService = new CommentService(
+          null,
+          {saveHotelComment},
+          {loadUserById: async () => userEntity},
+          {loadHotelById: async () => hotelEntity},
+          {saveRating: async () => ratingEntity},
+          null,
+          {checkRating: async () => false}
+        );
+        await commentService.createHotelComment(commentParams);
+        expect(saveHotelComment).toHaveBeenCalledTimes(1);
+      });
+
+      it(`should call with params`, async () => {
+        const commentEntity = CommentEntity.create(commentParams);
+        const saveHotelComment = jest.fn().mockReturnValue(commentEntity);
+        const commentService = new CommentService(
+          null,
+          {saveHotelComment},
+          {loadUserById: async () => userEntity},
+          {loadHotelById: async () => hotelEntity},
+          {saveRating: async () => ratingEntity},
+          null,
+          {checkRating: async () => false}
+        );
+        await commentService.createHotelComment(commentParams);
+        expect(saveHotelComment).toHaveBeenCalledWith(commentEntity);
+      });
     });
 
     it(`should return result of saveHotelComment method`, async () => {
@@ -289,9 +450,11 @@ describe(`Comment Service`, () => {
       const commentService = new CommentService(
         null,
         {saveHotelComment: jest.fn().mockReturnValue(commentEntity)},
-        {saveRating: async () => ratingEntity},
         {loadUserById: async () => userEntity},
-        {loadHotelById: async () => hotelEntity}
+        {loadHotelById: async () => hotelEntity},
+        {saveRating: async () => ratingEntity},
+        null,
+        {checkRating: async () => false}
       );
       const createHotelCommentResult = await commentService.createHotelComment(commentParams);
       expect(createHotelCommentResult).toEqual(commentEntity);
