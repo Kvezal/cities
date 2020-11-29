@@ -159,7 +159,7 @@ export class DatabaseFiller {
     const standardUsers: UserOrmEntity[] = this._userOrmEntities.filter((user: UserOrmEntity) => user.type.title === `standard`);
     const ratingOrmEntities: RatingOrmEntity[] = standardUsers.reduce((acc: RatingOrmEntity[], user: UserOrmEntity) => {
       const ratingEntities: RatingOrmEntity[] = shuffle(this._hotelOrmEntities)
-        .slice(0, getRandomInt[this._hotelOrmEntities.length - 1])
+        .slice(0, getRandomInt(0, this._hotelOrmEntities.length - 1))
         .map((hotel: HotelOrmEntity): RatingOrmEntity => ({
           value: getRandomInt(1, 5),
           hotelId: hotel.id,
