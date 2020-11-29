@@ -196,8 +196,8 @@ describe(`Comment Service`, () => {
           null,
           null
         );
-        expect(commentService.createHotelComment(commentParams)).rejects
-          .toThrowError(`user with ${commentParams.userId} id is not existed`);
+        await expect(commentService.createHotelComment(commentParams)).rejects
+          .toThrow(new Error(`user with ${commentParams.userId} id is not existed`));
       });
     });
 
@@ -242,8 +242,8 @@ describe(`Comment Service`, () => {
           null,
           {checkRating: async () => false}
         );
-        expect(commentService.createHotelComment(commentParams)).rejects
-          .toThrowError(`hotel with ${commentParams.hotelId} id is not existed`);
+        await expect(commentService.createHotelComment(commentParams)).rejects
+          .toThrow(new Error(`hotel with ${commentParams.hotelId} id is not existed`));
       });
     });
 

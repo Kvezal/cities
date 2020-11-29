@@ -2,7 +2,7 @@ import { compare } from 'bcrypt';
 
 import { IJsonWebTokenParams, JsonWebTokenEntity } from 'domains/entities';
 import { IUserAuthenticate } from 'domains/interfaces';
-import { DeleteJsonWebTokenPort, LoadJsonWebTokenPort, LoadUserByEmailPort, SaveJsonWebTokenPort } from 'domains/ports';
+import { DeleteJsonWebTokenPort, CheckExistedJsonWebTokenPort, LoadUserByEmailPort, SaveJsonWebTokenPort } from 'domains/ports';
 import {
   AuthenticateUserUseCase,
   CheckTokenUseCase,
@@ -19,18 +19,19 @@ export class AuthService implements
   constructor(
     private readonly _userLoaderService: LoadUserByEmailPort,
     private readonly _jsonWebTokenSaverService: SaveJsonWebTokenPort,
-    private readonly _jsonWebTokenLoaderService: LoadJsonWebTokenPort,
+    private readonly _jsonWebTokenCheckerService: CheckExistedJsonWebTokenPort,
     private readonly _jsonWebTokenDeleterService: DeleteJsonWebTokenPort
   ) {}
+
 
   public async authenticateUser(params: IUserAuthenticate): Promise<JsonWebTokenEntity> {
     const userEntity = await this._userLoaderService.loadUserByEmail(params.email);
     if (!userEntity) {
-      return;
+      throw new Error(`user with ${params.email} id is not existed`);
     }
     const isCorrectPassword = await compare(params.password, userEntity.password);
     if (!isCorrectPassword) {
-      return;
+      throw new Error(`user password is invalid`);
     }
     const jsonWebTokenEntity = JsonWebTokenEntity.generate({
       id: userEntity.id,
@@ -41,25 +42,28 @@ export class AuthService implements
     return this._jsonWebTokenSaverService.saveJsonWebToken(jsonWebTokenEntity);
   }
 
+
   public async checkAccessToken(jsonWebTokenEntity: JsonWebTokenEntity): Promise<boolean> {
     return jsonWebTokenEntity.checkAccessToken();
   }
+
 
   public async decodeAccessToken(jsonWebTokenEntity: JsonWebTokenEntity): Promise<IJsonWebTokenParams> {
     return jsonWebTokenEntity.decodeAccessToken();
   }
 
+
   public async refreshToken(jsonWebTokenEntity: JsonWebTokenEntity): Promise<JsonWebTokenEntity> {
-    const isValid = jsonWebTokenEntity.checkRefreshToken();
+    const isValid = await jsonWebTokenEntity.checkRefreshToken();
     if (!isValid) {
-      return;
+      throw new Error(`JSON Web Token is invalid`);
     }
-    const loadedJsonWebTokenEntity = await this._jsonWebTokenLoaderService.loadJsonWebToken(jsonWebTokenEntity.refreshToken);
-    if (!loadedJsonWebTokenEntity) {
-      return;
+    const isExistedToken = await this._jsonWebTokenCheckerService.checkExistedJsonWebToken(jsonWebTokenEntity);
+    if (!isExistedToken) {
+      throw new Error(`JSON Web Token isn't existed`);
     }
-    await this._jsonWebTokenDeleterService.deleteJsonWebToken(loadedJsonWebTokenEntity.refreshToken);
-    const newJsonWebToken = await loadedJsonWebTokenEntity.refresh();
+    await this._jsonWebTokenDeleterService.deleteJsonWebToken(jsonWebTokenEntity.refreshToken);
+    const newJsonWebToken = await jsonWebTokenEntity.refresh();
     return this._jsonWebTokenSaverService.saveJsonWebToken(newJsonWebToken);
   }
 }
