@@ -35,5 +35,5 @@ export class FavoriteOrmEntity {
   })
   public hotelId: string;
 
-  public value = true;
+  public value?: boolean = true;
 }

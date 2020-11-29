@@ -4,7 +4,7 @@ import { EntityTarget } from 'typeorm/common/EntityTarget';
 import { v4 as uuidv4 } from 'uuid';
 
 import {
-  CityOrmEntity,
+  CityOrmEntity, CommentOrmEntity, FavoriteOrmEntity,
   FeatureOrmEntity,
   HotelOrmEntity,
   HotelTypeOrmEntity,
@@ -14,9 +14,9 @@ import {
   UserOrmEntity,
   UserTypeOrmEntity,
 } from '../../../../modules/adapters/orm-entities';
-import { IDatabaseFillerParams, ICityParam } from './database-filler.interface';
-import { getRandomEmail, getRandomInt, getRandomString, shuffle } from '../utils';
 import { userParams } from '../data';
+import { getRandomEmail, getRandomInt, getRandomString, shuffle } from '../utils';
+import { IDatabaseFillerParams, ICityParam } from './database-filler.interface';
 
 
 export class DatabaseFiller {
@@ -43,6 +43,8 @@ export class DatabaseFiller {
       this._userOrmEntities = await this.fillUsersTable(count);
       this._hotelOrmEntities = await this.fillHotelsTable(count);
       await this.fillRatingsTable();
+      await this.fillFavoritesTable();
+      await this.fillCommentsTable();
     }
   }
 
@@ -169,6 +171,40 @@ export class DatabaseFiller {
       return acc;
     }, []);
     return this.save(RatingOrmEntity, ratingOrmEntities);
+  }
+
+
+  public async fillFavoritesTable(): Promise<FavoriteOrmEntity[]> {
+    const standardUsers: UserOrmEntity[] = this._userOrmEntities.filter((user: UserOrmEntity) => user.type.title === `standard`);
+    const favoriteOrmEntities: FavoriteOrmEntity[] = standardUsers.reduce((acc: FavoriteOrmEntity[], user: UserOrmEntity) => {
+      const favoriteEntities: FavoriteOrmEntity[] = shuffle(this._hotelOrmEntities)
+        .slice(0, getRandomInt(0, this._hotelOrmEntities.length - 1))
+        .map((hotel: HotelOrmEntity): FavoriteOrmEntity => ({
+          hotelId: hotel.id,
+          userId: user.id,
+        }));
+      acc.push(...favoriteEntities);
+      return acc;
+    }, []);
+    return this.save(FavoriteOrmEntity, favoriteOrmEntities);
+  }
+
+
+  public async fillCommentsTable(): Promise<CommentOrmEntity[]> {
+    const standardUsers: UserOrmEntity[] = this._userOrmEntities.filter((user: UserOrmEntity) => user.type.title === `standard`);
+    const commentOrmEntities: CommentOrmEntity[] = standardUsers.reduce((acc: CommentOrmEntity[], user: UserOrmEntity) => {
+      const commentEntities: CommentOrmEntity[] = shuffle(this._hotelOrmEntities)
+        .slice(0, getRandomInt(0, this._hotelOrmEntities.length - 1))
+        .map((hotel: HotelOrmEntity): CommentOrmEntity => ({
+          id: uuidv4(),
+          text: getRandomString(30),
+          hotel,
+          user,
+        }));
+      acc.push(...commentEntities);
+      return acc;
+    }, []);
+    return this.save(CommentOrmEntity, commentOrmEntities);
   }
 
 

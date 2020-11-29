@@ -22,7 +22,7 @@ export class CommentViewOrmEntity {
   public text: string;
 
   @ViewColumn()
-  public createdAt: Date;
+  public createdAt?: Date;
 
   @ViewColumn()
   public rating: number;
