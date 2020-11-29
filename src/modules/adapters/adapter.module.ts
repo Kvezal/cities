@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 
 import {
+  AuthService,
+  authServiceSymbol,
   CityService,
   cityServiceSymbol,
   CommentService,
@@ -14,14 +16,15 @@ import {
 } from 'domains/services';
 
 import {
+  AuthAdapterService,
   CommonAdapterModule,
+  CommentAdapterService,
   CityAdapterService,
   FavoriteAdapterService,
   HotelAdapterService,
   UserAdapterService,
-  CommentAdapterService,
+  RatingAdapterService,
 } from './services';
-import { RatingAdapterService } from 'modules/adapters/services/rating/rating-adapter.service';
 
 
 @Module({
@@ -29,6 +32,22 @@ import { RatingAdapterService } from 'modules/adapters/services/rating/rating-ad
     CommonAdapterModule
   ],
   providers: [
+    {
+      provide: authServiceSymbol,
+      useFactory: (
+        userAdapterService: UserAdapterService,
+        authAdapterService: AuthAdapterService,
+      ) => new AuthService(
+        userAdapterService,
+        authAdapterService,
+        authAdapterService,
+        authAdapterService
+      ),
+      inject: [
+        UserAdapterService,
+        AuthAdapterService,
+      ],
+    },
     {
       provide: cityServiceSymbol,
       useFactory: (cityAdapterService: CityAdapterService) => new CityService(cityAdapterService, cityAdapterService),
@@ -79,6 +98,7 @@ import { RatingAdapterService } from 'modules/adapters/services/rating/rating-ad
     },
   ],
   exports: [
+    authServiceSymbol,
     cityServiceSymbol,
     commentServiceSymbol,
     hotelServiceSymbol,

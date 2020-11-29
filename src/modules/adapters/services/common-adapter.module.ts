@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 
 import { OrmEntitiesModule } from '../orm-entities';
 import { ViewOrmEntitiesModule } from '../view-orm-entities';
+import { AuthAdapterService } from './auth';
 import { CityAdapterService } from './city';
 import { CommentAdapterService } from './comment';
 import { HotelAdapterService } from './hotel';
@@ -16,6 +17,7 @@ import { RatingAdapterService } from './rating';
     ViewOrmEntitiesModule,
   ],
   providers: [
+    AuthAdapterService,
     CityAdapterService,
     FavoriteAdapterService,
     HotelAdapterService,
@@ -24,6 +26,7 @@ import { RatingAdapterService } from './rating';
     CommentAdapterService,
   ],
   exports: [
+    AuthAdapterService,
     CityAdapterService,
     FavoriteAdapterService,
     HotelAdapterService,

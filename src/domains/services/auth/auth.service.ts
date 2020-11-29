@@ -39,7 +39,8 @@ export class AuthService implements
       email: userEntity.name,
       image: userEntity.image,
     });
-    return this._jsonWebTokenSaverService.saveJsonWebToken(jsonWebTokenEntity);
+    await this._jsonWebTokenSaverService.saveJsonWebToken(jsonWebTokenEntity.refreshToken);
+    return jsonWebTokenEntity;
   }
 
 
@@ -58,12 +59,14 @@ export class AuthService implements
     if (!isValid) {
       throw new Error(`JSON Web Token is invalid`);
     }
-    const isExistedToken = await this._jsonWebTokenCheckerService.checkExistedJsonWebToken(jsonWebTokenEntity);
+    const isExistedToken = await this._jsonWebTokenCheckerService.checkExistedJsonWebToken(jsonWebTokenEntity.refreshToken);
     if (!isExistedToken) {
       throw new Error(`JSON Web Token isn't existed`);
     }
     await this._jsonWebTokenDeleterService.deleteJsonWebToken(jsonWebTokenEntity.refreshToken);
     const newJsonWebToken = await jsonWebTokenEntity.refresh();
-    return this._jsonWebTokenSaverService.saveJsonWebToken(newJsonWebToken);
+    await this._jsonWebTokenSaverService.saveJsonWebToken(newJsonWebToken.refreshToken);
+    return newJsonWebToken;
+
   }
 }

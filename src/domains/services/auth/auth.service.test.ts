@@ -142,15 +142,16 @@ describe(`Auth service`, () => {
           null
         );
         await authService.authenticateUser(authenticateParam);
-        expect(saveJsonWebToken).toHaveBeenCalledWith(jsonWebTokenEntity);
+        expect(saveJsonWebToken).toHaveBeenCalledWith(jsonWebTokenEntity.refreshToken);
       });
     });
 
     it(`should return result of saveJsonWebToken method`, async () => {
       const jsonWebTokenEntity = JsonWebTokenEntity.generate(jsonWebTokenEntityParams);
+      JsonWebTokenEntity.generate = jest.fn(JsonWebTokenEntity.generate).mockReturnValueOnce(jsonWebTokenEntity);
       const authService = new AuthService(
-        {loadUserByEmail: jest.fn().mockReturnValue(userEntity)},
-        {saveJsonWebToken: jest.fn().mockReturnValue(jsonWebTokenEntity)},
+        {loadUserByEmail: async () => userEntity},
+        {saveJsonWebToken: async () => null},
         null,
         null
       );
@@ -292,7 +293,7 @@ describe(`Auth service`, () => {
           {deleteJsonWebToken: async () => null}
         );
         await authService.refreshToken(jsonWebTokenEntity);
-        expect(checkExistedJsonWebToken).toHaveBeenCalledWith(jsonWebTokenEntity);
+        expect(checkExistedJsonWebToken).toHaveBeenCalledWith(jsonWebTokenEntity.refreshToken);
       });
 
       it(`should throw error if token isn't existed`, async () => {
@@ -382,7 +383,7 @@ describe(`Auth service`, () => {
           {deleteJsonWebToken: async () => null}
         );
         await authService.refreshToken(jsonWebTokenEntity);
-        expect(saveJsonWebToken).toHaveBeenCalledWith(jsonWebTokenEntity);
+        expect(saveJsonWebToken).toHaveBeenCalledWith(jsonWebTokenEntity.refreshToken);
       });
     });
   });
