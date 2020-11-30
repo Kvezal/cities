@@ -1,4 +1,4 @@
-import { IJsonWebTokenParams, JsonWebTokenEntity } from '../entities';
+import { IJsonWebTokenParams, JsonWebTokenEntity } from 'domains/entities';
 
 
 export interface DecodeAccessTokenUseCase {

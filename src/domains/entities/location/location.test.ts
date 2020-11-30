@@ -3,14 +3,14 @@ import { ILocation } from './location.interface';
 
 
 const locationParams: ILocation = {
-  id: 1,
+  id: `1`,
   latitude: 0.000012,
   longitude: 0.000013,
   zoom: 10,
 };
 
 const otherLocationParams: ILocation = {
-  id: 1,
+  id: `2`,
   latitude: 0.000009,
   longitude: 0.000009,
   zoom: 10,

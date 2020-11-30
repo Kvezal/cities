@@ -1,5 +1,5 @@
-import { CommentEntity } from '../entities';
-import { ICommentSorting } from '../interfaces';
+import { CommentEntity } from 'domains/entities';
+import { ICommentSorting } from 'domains/interfaces';
 
 
 export interface GetHotelCommentListQuery {

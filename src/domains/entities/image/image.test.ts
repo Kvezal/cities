@@ -1,9 +1,9 @@
-import {ImageEntity} from './image.entity';
+import { ImageEntity } from './image.entity';
 import { IImage } from './image.interface';
 
 
 const imageParams: IImage = {
-  id: 1,
+  id: `1`,
   title: `title`,
 };
 

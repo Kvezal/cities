@@ -1,5 +1,5 @@
-import { HotelEntity } from '../entities';
-import { IHotelSortingParams } from '../interfaces';
+import { HotelEntity } from 'domains/entities';
+import { IHotelSortingParams } from 'domains/interfaces';
 
 
 export interface LoadHotelListPort {

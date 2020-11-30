@@ -1,18 +1,19 @@
-import { UserTypeEntity } from '../user-type';
-import { ImageEntity } from '../image';
+import { ImageEntity, UserTypeEntity } from 'domains/entities';
+
 import { IUser } from './user.interface';
+
 
 export class UserEntity {
   constructor(
-    private readonly _id: number,
+    private readonly _id: string,
     private readonly _name: string,
     private readonly _email: string,
     private readonly _password: string,
-    private readonly _type: UserTypeEntity,
     private readonly _image: ImageEntity,
+    private readonly _type: UserTypeEntity,
   ) {}
 
-  get id(): number {
+  get id(): string {
     return this._id;
   }
 
@@ -42,8 +43,8 @@ export class UserEntity {
       params.name,
       params.email,
       params.password,
+      params.image instanceof ImageEntity ? params.image : ImageEntity.create(params.image),
       params.type instanceof UserTypeEntity ? params.type : UserTypeEntity.create(params.type),
-      params.image instanceof ImageEntity ? params.image : ImageEntity.create(params.image)
     );
   }
 }

@@ -1,6 +1,6 @@
-import { CityEntity } from '../../entities';
-import { LoadCityByIdPort, LoadCityListPort } from '../../ports';
-import { GetCityByIdQuery, GetCityListQuery } from '../../queries';
+import { CityEntity } from 'domains/entities';
+import { LoadCityByIdPort, LoadCityListPort } from 'domains/ports';
+import { GetCityByIdQuery, GetCityListQuery } from 'domains/queries';
 
 
 export class CityService implements
@@ -15,7 +15,7 @@ export class CityService implements
     return this._cityListLoaderService.loadCityList();
   }
 
-  public async getCityById(cityId: number): Promise<CityEntity> {
+  public async getCityById(cityId: string): Promise<CityEntity> {
     return this._cityLoaderService.loadCityById(cityId);
   }
 }

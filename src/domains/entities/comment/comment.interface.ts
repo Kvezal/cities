@@ -1,13 +1,8 @@
-import { HotelEntity, IHotel } from '../hotel';
-import { IUser, UserEntity } from '../user';
-import { RatingEntity } from '../rating';
-
-
 export interface IComment {
-  id: number;
+  id: string;
   text: string;
-  date: Date;
-  rating: number | RatingEntity;
-  hotel: IHotel | HotelEntity;
-  user: IUser | UserEntity;
+  createdAt: Date;
+  hotelId: string;
+  userId: string;
+  rating: number;
 }

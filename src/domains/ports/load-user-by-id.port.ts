@@ -1,6 +1,6 @@
-import { UserEntity } from '../entities';
+import { UserEntity } from 'domains/entities';
 
 
 export interface LoadUserByIdPort {
-  loadUserById(userId: number): Promise<UserEntity>;
+  loadUserById(userId: string): Promise<UserEntity>;
 }

@@ -1,6 +1,6 @@
-import { UserEntity } from '../entities/user';
+import { UserEntity } from 'domains/entities';
 
 
 export interface GetUserByIdQuery {
-  getUserById(userId: number): Promise<UserEntity>;
+  getUserById(userId: string): Promise<UserEntity>;
 }

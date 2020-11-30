@@ -1,3 +1,3 @@
 export interface DeleteJsonWebTokenPort {
-  deleteJsonWebToken(refreshToken: string): Promise<boolean>;
+  deleteJsonWebToken(refreshToken: string): Promise<void>;
 }

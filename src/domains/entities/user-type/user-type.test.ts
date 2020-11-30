@@ -3,7 +3,7 @@ import { IUserType } from './user-type.interface';
 
 
 const userTypeParams: IUserType = {
-  id: 1,
+  id: `1`,
   title: `title`,
 };
 

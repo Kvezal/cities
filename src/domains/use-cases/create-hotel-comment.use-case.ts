@@ -1,7 +1,6 @@
-import { CommentEntity } from '../entities';
-import { IHotelCommentParams } from '../interfaces';
+import { CommentEntity, IComment } from 'domains/entities';
 
 
 export interface CreateHotelCommentUseCase {
-  createHotelComment(commentParams: IHotelCommentParams): Promise<CommentEntity>;
+  createHotelComment(commentParams: IComment): Promise<CommentEntity>;
 }

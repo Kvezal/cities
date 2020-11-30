@@ -1,4 +1,4 @@
-import { CommentEntity } from '../entities';
+import { CommentEntity } from 'domains/entities';
 
 
 export interface SaveHotelCommentPort {

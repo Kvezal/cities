@@ -1,5 +1,5 @@
-import { JsonWebTokenEntity } from '../entities';
-import { IUserAuthenticate } from '../interfaces';
+import { JsonWebTokenEntity } from 'domains/entities';
+import { IUserAuthenticate } from 'domains/interfaces';
 
 
 export interface AuthenticateUserUseCase {

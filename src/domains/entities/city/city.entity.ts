@@ -1,15 +1,16 @@
-import { LocationEntity } from '../location';
+import { LocationEntity } from 'domains/entities';
+
 import { ICity } from './city-interface';
 
 
 export class CityEntity {
   constructor(
-    private readonly _id: number,
+    private readonly _id: string,
     private readonly _title: string,
     private readonly _location: LocationEntity
   ) {}
 
-  get id(): number {
+  get id(): string {
     return this._id;
   }
 

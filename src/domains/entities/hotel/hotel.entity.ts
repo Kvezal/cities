@@ -1,16 +1,21 @@
-import { NEARBY_HOTEL_LIMIT } from '../../constants';
-import { CityEntity } from '../city';
-import { FeatureEntity, IFeature } from '../feature';
-import { HotelTypeEntity } from '../hotel-type';
-import { IImage, ImageEntity } from '../image';
-import { LocationEntity } from '../location';
-import { UserEntity } from '../user';
+import { NEARBY_HOTEL_LIMIT } from 'domains/constants';
+import {
+  CityEntity,
+  FeatureEntity,
+  HotelTypeEntity,
+  IFeature,
+  IImage,
+  ImageEntity,
+  LocationEntity,
+  UserEntity,
+} from 'domains/entities';
+
 import { IHotel } from './hotel.interface';
 
 
 export class HotelEntity {
   constructor(
-    private readonly _id: number,
+    private readonly _id: string,
     private readonly _title: string,
     private readonly _description: string,
     private readonly _bedroomCount: number,
@@ -26,7 +31,7 @@ export class HotelEntity {
     private readonly _images: ImageEntity[]
   ) {}
 
-  get id(): number {
+  get id(): string {
     return this._id;
   }
 

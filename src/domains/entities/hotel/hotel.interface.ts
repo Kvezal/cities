@@ -1,13 +1,21 @@
-import { CityEntity, ICity } from '../city';
-import { FeatureEntity, IFeature } from '../feature';
-import { HotelTypeEntity, IHotelType } from '../hotel-type';
-import { IImage, ImageEntity } from '../image';
-import { ILocation, LocationEntity } from '../location';
-import { IUser, UserEntity } from '../user';
+import {
+  CityEntity,
+  FeatureEntity,
+  HotelTypeEntity,
+  ICity,
+  IFeature,
+  IHotelType,
+  IImage,
+  ILocation,
+  ImageEntity,
+  IUser,
+  LocationEntity,
+  UserEntity,
+} from 'domains/entities';
 
 
 export interface IHotel {
-  id: number;
+  id: string;
   title: string;
   description: string;
   bedroomCount: number;

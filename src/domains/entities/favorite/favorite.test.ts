@@ -4,8 +4,8 @@ import { IFavorite } from './favorite.interface';
 
 const favoriteParams: IFavorite = {
   value: true,
-  userId: 1,
-  hotelId: 1,
+  userId: `1`,
+  hotelId: `1`,
 };
 
 describe(`Favorite entity`, () => {
@@ -20,7 +20,11 @@ describe(`Favorite entity`, () => {
       );
     });
 
-    it.each([`value`, `userId`, `hotelId`])(`should create a new Favorite instance with correct %p property`, (property) => {
+    it.each([
+      `value`,
+      `userId`,
+      `hotelId`
+    ])(`should create a new Favorite instance with correct %p property`, (property: string) => {
       expect(favorite[property]).toBe(favoriteParams[property]);
     });
   });
@@ -32,8 +36,31 @@ describe(`Favorite entity`, () => {
       favorite = FavoriteEntity.create(favoriteParams);
     });
 
-    it.each([`value`, `userId`, `hotelId`])(`should create a new Favorite instance with correct %p property`, (property) => {
+    it.each([
+      `value`,
+      `userId`,
+      `hotelId`
+    ])(`should create a new Favorite instance with correct %p property`, (property: string) => {
       expect(favorite[property]).toBe(favoriteParams[property]);
+    });
+  });
+
+  describe(`toggleFavoriteStateOfHotel method`, () => {
+    let favorite: FavoriteEntity;
+
+    beforeAll(() => {
+      favorite = FavoriteEntity.create(favoriteParams);
+    });
+
+    it.each([
+      `userId`,
+      `hotelId`
+    ])(`should create a new Favorite instance with correct %p property`, (property: string) => {
+      expect(favorite.toggleFavoriteStateOfHotel()[property]).toBe(favorite[property]);
+    });
+
+    it(`should create a new Favorite instance with other value`, () => {
+      expect(favorite.toggleFavoriteStateOfHotel().value).toBe(!favorite.value);
     });
   });
 });
