@@ -39,6 +39,7 @@ import {
         authAdapterService: AuthAdapterService,
       ) => new AuthService(
         userAdapterService,
+        userAdapterService,
         authAdapterService,
         authAdapterService,
         authAdapterService
@@ -93,7 +94,7 @@ import {
     },
     {
       provide: userServiceSymbol,
-      useFactory: (userAdapterService: UserAdapterService) => new UserService(userAdapterService, userAdapterService),
+      useFactory: (userAdapterService: UserAdapterService) => new UserService(userAdapterService),
       inject: [UserAdapterService],
     },
   ],

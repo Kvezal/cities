@@ -11,6 +11,7 @@ export { LoadHotelListPort } from './load-hotel-list.port';
 export { LoadUserByEmailPort } from './load-user-by-email.port';
 export { LoadUserByIdPort } from './load-user-by-id.port';
 export { LoadUserStateOfHotelPort } from './load-user-state-of-hotel.port';
+export { LoadUserTypeByTitlePort } from './load-user-type-by-title.port';
 export { SaveHotelCommentPort } from './save-hotel-comment.port';
 export { SaveJsonWebTokenPort } from './save-json-web-token.port';
 export { SaveRatingPort } from './save-rating.port';
