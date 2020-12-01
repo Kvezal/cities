@@ -1,6 +1,3 @@
-import { JsonWebTokenEntity } from 'domains/entities';
-
-
 export interface CheckTokenUseCase {
-  checkAccessToken(jsonWebTokenEntity: JsonWebTokenEntity): Promise<boolean>;
+  checkAccessToken(token: string): Promise<boolean>;
 }

@@ -43,7 +43,7 @@ export class UserEntity {
       params.name,
       params.email,
       params.password,
-      params.image instanceof ImageEntity ? params.image : ImageEntity.create(params.image),
+      params.image && (params.image instanceof ImageEntity ? params.image : ImageEntity.create(params.image)),
       params.type instanceof UserTypeEntity ? params.type : UserTypeEntity.create(params.type),
     );
   }

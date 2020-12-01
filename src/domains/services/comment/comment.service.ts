@@ -6,10 +6,12 @@ import {
   LoadHotelCommentListPort,
   LoadUserByIdPort,
   SaveHotelCommentPort,
-  SaveRatingPort, UpdateRatingPort,
+  SaveRatingPort,
+  UpdateRatingPort,
 } from 'domains/ports';
 import { GetHotelCommentListQuery } from 'domains/queries';
 import { CreateHotelCommentUseCase } from 'domains/use-cases';
+import { CommentError, ECommentField } from 'domains/exceptions';
 
 
 export class CommentService implements
@@ -34,12 +36,18 @@ export class CommentService implements
   public async createHotelComment(commentParams: IComment): Promise<CommentEntity> {
     const userEntity = await this._userLoaderService.loadUserById(commentParams.userId);
     if (!userEntity) {
-      throw new Error(`user with ${commentParams.userId} id is not existed`);
+      throw new CommentError({
+        field: ECommentField.USER_ID,
+        message: `user with ${commentParams.userId} id is not existed`,
+      });
     }
 
     const hotelEntity = await this._hotelLoaderService.loadHotelById(commentParams.hotelId);
     if (!hotelEntity) {
-      throw new Error(`hotel with ${commentParams.hotelId} id is not existed`);
+      throw new CommentError({
+        field: ECommentField.HOTEL_ID,
+        message: `hotel with ${commentParams.hotelId} id is not existed`,
+      });
     }
 
     const ratingEntity = RatingEntity.create({

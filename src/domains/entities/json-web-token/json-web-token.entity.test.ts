@@ -66,7 +66,7 @@ describe(`Json Web Token entity`, () => {
   describe(`checkAccessToken method`, () => {
     it(`result should return "true" if JWT is valid`, async () => {
       const jsonWebTokenEntity = JsonWebTokenEntity.generate(jsonWebTokenParams);
-      const result = await jsonWebTokenEntity.checkAccessToken();
+      const result = await JsonWebTokenEntity.checkAccessToken(jsonWebTokenEntity.accessToken);
       expect(result).toBeTruthy();
     });
 
@@ -75,7 +75,7 @@ describe(`Json Web Token entity`, () => {
         accessToken: `invalid access JWT token`,
         refreshToken: ``,
       });
-      const result = await jsonWebTokenEntity.checkAccessToken();
+      const result = await JsonWebTokenEntity.checkAccessToken(jsonWebTokenEntity.accessToken);
       expect(result).toBeFalsy();
     });
   });
@@ -85,7 +85,7 @@ describe(`Json Web Token entity`, () => {
       [`id`, `name`, `email`, `image`]
     )(`result should have correct %p property value`, async (property: string) => {
       const jsonWebTokenEntity = JsonWebTokenEntity.generate(jsonWebTokenParams);
-      const result = await jsonWebTokenEntity.decodeAccessToken();
+      const result = await JsonWebTokenEntity.decodeAccessToken(jsonWebTokenEntity.accessToken);
       expect(result[property]).toEqual(jsonWebTokenParams[property]);
     });
   });
@@ -93,7 +93,7 @@ describe(`Json Web Token entity`, () => {
   describe(`checkRefreshToken method`, () => {
     it(`result should return "true" if JWT is valid`, async () => {
       const jsonWebTokenEntity = JsonWebTokenEntity.generate(jsonWebTokenParams);
-      const result = await jsonWebTokenEntity.checkRefreshToken();
+      const result = await JsonWebTokenEntity.checkRefreshToken(jsonWebTokenEntity.refreshToken);
       expect(result).toBeTruthy();
     });
 
@@ -102,7 +102,7 @@ describe(`Json Web Token entity`, () => {
         accessToken: `invalid access JWT token`,
         refreshToken: ``,
       });
-      const result = await jsonWebTokenEntity.checkRefreshToken();
+      const result = await JsonWebTokenEntity.checkRefreshToken(jsonWebTokenEntity.refreshToken);
       expect(result).toBeFalsy();
     });
   });
@@ -117,12 +117,12 @@ describe(`Json Web Token entity`, () => {
         generate();
         return generateJsonWebTokenEntity(params);
       };
-      await jsonWebTokenEntity.refresh();
+      await JsonWebTokenEntity.refresh(jsonWebTokenEntity.refreshToken);
       expect(generate).toHaveBeenCalledTimes(1);
     });
 
     it.each([`accessToken`, `refreshToken`])(`result should return new JsonWebTokenEntity with %p property`, async (property: string) => {
-      const result = await jsonWebTokenEntity.refresh();
+      const result = await JsonWebTokenEntity.refresh(jsonWebTokenEntity.refreshToken);
       expect(result).toHaveProperty(property);
     });
   });

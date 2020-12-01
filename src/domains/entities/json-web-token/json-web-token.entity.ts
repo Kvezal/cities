@@ -31,30 +31,30 @@ export class JsonWebTokenEntity {
     });
   }
 
-  async checkAccessToken(): Promise<boolean> {
+  static async checkAccessToken(accessToken: string): Promise<boolean> {
     return await verify(
-      this.accessToken, process.env.JWT_ACCESS_SECRET,
+      accessToken, process.env.JWT_ACCESS_SECRET,
       (error) => !error
     );
   }
 
-  async decodeAccessToken(): Promise<IJsonWebTokenParams> {
+  static async decodeAccessToken(accessToken: string): Promise<IJsonWebTokenParams> {
     return await decode(
-      this.accessToken, process.env.JWT_ACCESS_SECRET,
+      accessToken, process.env.JWT_ACCESS_SECRET,
       (error, tokenData) => error ? null : tokenData
     );
   }
 
-  async checkRefreshToken(): Promise<boolean> {
+  static async checkRefreshToken(refreshToken: string): Promise<boolean> {
     return await verify(
-      this.refreshToken, process.env.JWT_REFRESH_SECRET,
+      refreshToken, process.env.JWT_REFRESH_SECRET,
       (error) => !error
     );
   }
 
-  async refresh(): Promise<JsonWebTokenEntity> {
+  static async refresh(refreshToken: string): Promise<JsonWebTokenEntity> {
     const refreshTokenData = await decode(
-      this.refreshToken, process.env.JWT_REFRESH_SECRET,
+      refreshToken, process.env.JWT_REFRESH_SECRET,
       (error, tokenData) => error ? null : tokenData
     );
     return JsonWebTokenEntity.generate(refreshTokenData);
