@@ -36,8 +36,7 @@ export class AuthController {
     @Res() response: Response
   ): Promise<void> {
     const jsonWebTokenEntity = await this._authControllerService.authenticateUser(body);
-    response.cookie(`access-token`, jsonWebTokenEntity.accessToken);
-    response.cookie(`refresh-token`, jsonWebTokenEntity.refreshToken);
+    this._authControllerService.setTokens(response, jsonWebTokenEntity);
     response.send();
   }
 
@@ -73,8 +72,7 @@ export class AuthController {
   ): Promise<void> {
     const refreshToken = headers[`refresh-token`];
     const jsonWebTokenEntity = await this._authControllerService.refreshToken(refreshToken);
-    response.cookie(`access-token`, jsonWebTokenEntity.accessToken);
-    response.cookie(`refresh-token`, jsonWebTokenEntity.refreshToken);
+    this._authControllerService.setTokens(response, jsonWebTokenEntity);
     response.send();
   }
 }
