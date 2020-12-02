@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 
-import { AuthModule, CityModule, HotelModule } from './controllers';
+import { AuthModule, CityModule, CommentModule, HotelModule } from './controllers';
 
 
 @Module({
   imports: [
     AuthModule,
     CityModule,
+    CommentModule,
     HotelModule,
   ],
 })
