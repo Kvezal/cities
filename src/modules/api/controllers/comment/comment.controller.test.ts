@@ -8,7 +8,7 @@ import { authServiceSymbol, commentServiceSymbol } from 'domains/services';
 
 import { CommentController } from './comment.controller';
 import { CommentControllerService } from './comment-controller.service';
-import { CommentDto } from 'modules/api/controllers/comment/comment.dto';
+import { CommentDto } from './comment.dto';
 import { EJsonWebTokenType, JsonWebTokenError } from 'domains/exceptions';
 
 
@@ -82,7 +82,8 @@ describe('CommentController', () => {
         });
         const result = await request(app.getHttpServer())
           .post(commentUrl)
-          .send(commentParams);
+          .send(commentParams)
+          .set(`Cookie`, `access-token=test`);
         expect(result.status).toBe(HttpStatus.UNAUTHORIZED);
       });
 
@@ -95,14 +96,16 @@ describe('CommentController', () => {
         delete params[paramName];
         const result = await request(app.getHttpServer())
           .post(commentUrl)
-          .send(params);
+          .send(params)
+          .set(`Cookie`, `access-token=test`);
         expect(result.status).toBe(HttpStatus.BAD_REQUEST);
       });
 
       it(`status code should be 200`, async () => {
         const result = await request(app.getHttpServer())
           .post(commentUrl)
-          .send(commentParams);
+          .send(commentParams)
+          .set(`Cookie`, `access-token=test`);
         expect(result.status).toBe(HttpStatus.OK);
       });
 
@@ -111,7 +114,8 @@ describe('CommentController', () => {
           const createHotelComment = jest.spyOn(service, `createHotelComment`);
           await request(app.getHttpServer())
             .post(commentUrl)
-            .send(commentParams);
+            .send(commentParams)
+            .set(`Cookie`, `access-token=test`);
           expect(createHotelComment).toHaveBeenCalledTimes(1);
         });
 

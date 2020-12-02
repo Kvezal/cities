@@ -3,4 +3,5 @@ export enum EApiRouteName {
   CITY = `api/city`,
   COMMENT = `api/comment`,
   HOTEL = `api/hotel`,
+  FAVORITE = `api/favorite`,
 }
