@@ -23,6 +23,7 @@ import {
   FavoriteAdapterService,
   HotelAdapterService,
   UserAdapterService,
+  UserTypeAdapterService,
   RatingAdapterService,
 } from './services';
 
@@ -36,16 +37,19 @@ import {
       provide: authServiceSymbol,
       useFactory: (
         userAdapterService: UserAdapterService,
+        userTypeAdapterService: UserTypeAdapterService,
         authAdapterService: AuthAdapterService,
       ) => new AuthService(
         userAdapterService,
         userAdapterService,
+        userTypeAdapterService,
         authAdapterService,
         authAdapterService,
         authAdapterService
       ),
       inject: [
         UserAdapterService,
+        UserTypeAdapterService,
         AuthAdapterService,
       ],
     },

@@ -5,4 +5,5 @@ export { FavoriteAdapterService } from './favorite';
 export { HotelAdapterService } from './hotel';
 export { RatingAdapterService } from './rating';
 export { UserAdapterService } from './user';
+export { UserTypeAdapterService } from './user-type';
 export { CommonAdapterModule } from './common-adapter.module';

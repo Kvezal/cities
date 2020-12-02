@@ -174,7 +174,7 @@ describe(`Auth service`, () => {
         expect(JsonWebTokenEntity.generate).toHaveBeenCalledWith({
           id: userEntity.id,
           name: userEntity.name,
-          email: userEntity.name,
+          email: userEntity.email,
           image: userEntity.image,
         });
       });

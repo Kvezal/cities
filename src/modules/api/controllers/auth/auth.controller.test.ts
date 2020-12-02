@@ -1,12 +1,15 @@
 import { HttpStatus, INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { parse } from 'cookie';
+import * as cookieParser from 'cookie-parser';
 import * as request from 'supertest';
 
-import { AuthControllerService } from './auth-controller.service';
-import { AuthModule } from './auth.module';
-import { EJsonWebTokenType, EUserField, JsonWebTokenError, UserError } from 'domains/exceptions';
 import { IJsonWebTokenParams, JsonWebTokenEntity } from 'domains/entities';
+import { EJsonWebTokenType, EUserField, JsonWebTokenError, UserError } from 'domains/exceptions';
+import { authServiceSymbol } from 'domains/services';
+
+import { AuthControllerService } from './auth-controller.service';
+import { AuthController } from './auth.controller';
 
 
 const jsonWebTokenParams: IJsonWebTokenParams = {
@@ -23,14 +26,25 @@ describe(`AuthController`, () => {
 
   beforeAll(async () => {
     const testModule = await Test.createTestingModule({
-      imports: [AuthModule],
+      controllers: [AuthController],
       providers: [
         AuthControllerService,
+        {
+          provide: authServiceSymbol,
+          useValue: {
+            authenticateUser: async () => null,
+            checkAccessToken: async () => null,
+            decodeAccessToken: async () => null,
+            refreshToken: async () => null,
+          },
+        },
       ],
     }).compile();
+
     app = testModule.createNestApplication();
-    service = testModule.get<AuthControllerService>(AuthControllerService);
+    app.use(cookieParser());
     await app.init();
+    service = testModule.get<AuthControllerService>(AuthControllerService);
   });
 
   describe(`POST`, () => {

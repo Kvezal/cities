@@ -52,7 +52,7 @@ export class AuthService implements
     const jsonWebTokenEntity = JsonWebTokenEntity.generate({
       id: userEntity.id,
       name: userEntity.name,
-      email: userEntity.name,
+      email: userEntity.email,
       image: userEntity.image,
     });
     await this._jsonWebTokenSaverService.saveJsonWebToken(jsonWebTokenEntity.refreshToken);
@@ -62,9 +62,10 @@ export class AuthService implements
 
   public async getUserParams(params: IUserAuthenticate): Promise<IUser> {
     const userType: UserTypeEntity = await this._userTypeLoaderService.loadUserTypeByTitle(`standard`);
-    params.password = await hash(params.password, SALT_ROUND);
+    const password = await hash(params.password, SALT_ROUND);
     return {
       ...params,
+      password,
       id: uuidv4(),
       name: params.email.split(`@`)[0],
       image: null,

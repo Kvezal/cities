@@ -1,6 +1,7 @@
 import { UserEntity } from 'domains/entities';
 import { LoadUserByIdPort } from 'domains/ports';
 import { GetUserByIdQuery } from 'domains/queries';
+import { UserMapper, UserOrmEntity } from 'modules/adapters';
 
 
 export class UserService implements GetUserByIdQuery {
@@ -9,6 +10,7 @@ export class UserService implements GetUserByIdQuery {
   ) {}
 
   public async getUserById(userId: string): Promise<UserEntity> {
-    return this._userLoaderService.loadUserById(userId);
+    const userOrmEntity: UserOrmEntity = await this._userLoaderService.loadUserById(userId);
+    return userOrmEntity && UserMapper.mapToDomain(userOrmEntity);
   }
 }

@@ -12,7 +12,7 @@ export class UserMapper {
       name: ormEntity.name,
       email: ormEntity.email,
       password: ormEntity.password,
-      image: ImageMapper.mapToDomain(ormEntity.image),
+      image: ormEntity.image && ImageMapper.mapToDomain(ormEntity.image),
       type: UserTypeMapper.mapToDomain(ormEntity.type),
     });
   }
@@ -23,7 +23,7 @@ export class UserMapper {
     ormEntity.name = domain.name;
     ormEntity.email = domain.email;
     ormEntity.password = domain.password;
-    ormEntity.image = ImageMapper.mapToOrmEntity(domain.image);
+    ormEntity.image = domain.image && ImageMapper.mapToOrmEntity(domain.image);
     ormEntity.type = UserTypeMapper.mapToOrmEntity(domain.type);
     return ormEntity;
   }
