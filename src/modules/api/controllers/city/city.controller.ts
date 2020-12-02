@@ -13,6 +13,6 @@ export class CityController {
   @Get()
   @HttpCode(HttpStatus.OK)
   public async getList(): Promise<CityOrmEntity[]> {
-    return await this._cityControllerService.getCityList();
+    return this._cityControllerService.getCityList();
   }
 }

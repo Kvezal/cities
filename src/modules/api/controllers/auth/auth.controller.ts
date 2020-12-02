@@ -59,7 +59,7 @@ export class AuthController {
     @Req() request: Request
   ): Promise<IJsonWebTokenParams> {
     const accessToken = request.cookies[`access-token`];
-    return await this._authControllerService.decodeAccessToken(accessToken);
+    return this._authControllerService.decodeAccessToken(accessToken);
   }
 
 
