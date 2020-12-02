@@ -3,15 +3,15 @@ import {
   Controller,
   Get,
   Head,
-  Headers,
   HttpCode,
   HttpStatus,
   Post,
   UseFilters,
   ValidationPipe,
+  Req,
   Res,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 
 import { IJsonWebTokenParams } from 'domains/entities';
 
@@ -24,7 +24,7 @@ import { AuthControllerService } from './auth-controller.service';
 @Controller(EApiRouteName.AUTH)
 export class AuthController {
   constructor(
-    private readonly _authControllerService: AuthControllerService
+    private readonly _authControllerService: AuthControllerService,
   ) {}
 
 
@@ -45,9 +45,9 @@ export class AuthController {
   @UseFilters(JsonWebTokenExceptionFilter)
   @HttpCode(HttpStatus.NO_CONTENT)
   public async check(
-    @Headers() headers
+    @Req() request: Request
   ): Promise<void> {
-    const accessToken = headers[`access-token`];
+    const accessToken = request.cookies[`access-token`];
     await this._authControllerService.checkAccessToken(accessToken);
   }
 
@@ -56,9 +56,9 @@ export class AuthController {
   @UseFilters(JsonWebTokenExceptionFilter)
   @HttpCode(HttpStatus.OK)
   public async decode(
-    @Headers() headers
+    @Req() request: Request
   ): Promise<IJsonWebTokenParams> {
-    const accessToken = headers[`access-token`];
+    const accessToken = request.cookies[`access-token`];
     return await this._authControllerService.decodeAccessToken(accessToken);
   }
 
@@ -67,10 +67,10 @@ export class AuthController {
   @UseFilters(Filter)
   @HttpCode(HttpStatus.CREATED)
   public async refresh(
-    @Headers() headers,
+    @Req() request: Request,
     @Res() response: Response
   ): Promise<void> {
-    const refreshToken = headers[`refresh-token`];
+    const refreshToken = request.cookies[`refresh-token`];
     const jsonWebTokenEntity = await this._authControllerService.refreshToken(refreshToken);
     this._authControllerService.setTokens(response, jsonWebTokenEntity);
     response.send();

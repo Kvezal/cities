@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Response } from 'express';
 
 import { IJsonWebTokenParams, JsonWebTokenEntity } from 'domains/entities';
@@ -9,6 +9,7 @@ import {
   DecodeAccessTokenUseCase,
   RefreshTokenUseCase,
 } from 'domains/use-cases';
+import { AuthService, authServiceSymbol } from 'domains/services';
 
 
 const MAX_AGE_ACCESS_TOKEN_COOKIE = Number(process.env.MAX_AGE_ACCESS_TOKEN_COOKIE);
@@ -19,20 +20,24 @@ export class AuthControllerService implements
   CheckTokenUseCase,
   DecodeAccessTokenUseCase,
   RefreshTokenUseCase {
+  constructor(
+    @Inject(authServiceSymbol) private readonly _authService: AuthService
+  ) {}
+
   public async authenticateUser(params: IUserAuthenticate): Promise<JsonWebTokenEntity> {
-    return null;
+    return this._authService.authenticateUser(params);
   }
 
   public async checkAccessToken(token: string): Promise<boolean> {
-    return null;
+    return this._authService.checkAccessToken(token);
   }
 
   public async decodeAccessToken(token: string): Promise<IJsonWebTokenParams> {
-    return null;
+    return this._authService.decodeAccessToken(token);
   }
 
   public async refreshToken(token: string): Promise<JsonWebTokenEntity> {
-    return null;
+    return this._authService.refreshToken(token);
   }
 
   public setTokens(response: Response, jsonWebTokenEntity): void {

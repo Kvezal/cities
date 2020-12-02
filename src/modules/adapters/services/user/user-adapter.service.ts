@@ -16,17 +16,17 @@ export class UserAdapterService implements LoadUserByIdPort, LoadUserByEmailPort
 
   public async loadUserById(id: string): Promise<UserEntity> {
     const userOrmEntity: UserOrmEntity = await this._userRepository.findOne(id);
-    return UserMapper.mapToDomain(userOrmEntity);
+    return userOrmEntity && UserMapper.mapToDomain(userOrmEntity);
   }
 
   public async loadUserByEmail(email: string): Promise<UserEntity> {
     const userOrmEntity: UserOrmEntity = await this._userRepository.findOne({email});
-    return UserMapper.mapToDomain(userOrmEntity);
+    return userOrmEntity && UserMapper.mapToDomain(userOrmEntity);
   }
 
   public async saveUser(userEntity: UserEntity): Promise<UserEntity> {
     const userOrmEntity = UserMapper.mapToOrmEntity(userEntity);
     const createdUserOrmEntity = await this._userRepository.create(userOrmEntity);
-    return UserMapper.mapToDomain(createdUserOrmEntity);
+    return createdUserOrmEntity && UserMapper.mapToDomain(createdUserOrmEntity);
   }
 }

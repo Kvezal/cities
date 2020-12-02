@@ -9,6 +9,7 @@ import { HotelAdapterService } from './hotel';
 import { UserAdapterService } from './user';
 import { FavoriteAdapterService } from './favorite';
 import { RatingAdapterService } from './rating';
+import { UserTypeAdapterService } from './user-type';
 
 
 @Module({
@@ -19,20 +20,22 @@ import { RatingAdapterService } from './rating';
   providers: [
     AuthAdapterService,
     CityAdapterService,
+    CommentAdapterService,
     FavoriteAdapterService,
     HotelAdapterService,
-    UserAdapterService,
     RatingAdapterService,
-    CommentAdapterService,
+    UserAdapterService,
+    UserTypeAdapterService
   ],
   exports: [
     AuthAdapterService,
     CityAdapterService,
+    CommentAdapterService,
     FavoriteAdapterService,
     HotelAdapterService,
-    UserAdapterService,
     RatingAdapterService,
-    CommentAdapterService,
+    UserAdapterService,
+    UserTypeAdapterService
   ],
 })
 export class CommonAdapterModule {}
