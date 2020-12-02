@@ -1,7 +1,7 @@
 export interface IComment {
-  id: string;
+  id?: string;
   text: string;
-  createdAt: Date;
+  createdAt?: Date;
   hotelId: string;
   userId: string;
   rating: number;
