@@ -8,8 +8,8 @@ import { FavoriteMapper, FavoriteOrmEntity, HotelMapper, HotelOrmEntity } from '
 @Injectable()
 export class FavoriteControllerService {
   constructor(
-    @Inject(favoriteServiceSymbol) private readonly _favoriteService: FavoriteService,
-    @Inject(authServiceSymbol) private readonly _authService: AuthService
+    @Inject(authServiceSymbol) private readonly _authService: AuthService,
+    @Inject(favoriteServiceSymbol) private readonly _favoriteService: FavoriteService
   ) {}
 
 

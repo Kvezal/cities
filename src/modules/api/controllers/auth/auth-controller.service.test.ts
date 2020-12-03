@@ -1,15 +1,32 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { authServiceSymbol } from 'domains/services';
+import { IJsonWebTokenParams, JsonWebTokenEntity } from 'domains/entities';
+import { AuthService, authServiceSymbol } from 'domains/services';
+import { ConfigService } from 'modules/config';
 
+import { AuthLoginDto } from './auth.dto';
 import { AuthControllerService } from './auth-controller.service';
 
 
+const authenticateUserParams: AuthLoginDto = {
+  email: `test@gmail.com`,
+  password: `test123456`,
+};
+
+const jsonWebTokenParams: IJsonWebTokenParams = {
+  id: `1`,
+  name: `name`,
+  email: `email@gmail.com`,
+  image: null,
+};
+
 describe('AuthControllerService', () => {
   let service: AuthControllerService;
+  let authService: AuthService;
+  let configService: ConfigService;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    const testModule: TestingModule = await Test.createTestingModule({
       providers: [
         AuthControllerService,
         {
@@ -21,13 +38,146 @@ describe('AuthControllerService', () => {
             refreshToken: async () => null,
           },
         },
+        {
+          provide: ConfigService,
+          useValue: {
+            getGlobalEnvironmentVariable: () => null,
+          }
+        }
       ],
     }).compile();
 
-    service = module.get<AuthControllerService>(AuthControllerService);
+    service = testModule.get<AuthControllerService>(AuthControllerService);
+    authService = testModule.get<AuthService>(authServiceSymbol);
+    configService = testModule.get<ConfigService>(ConfigService);
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  describe(`authenticateUser method`, () => {
+    it(`should call authenticateUser method of AuthService`, async () => {
+      const authenticateUser = jest.spyOn(authService, `authenticateUser`);
+      await service.authenticateUser(authenticateUserParams);
+      expect(authenticateUser).toHaveBeenCalledTimes(1);
+    });
+
+    it(`should call authenticateUser method of AuthService with params`, async () => {
+      const authenticateUser = jest.spyOn(authService, `authenticateUser`);
+      await service.authenticateUser(authenticateUserParams);
+      expect(authenticateUser).toHaveBeenCalledWith(authenticateUserParams);
+    });
+
+    it(`should return result of authenticateUser method of AuthService`, async () => {
+      const jsonWebTokenEntity = await JsonWebTokenEntity.generate(jsonWebTokenParams);
+      jest.spyOn(authService, `authenticateUser`).mockImplementationOnce(async () => jsonWebTokenEntity);
+      const result: JsonWebTokenEntity = await service.authenticateUser(authenticateUserParams);
+      expect(result).toBe(jsonWebTokenEntity);
+    });
+  });
+
+  describe(`checkAccessToken method`, () => {
+    const accessToken = `access-token`;
+
+    it(`should call checkAccessToken method of AuthService`, async () => {
+      const checkAccessToken = jest.spyOn(authService, `checkAccessToken`);
+      await service.checkAccessToken(accessToken);
+      expect(checkAccessToken).toHaveBeenCalledTimes(1);
+    });
+
+    it(`should call checkAccessToken method of AuthService with params`, async () => {
+      const checkAccessToken = jest.spyOn(authService, `checkAccessToken`);
+      await service.checkAccessToken(accessToken);
+      expect(checkAccessToken).toHaveBeenCalledWith(accessToken);
+    });
+
+    it(`should return result of checkAccessToken method of AuthService`, async () => {
+      jest.spyOn(authService, `checkAccessToken`).mockImplementation(async () => true);
+      const result: boolean = await service.checkAccessToken(accessToken);
+      expect(result).toBe(true);
+    });
+  });
+
+  describe(`decodeAccessToken method`, () => {
+    const accessToken = `access-token`;
+
+    it(`should call decodeAccessToken method of AuthService`, async () => {
+      const decodeAccessToken = jest.spyOn(authService, `decodeAccessToken`);
+      await service.decodeAccessToken(accessToken);
+      expect(decodeAccessToken).toHaveBeenCalledTimes(1);
+    });
+
+    it(`should call decodeAccessToken method of AuthService with params`, async () => {
+      const decodeAccessToken = jest.spyOn(authService, `decodeAccessToken`);
+      await service.decodeAccessToken(accessToken);
+      expect(decodeAccessToken).toHaveBeenCalledWith(accessToken);
+    });
+
+    it(`should return result of decodeAccessToken method of AuthService`, async () => {
+      jest.spyOn(authService, `decodeAccessToken`).mockImplementation(async () => jsonWebTokenParams);
+      const result: IJsonWebTokenParams = await service.decodeAccessToken(accessToken);
+      expect(result).toBe(jsonWebTokenParams);
+    });
+  });
+
+  describe(`refreshToken method`, () => {
+    const token = `refresh-token`;
+
+    it(`should call refreshToken method of AuthService`, async () => {
+      const refreshToken = jest.spyOn(authService, `refreshToken`);
+      await service.refreshToken(token);
+      expect(refreshToken).toHaveBeenCalledTimes(1);
+    });
+
+    it(`should call refreshToken method of AuthService with params`, async () => {
+      const refreshToken = jest.spyOn(authService, `refreshToken`);
+      await service.refreshToken(token);
+      expect(refreshToken).toHaveBeenCalledWith(token);
+    });
+
+    it(`should return result of refreshToken method of AuthService`, async () => {
+      const jsonWebTokenEntity = await JsonWebTokenEntity.generate(jsonWebTokenParams);
+      jest.spyOn(authService, `refreshToken`).mockImplementation(async () => jsonWebTokenEntity);
+      const result: JsonWebTokenEntity = await service.refreshToken(token);
+      expect(result).toBe(jsonWebTokenEntity);
+    });
+  });
+
+  describe(`setTokens method`, () => {
+    it(`should call cookie method of response`, async () => {
+      const jsonWebTokenEntity = await JsonWebTokenEntity.generate(jsonWebTokenParams);
+      const response: any = {
+        cookie: jest.fn(),
+      };
+      service.setTokens(response, jsonWebTokenEntity);
+      expect(response.cookie).toHaveBeenCalledTimes(2);
+    });
+
+    it(`should call cookie method of response with access token params`, async () => {
+      const maxAge = `1000`;
+      const jsonWebTokenEntity = await JsonWebTokenEntity.generate(jsonWebTokenParams);
+      jest.spyOn(configService, `getGlobalEnvironmentVariable`).mockImplementationOnce(() => maxAge);
+      const response: any = {
+        cookie: jest.fn(),
+      };
+      service.setTokens(response, jsonWebTokenEntity);
+      expect(response.cookie).toHaveBeenNthCalledWith(1, `access-token`, jsonWebTokenEntity.accessToken, {
+        maxAge: +maxAge,
+        sameSite: true,
+      });
+    });
+
+    it(`should call cookie method of response with refresh token params`, async () => {
+      const jsonWebTokenEntity = await JsonWebTokenEntity.generate(jsonWebTokenParams);
+      const response: any = {
+        cookie: jest.fn(),
+      };
+      service.setTokens(response, jsonWebTokenEntity);
+      expect(response.cookie).toHaveBeenNthCalledWith(2, `refresh-token`, jsonWebTokenEntity.refreshToken, {
+        httpOnly: true,
+        sameSite: true,
+      });
+    });
   });
 });

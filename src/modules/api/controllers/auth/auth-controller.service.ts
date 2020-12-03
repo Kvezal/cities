@@ -10,9 +10,8 @@ import {
   RefreshTokenUseCase,
 } from 'domains/use-cases';
 import { AuthService, authServiceSymbol } from 'domains/services';
+import { ConfigService } from 'modules/config';
 
-
-const MAX_AGE_ACCESS_TOKEN_COOKIE = Number(process.env.MAX_AGE_ACCESS_TOKEN_COOKIE);
 
 @Injectable()
 export class AuthControllerService implements
@@ -21,6 +20,7 @@ export class AuthControllerService implements
   DecodeAccessTokenUseCase,
   RefreshTokenUseCase {
   constructor(
+    @Inject(ConfigService) private readonly _configService: ConfigService,
     @Inject(authServiceSymbol) private readonly _authService: AuthService
   ) {}
 
@@ -40,9 +40,9 @@ export class AuthControllerService implements
     return this._authService.refreshToken(token);
   }
 
-  public setTokens(response: Response, jsonWebTokenEntity): void {
+  public setTokens(response: Response, jsonWebTokenEntity: JsonWebTokenEntity): void {
     response.cookie(`access-token`, jsonWebTokenEntity.accessToken, {
-      maxAge: MAX_AGE_ACCESS_TOKEN_COOKIE,
+      maxAge: +this._configService.getGlobalEnvironmentVariable(`MAX_AGE_ACCESS_TOKEN_COOKIE`),
       sameSite: true,
     });
     response.cookie(`refresh-token`, jsonWebTokenEntity.refreshToken, {

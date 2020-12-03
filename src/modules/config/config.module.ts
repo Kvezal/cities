@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { configService } from './config.service';
+import { ConfigService } from './config.service';
 
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(configService.getTypeOrmConfig())
+    TypeOrmModule.forRoot(ConfigService.getTypeOrmConfig(process.env))
   ],
 })
 export class ConfigModule {

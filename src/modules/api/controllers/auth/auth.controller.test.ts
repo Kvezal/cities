@@ -10,6 +10,7 @@ import { authServiceSymbol } from 'domains/services';
 
 import { AuthControllerService } from './auth-controller.service';
 import { AuthController } from './auth.controller';
+import { ConfigService } from 'modules/config';
 
 
 const jsonWebTokenParams: IJsonWebTokenParams = {
@@ -38,6 +39,12 @@ describe(`AuthController`, () => {
             refreshToken: async () => null,
           },
         },
+        {
+          provide: ConfigService,
+          useValue: {
+            getGlobalEnvironmentVariable: () => null,
+          }
+        }
       ],
     }).compile();
 
