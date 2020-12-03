@@ -1,13 +1,20 @@
-import { Module } from '@nestjs/common';
+import { resolve } from 'path';
 
-import { AuthModule, CityModule, CommentModule, HotelModule } from './controllers';
+import { Module } from '@nestjs/common';
+import { ServeStaticModule } from '@nestjs/serve-static';
+
+import { AuthModule, CityModule, CommentModule, FavoriteModule, HotelModule } from './controllers';
 
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: resolve(process.cwd(), `./src/public`),
+    }),
     AuthModule,
     CityModule,
     CommentModule,
+    FavoriteModule,
     HotelModule,
   ],
 })
