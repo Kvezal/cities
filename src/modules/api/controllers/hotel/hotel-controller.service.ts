@@ -14,13 +14,7 @@ export class HotelControllerService {
 
 
   public async getHotelList(sortingParams: IHotelSortingParams): Promise<HotelOrmEntity[]> {
-    let hotelEntities: HotelOrmEntity[] = [];
-    if (sortingParams.cityId) {
-      hotelEntities = await this._hotelService.getHotelList(sortingParams);
-    }
-    if (sortingParams.hotelId) {
-      hotelEntities = await this._hotelService.getNearbyHotelList(sortingParams.hotelId);
-    }
+    const hotelEntities: HotelOrmEntity[] = await this._hotelService.getHotelList(sortingParams);
     return hotelEntities.map((hotelEntity: HotelEntity) => HotelMapper.mapToOrmEntity(hotelEntity));
   }
 

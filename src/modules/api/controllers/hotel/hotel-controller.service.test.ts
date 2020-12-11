@@ -114,78 +114,39 @@ describe('HotelControllerService', () => {
   });
 
   describe(`getHotelList`, () => {
-    describe(`getHotelList of HotelService`, () => {
-      const cityId = `test`;
+    const cityId = `test`;
 
+    it(`should call`, async () => {
+      const getHotelList = jest.spyOn(hotelService, `getHotelList`);
+      await service.getHotelList({ cityId });
+      expect(getHotelList).toHaveBeenCalledTimes(1);
+    });
+
+    it(`should call with params`, async () => {
+      const getHotelList = jest.spyOn(hotelService, `getHotelList`);
+      await service.getHotelList({ cityId });
+      expect(getHotelList).toHaveBeenCalledWith({ cityId });
+    });
+
+    describe(`mapToOrmEntity method of HotelMapper`, () => {
       it(`should call`, async () => {
-        const getHotelList = jest.spyOn(hotelService, `getHotelList`);
+        HotelMapper.mapToOrmEntity = jest.fn(HotelMapper.mapToOrmEntity);
         await service.getHotelList({ cityId });
-        expect(getHotelList).toHaveBeenCalledTimes(1);
+        expect(HotelMapper.mapToOrmEntity).toHaveBeenCalledTimes(hotelCount);
       });
 
       it(`should call with params`, async () => {
-        const getHotelList = jest.spyOn(hotelService, `getHotelList`);
+        HotelMapper.mapToOrmEntity = jest.fn(HotelMapper.mapToOrmEntity);
         await service.getHotelList({ cityId });
-        expect(getHotelList).toHaveBeenCalledWith({ cityId });
-      });
-
-      describe(`mapToOrmEntity method of HotelMapper`, () => {
-        it(`should call`, async () => {
-          HotelMapper.mapToOrmEntity = jest.fn(HotelMapper.mapToOrmEntity);
-          await service.getHotelList({ cityId });
-          expect(HotelMapper.mapToOrmEntity).toHaveBeenCalledTimes(hotelCount);
-        });
-
-        it(`should call with params`, async () => {
-          HotelMapper.mapToOrmEntity = jest.fn(HotelMapper.mapToOrmEntity);
-          await service.getHotelList({ cityId });
-          for (let i = 1; i <= hotelCount; i++) {
-            expect(HotelMapper.mapToOrmEntity).toHaveBeenNthCalledWith(i, hotelEntity);
-          }
-        });
-      });
-
-      it(`should return correct result`, async () => {
-        const result = await service.getHotelList({ cityId });
-        expect(result).toEqual(Array(hotelCount).fill(hotelOrmEntity));
+        for (let i = 1; i <= hotelCount; i++) {
+          expect(HotelMapper.mapToOrmEntity).toHaveBeenNthCalledWith(i, hotelEntity);
+        }
       });
     });
 
-    describe(`getNearbyHotelList of HotelService`, () => {
-      const hotelId = `test`;
-
-      it(`should call`, async () => {
-        const getNearbyHotelList = jest.spyOn(hotelService, `getNearbyHotelList`);
-        await service.getHotelList({ hotelId });
-        expect(getNearbyHotelList).toHaveBeenCalledTimes(1);
-      });
-
-      it(`should call with params`, async () => {
-        const getNearbyHotelList = jest.spyOn(hotelService, `getNearbyHotelList`);
-        await service.getHotelList({ hotelId });
-        expect(getNearbyHotelList).toHaveBeenCalledWith(hotelId);
-      });
-
-      describe(`mapToOrmEntity method of HotelMapper`, () => {
-        it(`should call`, async () => {
-          HotelMapper.mapToOrmEntity = jest.fn(HotelMapper.mapToOrmEntity);
-          await service.getHotelList({ hotelId });
-          expect(HotelMapper.mapToOrmEntity).toHaveBeenCalledTimes(hotelCount);
-        });
-
-        it(`should call with params`, async () => {
-          HotelMapper.mapToOrmEntity = jest.fn(HotelMapper.mapToOrmEntity);
-          await service.getHotelList({ hotelId });
-          for (let i = 1; i <= hotelCount; i++) {
-            expect(HotelMapper.mapToOrmEntity).toHaveBeenNthCalledWith(i, hotelEntity);
-          }
-        });
-      });
-
-      it(`should return correct result`, async () => {
-        const result = await service.getHotelList({ hotelId });
-        expect(result).toEqual(Array(hotelCount).fill(hotelOrmEntity));
-      });
+    it(`should return correct result`, async () => {
+      const result = await service.getHotelList({ cityId });
+      expect(result).toEqual(Array(hotelCount).fill(hotelOrmEntity));
     });
   });
 

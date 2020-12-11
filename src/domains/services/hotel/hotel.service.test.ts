@@ -1,7 +1,12 @@
-import { HotelEntity, IHotel, ILocation } from 'domains/entities';
+import {
+  HotelEntity,
+  IHotel,
+  ILocation,
+} from 'domains/entities';
 import { IHotelSortingParams } from 'domains/interfaces';
 
 import { HotelService } from './hotel.service';
+import { ESortingFilter } from 'domains/interfaces/hotel-sorting.interface';
 
 
 const hotelParams: IHotel = {
@@ -128,34 +133,136 @@ describe(`Hotel Service`, () => {
   const hotelEntity = HotelEntity.create(hotelParams);
 
   describe(`getHotelList method`, () => {
-    it(`should call loadHotelList method`, async () => {
-      const loadHotelList = jest.fn();
-      const hotelService = new HotelService(
-        {loadHotelList},
-        null
-      );
-      await hotelService.getHotelList(hotelSortingParams);
-      expect(loadHotelList).toHaveBeenCalledTimes(1);
-    });
-
-    it(`should call loadHotelList method with sorting params`, async () => {
-      const loadHotelList = jest.fn();
-      const hotelService = new HotelService(
-        {loadHotelList},
-        null
-      );
-      await hotelService.getHotelList(hotelSortingParams);
-      expect(loadHotelList).toHaveBeenCalledWith(hotelSortingParams);
-    });
-
-    it(`should return result of loadHotelList method`, async () => {
+    describe(`if sorting filter isn't nearby`, () => {
+      let result: HotelEntity[];
       const hotelEntityList = [hotelEntity];
-      const hotelService = new HotelService(
-        {loadHotelList: jest.fn().mockReturnValue(hotelEntityList)},
-        null
+      let loadHotelList;
+
+      beforeEach(async () => {
+        loadHotelList = jest.fn().mockResolvedValue(hotelEntityList);
+        const hotelService = new HotelService(
+          {loadHotelList},
+          null
+        );
+        result = await hotelService.getHotelList(hotelSortingParams);
+      });
+
+      it(`should return result`, async () => {
+        expect(result).toEqual(hotelEntityList);
+      });
+
+      describe(`loadHotelList method of HotelListLoaderService`, () => {
+        it(`should call loadHotelList method`, async () => {
+          expect(loadHotelList).toHaveBeenCalledTimes(1);
+        });
+
+        it(`should call loadHotelList method with sorting params`, async () => {
+          expect(loadHotelList).toHaveBeenCalledWith(hotelSortingParams);
+        });
+      });
+    });
+
+    describe(`if sorting filter is nearby`, () => {
+      const hotelEntityList: HotelEntity[] = hotelLocations.map(
+        (location: ILocation) => HotelEntity.create({...hotelParams, location})
       );
-      const result = await hotelService.getHotelList(hotelSortingParams);
-      expect(result).toEqual(hotelEntityList);
+
+      it(`should return result of getNearbyHotels method`, async () => {
+        const expectedHotelEntityList = hotelEntityList.slice(0, 3);
+        hotelEntity.getNearbyHotelList = jest.fn(hotelEntity.getNearbyHotelList).mockReturnValue(expectedHotelEntityList);
+        const hotelService = new HotelService(
+          {loadHotelList: jest.fn().mockReturnValue(hotelEntityList)},
+          {loadHotelById: jest.fn().mockReturnValue(hotelEntity)}
+        );
+        const nearbyHotels = await hotelService.getHotelList({
+          hotelId: hotelParams.id,
+          filter: ESortingFilter.NEARBY,
+        });
+        expect(nearbyHotels).toEqual(expectedHotelEntityList);
+      });
+
+      describe(`loadHotelById method of HotelLoaderService`, () => {
+        const loadHotelById = jest.fn().mockReturnValue(hotelEntity);
+
+        beforeEach(async () => {
+          const hotelService = new HotelService(
+            {loadHotelList: async () => hotelEntityList},
+            {loadHotelById}
+          );
+          await hotelService.getHotelList({
+            hotelId: hotelParams.id,
+            filter: ESortingFilter.NEARBY,
+          });
+        });
+
+        it(`should call loadHotelById method`, async () => {
+          expect(loadHotelById).toHaveBeenCalledTimes(1);
+        });
+
+        it(`should call loadHotelById method with correct param`, async () => {
+          expect(loadHotelById).toHaveBeenCalledWith(hotelParams.id);
+        });
+      });
+
+      describe(`loadHotelList method of HotelListLoaderService`, () => {
+        it(`should call`, async () => {
+          const loadHotelList = jest.fn().mockReturnValue(hotelEntityList);
+          const hotelService = new HotelService(
+            {loadHotelList},
+            {loadHotelById: jest.fn().mockReturnValue(hotelEntity)}
+          );
+          await hotelService.getHotelList({
+            hotelId: hotelParams.id,
+            filter: ESortingFilter.NEARBY,
+          });
+          expect(loadHotelList).toHaveBeenCalledTimes(1);
+        });
+
+        it(`should call with params`, async () => {
+          const loadHotelList = jest.fn().mockReturnValue(hotelEntityList);
+          const hotelService = new HotelService(
+            {loadHotelList},
+            {loadHotelById: jest.fn().mockReturnValue(hotelEntity)}
+          );
+          await hotelService.getHotelList({
+            hotelId: hotelParams.id,
+            filter: ESortingFilter.NEARBY,
+          });
+          expect(loadHotelList).toHaveBeenCalledWith({
+            cityId: hotelEntity.city.id,
+            hotelId: hotelParams.id,
+            filter: ESortingFilter.NEARBY,
+          });
+        });
+      });
+
+      describe(`getNearbyHotels method of hotelEntity instance`, () => {
+        it(`should call`, async () => {
+          hotelEntity.getNearbyHotelList = jest.fn(hotelEntity.getNearbyHotelList);
+          const hotelService = new HotelService(
+            {loadHotelList: jest.fn().mockReturnValue(hotelEntityList)},
+            {loadHotelById: jest.fn().mockReturnValue(hotelEntity)}
+          );
+          await hotelService.getHotelList({
+            hotelId: hotelParams.id,
+            filter: ESortingFilter.NEARBY,
+          });
+          expect(hotelEntity.getNearbyHotelList).toHaveBeenCalledTimes(1);
+        });
+
+        it(`should call with params`, async () => {
+          hotelEntity.getNearbyHotelList = jest.fn(hotelEntity.getNearbyHotelList);
+          const hotelService = new HotelService(
+            {loadHotelList: jest.fn().mockReturnValue(hotelEntityList)},
+            {loadHotelById: jest.fn().mockReturnValue(hotelEntity)}
+          );
+          await hotelService.getHotelList({
+            hotelId: hotelParams.id,
+            filter: ESortingFilter.NEARBY,
+          });
+          expect(hotelEntity.getNearbyHotelList).toHaveBeenCalledWith(hotelEntityList);
+        });
+      });
     });
   });
 
@@ -177,73 +284,6 @@ describe(`Hotel Service`, () => {
       );
       const hotelResult = await hotelService.getHotelById(hotelParams.id);
       expect(hotelResult).toEqual(hotelEntity);
-    });
-  });
-
-  describe(`getNearbyHotelList method`, () => {
-    const hotelEntityList: HotelEntity[] = hotelLocations.map(
-      (location: ILocation) => HotelEntity.create({...hotelParams, location})
-    );
-
-    it(`should call loadHotelById method`, async () => {
-      const loadHotelById = jest.fn().mockReturnValue(hotelEntity);
-      const hotelService = new HotelService(
-        {loadHotelList: jest.fn().mockReturnValue(hotelEntityList)},
-        {loadHotelById}
-      );
-      await hotelService.getNearbyHotelList(hotelParams.id);
-      expect(loadHotelById).toHaveBeenCalledTimes(1);
-    });
-
-    it(`should call loadHotelById method with correct param`, async () => {
-      const loadHotelById = jest.fn().mockReturnValue(hotelEntity);
-      const hotelService = new HotelService(
-        {loadHotelList: jest.fn().mockReturnValue(hotelEntityList)},
-        {loadHotelById}
-      );
-      await hotelService.getNearbyHotelList(hotelParams.id);
-      expect(loadHotelById).toHaveBeenCalledWith(hotelParams.id);
-    });
-
-    it(`should call loadHotelList method`, async () => {
-      const loadHotelList = jest.fn().mockReturnValue(hotelEntityList);
-      const hotelService = new HotelService(
-        {loadHotelList},
-        {loadHotelById: jest.fn().mockReturnValue(hotelEntity)}
-      );
-      await hotelService.getNearbyHotelList(hotelParams.id);
-      expect(loadHotelList).toHaveBeenCalledTimes(1);
-    });
-
-    it(`should call getNearbyHotels method of hotelEntity instance`, async () => {
-      hotelEntity.getNearbyHotelList = jest.fn(hotelEntity.getNearbyHotelList);
-      const hotelService = new HotelService(
-        {loadHotelList: jest.fn().mockReturnValue(hotelEntityList)},
-        {loadHotelById: jest.fn().mockReturnValue(hotelEntity)}
-      );
-      await hotelService.getNearbyHotelList(hotelParams.id);
-      expect(hotelEntity.getNearbyHotelList).toHaveBeenCalledTimes(1);
-    });
-
-    it(`should call getNearbyHotels method of hotelEntity instance with correct params`, async () => {
-      hotelEntity.getNearbyHotelList = jest.fn(hotelEntity.getNearbyHotelList);
-      const hotelService = new HotelService(
-        {loadHotelList: jest.fn().mockReturnValue(hotelEntityList)},
-        {loadHotelById: jest.fn().mockReturnValue(hotelEntity)}
-      );
-      await hotelService.getNearbyHotelList(hotelParams.id);
-      expect(hotelEntity.getNearbyHotelList).toHaveBeenCalledWith(hotelEntityList);
-    });
-
-    it(`should return result of getNearbyHotels method`, async () => {
-      const expectedHotelEntityList = hotelEntityList.slice(0, 3);
-      hotelEntity.getNearbyHotelList = jest.fn(hotelEntity.getNearbyHotelList).mockReturnValue(expectedHotelEntityList);
-      const hotelService = new HotelService(
-        {loadHotelList: jest.fn().mockReturnValue(hotelEntityList)},
-        {loadHotelById: jest.fn().mockReturnValue(hotelEntity)}
-      );
-      const nearbyHotels = await hotelService.getNearbyHotelList(hotelParams.id);
-      expect(nearbyHotels).toEqual(expectedHotelEntityList);
     });
   });
 });
