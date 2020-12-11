@@ -15,6 +15,7 @@ import { HotelMapper } from 'modules/adapters/mappers';
 import {
   CityOrmEntity,
   CommentOrmEntity,
+  FavoriteOrmEntity,
   HotelOrmEntity,
   ImageOrmEntity,
   LocationOrmEntity,
@@ -26,6 +27,7 @@ import {
   EOrderType,
   IOrderParams,
 } from './hotel-adapter.interface';
+import { ESortingFilter } from 'domains/interfaces/hotel-sorting.interface';
 
 
 @Injectable()
@@ -63,6 +65,7 @@ export class HotelAdapterService implements LoadHotelListPort,
 
   public async loadHotelList(sortParams: IHotelSortingParams): Promise<HotelEntity[]> {
     const hotelOrmEntities: HotelOrmEntity[] = await this.getHotelList(sortParams);
+    console.log(hotelOrmEntities);
     return hotelOrmEntities.map((hotelOrmEntity: HotelOrmEntity) => HotelMapper.mapToDomain(hotelOrmEntity));
   }
 
@@ -91,8 +94,9 @@ export class HotelAdapterService implements LoadHotelListPort,
   }
 
   public async getHotelList(sortParams: IHotelSortingParams): Promise<HotelOrmEntity[]> {
-    const { cityId, hotelId, type = ESortingType.POPULAR } = sortParams;
+    const { cityId, hotelId, type = ESortingType.POPULAR, filter, userId } = sortParams;
     const orderParams = this._hotelOrderParamsMap.get(type);
+    // const userId = `07bda126-335a-4ccf-be00-85d0fd57617a`;
 
     return this._hotelRepository
       .createQueryBuilder(`hotels`)
@@ -112,6 +116,7 @@ export class HotelAdapterService implements LoadHotelListPort,
         `cities.value AS city`,
         `locations.value AS location`,
         `users.value AS host`,
+        `favorites IS NOT NULL AS "isFavorite"`,
       ])
       .leftJoin((subQuery) => {
         return subQuery
@@ -197,8 +202,14 @@ export class HotelAdapterService implements LoadHotelListPort,
           .from(CommentOrmEntity, `comments`)
           .groupBy(`comments."hotelId"`);
       }, `comments`, `comments."hotelId" = hotels.id`)
+      .leftJoin((subQuery) => {
+        return subQuery
+          .from(FavoriteOrmEntity, `favorites`)
+          .where(userId ? `favorites."userId" = :userId` : `FALSE`, {userId})
+      }, `favorites`, `favorites."hotelId" = hotels.id`)
       .where(cityId ? `hotels.cityId = :cityId` : `TRUE`, { cityId })
       .andWhere(hotelId ? `hotels.id = :hotelId` : `TRUE`, { hotelId })
+      .andWhere(filter === ESortingFilter.FAVORITE ? `favorites IS NOT NULL` : `TRUE`)
       .orderBy(orderParams.condition, orderParams.type)
       .getRawMany();
   }
