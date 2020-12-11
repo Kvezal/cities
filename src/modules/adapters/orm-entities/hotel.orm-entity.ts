@@ -6,6 +6,7 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryColumn,
 } from 'typeorm';
@@ -26,40 +27,54 @@ export class HotelOrmEntity {
   })
   public id: string;
 
+
   @Column()
   public title: string;
+
 
   @Column()
   public description: string;
 
+
   @Column()
   public bedroomCount: number;
+
 
   @Column()
   public maxAdultCount: number;
 
+
   @Column()
   public price: number;
+
 
   @Column()
   public isPremium: boolean;
 
+
   @CreateDateColumn()
   public createdAt?: Date;
 
-  @ManyToMany(
+
+  @OneToMany(
     () => RatingOrmEntity,
+    (ratingOrmEntity: RatingOrmEntity) => ratingOrmEntity.hotelId
   )
+  @JoinColumn()
   public rating?: number;
+
 
   @ManyToMany(
     () => FeatureOrmEntity,
     {
-      eager: true,
+      // eager: true,
     }
   )
-  @JoinTable()
+  @JoinTable({
+
+  })
   public features: FeatureOrmEntity[];
+
 
   @ManyToOne(
     () => HotelTypeOrmEntity,
@@ -69,6 +84,7 @@ export class HotelOrmEntity {
   )
   @JoinColumn()
   public type: HotelTypeOrmEntity;
+
 
   @ManyToOne(
     () => CityOrmEntity,
@@ -80,6 +96,7 @@ export class HotelOrmEntity {
   @JoinColumn()
   public city: CityOrmEntity;
 
+
   @OneToOne(
     () => LocationOrmEntity,
     {
@@ -88,6 +105,7 @@ export class HotelOrmEntity {
   )
   @JoinColumn()
   public location: LocationOrmEntity;
+
 
   @ManyToOne(
     () => UserOrmEntity,
@@ -99,6 +117,7 @@ export class HotelOrmEntity {
   )
   @JoinColumn()
   public host: UserOrmEntity;
+
 
   @ManyToMany(
     () => ImageOrmEntity,

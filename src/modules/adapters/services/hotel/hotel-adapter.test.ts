@@ -78,7 +78,6 @@ describe(`Hotel Adapter Service`, () => {
   let service: HotelAdapterService;
   let hotelRepositoryService: Repository<HotelOrmEntity>;
   let ratingRepositoryService: Repository<RatingOrmEntity>;
-
   const hotelsParams: IHotel[] = [
     hotelParams,
     {
@@ -87,6 +86,7 @@ describe(`Hotel Adapter Service`, () => {
     }
   ];
   const hotelIds = hotelsParams.map((hotelParam: IHotel) => hotelParam.id);
+  const hotelEntity = HotelEntity.create(hotelParams);
 
   beforeEach(async () => {
     const testModule: TestingModule = await Test.createTestingModule({
@@ -108,116 +108,70 @@ describe(`Hotel Adapter Service`, () => {
   });
 
   describe(`loadHotelById method`, () => {
-    beforeEach(() => {
-      service.getHotelsWithRatingByIds = async () => [hotelParams];
+    let hotelOrmEntityResult: HotelEntity;
+
+    beforeEach(async () => {
+      HotelMapper.mapToDomain = jest.fn(HotelMapper.mapToDomain).mockReturnValue(hotelEntity);
+      service.getHotelList = jest.fn(service.getHotelList).mockResolvedValue([hotelParams]);
+      hotelOrmEntityResult = await service.loadHotelById(hotelParams.id);
     });
 
-    it(`should call findOne method of repository`, async () => {
-      const findOne = jest.spyOn(hotelRepositoryService, `findOne`).mockResolvedValueOnce(hotelParams);
-      await service.loadHotelById(hotelParams.id);
-      expect(findOne).toHaveBeenCalledTimes(1);
+    describe(`getHotelList of HotelAdapterService`, () => {
+      it(`should call`, async () => {
+        expect(service.getHotelList).toHaveBeenCalledTimes(1);
+      });
+
+      it(`should call with params`, async () => {
+        expect(service.getHotelList).toHaveBeenCalledWith({ hotelId: hotelParams.id});
+      });
     });
 
-    it(`should call findOne method of repository with params`, async () => {
-      const findOne = jest.spyOn(hotelRepositoryService, `findOne`).mockResolvedValueOnce(hotelParams);
-      await service.loadHotelById(hotelParams.id);
-      expect(findOne).toHaveBeenCalledWith(hotelParams.id);
-    });
+    describe(`mapToDomain method of HotelMapper`, () => {
+      it(`should call `, async () => {
+        expect(HotelMapper.mapToDomain).toHaveBeenCalledTimes(1);
+      });
 
-    it(`should call getHotelsWithRatingByIds method`, async () => {
-      jest.spyOn(hotelRepositoryService, `findOne`).mockResolvedValueOnce(hotelParams);
-      const getHotelsWithRatingByIds = jest.spyOn(service, `getHotelsWithRatingByIds`);
-      await service.loadHotelById(hotelParams.id);
-      expect(getHotelsWithRatingByIds).toHaveBeenCalledTimes(1);
-    });
-
-    it(`should call getHotelsWithRatingByIds method with params`, async () => {
-      jest.spyOn(hotelRepositoryService, `findOne`).mockResolvedValueOnce(hotelParams);
-      const getHotelsWithRatingByIds = jest.spyOn(service, `getHotelsWithRatingByIds`);
-      await service.loadHotelById(hotelParams.id);
-      expect(getHotelsWithRatingByIds).toHaveBeenCalledWith([hotelParams]);
-    });
-
-    it(`should call mapToDomain method of HotelMapper`, async () => {
-      jest.spyOn(hotelRepositoryService, `findOne`).mockResolvedValueOnce(hotelParams);
-      HotelMapper.mapToDomain = jest.fn(HotelMapper.mapToDomain);
-      await service.loadHotelById(hotelParams.id);
-      expect(HotelMapper.mapToDomain).toHaveBeenCalledTimes(1);
-    });
-
-    it(`should be called mapToDomain method of HotelMapper with params`, async () => {
-      jest.spyOn(hotelRepositoryService, `findOne`).mockResolvedValueOnce(hotelParams);
-      HotelMapper.mapToDomain = jest.fn(HotelMapper.mapToDomain);
-      await service.loadHotelById(hotelParams.id);
-      expect(HotelMapper.mapToDomain).toHaveBeenCalledWith(hotelParams);
+      it(`should call with params`, async () => {
+        expect(HotelMapper.mapToDomain).toHaveBeenCalledWith(hotelParams);
+      });
     });
 
     it(`should return result of mapToDomain method of HotelMapper`, async () => {
-      jest.spyOn(hotelRepositoryService, `findOne`).mockResolvedValueOnce(hotelParams);
-      const hotelEntity = HotelEntity.create(hotelParams);
-      jest.fn(HotelMapper.mapToDomain).mockReturnValue(hotelEntity);
-      const hotelOrmEntityResult = await service.loadHotelById(hotelParams.id);
       expect(hotelOrmEntityResult).toEqual(hotelEntity);
     });
   });
 
   describe(`loadHotelList method`, () => {
-    beforeEach(() => {
-      service.getHotelsWithRatingByIds = async () => hotelsParams;
+    let hotelOrmEntityResult: HotelEntity[];
+    beforeEach(async () => {
+      service.getHotelList = jest.fn(service.getHotelList).mockResolvedValueOnce(hotelsParams);
+      HotelMapper.mapToDomain = jest.fn(HotelMapper.mapToDomain).mockReturnValue(hotelEntity);
+      hotelOrmEntityResult = await service.loadHotelList({cityId: hotelParams.city.id});
     });
 
-    it(`should call find method of repository`, async () => {
-      const find = jest.spyOn(hotelRepositoryService, `find`).mockResolvedValueOnce(hotelsParams);
-      await service.loadHotelList({cityId: hotelParams.city.id});
-      expect(find).toHaveBeenCalledTimes(1);
-    });
+    describe(`getHotelList of HotelAdapterService`, () => {
+      it(`should call`, async () => {
+        expect(service.getHotelList).toHaveBeenCalledTimes(1);
+      });
 
-    it(`should call find method of repository with params`, async () => {
-      const find = jest.spyOn(hotelRepositoryService, `find`).mockResolvedValueOnce(hotelsParams);
-      await service.loadHotelList({cityId: hotelParams.city.id});
-      expect(find).toHaveBeenCalledWith({
-        where: {
-          city: {
-            id: hotelParams.city.id,
-          },
-        },
+      it(`should call with params`, async () => {
+        expect(service.getHotelList).toHaveBeenCalledWith({ cityId: hotelParams.city.id});
       });
     });
 
-    it(`should call getHotelsWithRatingByIds method`, async () => {
-      jest.spyOn(hotelRepositoryService, `find`).mockResolvedValueOnce(hotelsParams);
-      const getHotelsWithRatingByIds = jest.spyOn(service, `getHotelsWithRatingByIds`);
-      await service.loadHotelList({cityId: hotelParams.city.id});
-      expect(getHotelsWithRatingByIds).toHaveBeenCalledTimes(1);
-    });
+    describe(`mapToDomain method of HotelMapper`, () => {
+      it(`should call `, async () => {
+        expect(HotelMapper.mapToDomain).toHaveBeenCalledTimes(hotelsParams.length);
+      });
 
-    it(`should call getHotelsWithRatingByIds method with params`, async () => {
-      jest.spyOn(hotelRepositoryService, `find`).mockResolvedValueOnce(hotelsParams);
-      const getHotelsWithRatingByIds = jest.spyOn(service, `getHotelsWithRatingByIds`);
-      await service.loadHotelList({cityId: hotelParams.city.id});
-      expect(getHotelsWithRatingByIds).toHaveBeenCalledWith(hotelsParams);
-    });
-
-    it(`should call mapToDomain method of HotelMapper`, async () => {
-      jest.spyOn(hotelRepositoryService, `find`).mockResolvedValueOnce(hotelsParams);
-      HotelMapper.mapToDomain = jest.fn(HotelMapper.mapToDomain);
-      await service.loadHotelList({cityId: hotelParams.city.id});
-      expect(HotelMapper.mapToDomain).toHaveBeenCalledTimes(hotelsParams.length);
-    });
-
-    it(`should be called mapToDomain method of HotelMapper with params`, async () => {
-      jest.spyOn(hotelRepositoryService, `find`).mockResolvedValueOnce(hotelsParams);
-      HotelMapper.mapToDomain = jest.fn(HotelMapper.mapToDomain);
-      await service.loadHotelList({cityId: hotelParams.city.id});
-      expect(HotelMapper.mapToDomain).toHaveBeenNthCalledWith(1, hotelsParams[0]);
-      expect(HotelMapper.mapToDomain).toHaveBeenNthCalledWith(2, hotelsParams[1]);
+      it(`should call with params`, async () => {
+        expect(HotelMapper.mapToDomain).toHaveBeenNthCalledWith(1, hotelsParams[0]);
+        expect(HotelMapper.mapToDomain).toHaveBeenNthCalledWith(2, hotelsParams[1]);
+      });
     });
 
     it(`should return result of mapToDomain method of HotelMapper`, async () => {
-      const hotelEntityList: HotelEntity[] = hotelsParams.map((hotelParams: IHotel) => HotelEntity.create(hotelParams));
-      jest.spyOn(hotelRepositoryService, `find`).mockResolvedValueOnce(hotelsParams);
-      const hotelOrmEntityResult = await service.loadHotelList({cityId: hotelParams.city.id});
-      expect(hotelOrmEntityResult).toEqual(hotelEntityList);
+      expect(hotelOrmEntityResult).toEqual([hotelEntity, hotelEntity]);
     });
   });
 

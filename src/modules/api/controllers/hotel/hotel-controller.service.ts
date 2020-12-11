@@ -3,6 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { HotelService, hotelServiceSymbol } from 'domains/services';
 import { HotelMapper, HotelOrmEntity } from 'modules/adapters';
 import { HotelEntity } from 'domains/entities';
+import { IHotelSortingParams } from 'domains/interfaces';
 
 
 @Injectable()
@@ -12,13 +13,13 @@ export class HotelControllerService {
   ) {}
 
 
-  public async getHotelList(cityId: string, hotelId: string): Promise<HotelOrmEntity[]> {
+  public async getHotelList(sortingParams: IHotelSortingParams): Promise<HotelOrmEntity[]> {
     let hotelEntities: HotelOrmEntity[] = [];
-    if (cityId) {
-      hotelEntities = await this._hotelService.getHotelList({cityId});
+    if (sortingParams.cityId) {
+      hotelEntities = await this._hotelService.getHotelList(sortingParams);
     }
-    if (hotelId) {
-      hotelEntities = await this._hotelService.getNearbyHotelList(hotelId);
+    if (sortingParams.hotelId) {
+      hotelEntities = await this._hotelService.getNearbyHotelList(sortingParams.hotelId);
     }
     return hotelEntities.map((hotelEntity: HotelEntity) => HotelMapper.mapToOrmEntity(hotelEntity));
   }

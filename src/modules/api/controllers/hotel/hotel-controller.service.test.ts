@@ -1,8 +1,20 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import {
+  Test,
+  TestingModule,
+} from '@nestjs/testing';
 
-import { HotelEntity, IHotel } from 'domains/entities';
-import { HotelService, hotelServiceSymbol } from 'domains/services';
-import { HotelMapper, HotelOrmEntity } from 'modules/adapters';
+import {
+  HotelEntity,
+  IHotel,
+} from 'domains/entities';
+import {
+  HotelService,
+  hotelServiceSymbol,
+} from 'domains/services';
+import {
+  HotelMapper,
+  HotelOrmEntity,
+} from 'modules/adapters';
 import { HotelControllerService } from './hotel-controller.service';
 
 
@@ -23,7 +35,7 @@ const hotelParams: IHotel = {
     {
       id: `2`,
       title: `title`,
-    }
+    },
   ],
   type: {
     id: `1`,
@@ -67,7 +79,7 @@ const hotelParams: IHotel = {
     {
       id: `2`,
       title: `title`,
-    }
+    },
   ],
 };
 
@@ -107,26 +119,26 @@ describe('HotelControllerService', () => {
 
       it(`should call`, async () => {
         const getHotelList = jest.spyOn(hotelService, `getHotelList`);
-        await service.getHotelList(cityId, null);
+        await service.getHotelList({ cityId });
         expect(getHotelList).toHaveBeenCalledTimes(1);
       });
 
       it(`should call with params`, async () => {
         const getHotelList = jest.spyOn(hotelService, `getHotelList`);
-        await service.getHotelList(cityId, null);
-        expect(getHotelList).toHaveBeenCalledWith({cityId});
+        await service.getHotelList({ cityId });
+        expect(getHotelList).toHaveBeenCalledWith({ cityId });
       });
 
       describe(`mapToOrmEntity method of HotelMapper`, () => {
         it(`should call`, async () => {
           HotelMapper.mapToOrmEntity = jest.fn(HotelMapper.mapToOrmEntity);
-          await service.getHotelList(cityId, null);
+          await service.getHotelList({ cityId });
           expect(HotelMapper.mapToOrmEntity).toHaveBeenCalledTimes(hotelCount);
         });
 
         it(`should call with params`, async () => {
           HotelMapper.mapToOrmEntity = jest.fn(HotelMapper.mapToOrmEntity);
-          await service.getHotelList(cityId, null);
+          await service.getHotelList({ cityId });
           for (let i = 1; i <= hotelCount; i++) {
             expect(HotelMapper.mapToOrmEntity).toHaveBeenNthCalledWith(i, hotelEntity);
           }
@@ -134,7 +146,7 @@ describe('HotelControllerService', () => {
       });
 
       it(`should return correct result`, async () => {
-        const result = await service.getHotelList(cityId, null);
+        const result = await service.getHotelList({ cityId });
         expect(result).toEqual(Array(hotelCount).fill(hotelOrmEntity));
       });
     });
@@ -144,26 +156,26 @@ describe('HotelControllerService', () => {
 
       it(`should call`, async () => {
         const getNearbyHotelList = jest.spyOn(hotelService, `getNearbyHotelList`);
-        await service.getHotelList(null, hotelId);
+        await service.getHotelList({ hotelId });
         expect(getNearbyHotelList).toHaveBeenCalledTimes(1);
       });
 
       it(`should call with params`, async () => {
         const getNearbyHotelList = jest.spyOn(hotelService, `getNearbyHotelList`);
-        await service.getHotelList(null, hotelId);
+        await service.getHotelList({ hotelId });
         expect(getNearbyHotelList).toHaveBeenCalledWith(hotelId);
       });
 
       describe(`mapToOrmEntity method of HotelMapper`, () => {
         it(`should call`, async () => {
           HotelMapper.mapToOrmEntity = jest.fn(HotelMapper.mapToOrmEntity);
-          await service.getHotelList(null, hotelId);
+          await service.getHotelList({ hotelId });
           expect(HotelMapper.mapToOrmEntity).toHaveBeenCalledTimes(hotelCount);
         });
 
         it(`should call with params`, async () => {
           HotelMapper.mapToOrmEntity = jest.fn(HotelMapper.mapToOrmEntity);
-          await service.getHotelList(null, hotelId);
+          await service.getHotelList({ hotelId });
           for (let i = 1; i <= hotelCount; i++) {
             expect(HotelMapper.mapToOrmEntity).toHaveBeenNthCalledWith(i, hotelEntity);
           }
@@ -171,7 +183,7 @@ describe('HotelControllerService', () => {
       });
 
       it(`should return correct result`, async () => {
-        const result = await service.getHotelList(null, hotelId);
+        const result = await service.getHotelList({ hotelId });
         expect(result).toEqual(Array(hotelCount).fill(hotelOrmEntity));
       });
     });

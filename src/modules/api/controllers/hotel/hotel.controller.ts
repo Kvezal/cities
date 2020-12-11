@@ -18,7 +18,10 @@ export class HotelController {
     @Query(`cityId`) cityId: string,
     @Query(`hotelId`) hotelId: string
   ): Promise<HotelOrmEntity[]> {
-    return this._hotelControllerService.getHotelList(cityId, hotelId);
+    return this._hotelControllerService.getHotelList({
+      cityId,
+      hotelId,
+    });
   }
 
   @Get(`:hotelId`)
