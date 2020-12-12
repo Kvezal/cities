@@ -124,57 +124,6 @@ describe('FavoriteControllerService', () => {
     expect(service).toBeDefined();
   });
 
-  describe(`getFavoriteHotelList method`, () => {
-    describe(`decodeAccessToken method of AuthService`, () => {
-      it(`should call`, async () => {
-        const decodeAccessToken = jest.spyOn(authService, `decodeAccessToken`);
-        await service.getFavoriteHotelList(accessToken);
-        expect(decodeAccessToken).toHaveBeenCalledTimes(1);
-      });
-
-      it(`should call with params`, async () => {
-        const decodeAccessToken = jest.spyOn(authService, `decodeAccessToken`);
-        await service.getFavoriteHotelList(accessToken);
-        expect(decodeAccessToken).toHaveBeenCalledWith(accessToken);
-      });
-    });
-
-    describe(`getFavoriteHotelList method of FavoriteService`, () => {
-      it(`should call`, async () => {
-        const getFavoriteHotelList = jest.spyOn(favoriteService, `getFavoriteHotelList`);
-        await service.getFavoriteHotelList(accessToken);
-        expect(getFavoriteHotelList).toHaveBeenCalledTimes(1);
-      });
-
-      it(`should call with params`, async () => {
-        const getFavoriteHotelList = jest.spyOn(favoriteService, `getFavoriteHotelList`);
-        await service.getFavoriteHotelList(accessToken);
-        expect(getFavoriteHotelList).toHaveBeenCalledWith(jsonWebTokenParams.id);
-      });
-    });
-
-    describe(`mapToOrmEntity method of HotelMapper`, () => {
-      it(`should call`, async () => {
-        HotelMapper.mapToOrmEntity = jest.fn(HotelMapper.mapToOrmEntity);
-        await service.getFavoriteHotelList(accessToken);
-        expect(HotelMapper.mapToOrmEntity).toHaveBeenCalledTimes(hotelCount);
-      });
-
-      it(`should call with params`, async () => {
-        HotelMapper.mapToOrmEntity = jest.fn(HotelMapper.mapToOrmEntity);
-        await service.getFavoriteHotelList(accessToken);
-        for (let i = 1; i <= hotelCount; i++) {
-          expect(HotelMapper.mapToOrmEntity).toHaveBeenNthCalledWith(i, hotelEntity);
-        }
-      });
-    });
-
-    it(`should return correct result`, async () => {
-      const result = await service.getFavoriteHotelList(accessToken);
-      expect(result).toEqual(Array(hotelCount).fill(hotelOrmEntity));
-    });
-  });
-
   describe(`toggleFavoriteStatus method`, () => {
     describe(`decodeAccessToken method of AuthService`, () => {
       it(`should call`, async () => {

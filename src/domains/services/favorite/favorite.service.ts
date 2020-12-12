@@ -1,12 +1,14 @@
-import { FavoriteEntity, HotelEntity } from 'domains/entities';
-import { DeleteUserHotelStatePort, LoadFavoriteHotelListPort, LoadUserStateOfHotelPort, SaveUserHotelStatePort } from 'domains/ports';
-import { GetFavoriteHotelListQuery } from 'domains/queries';
+import { FavoriteEntity } from 'domains/entities';
+import {
+  DeleteUserHotelStatePort,
+  LoadFavoriteHotelListPort,
+  LoadUserStateOfHotelPort,
+  SaveUserHotelStatePort,
+} from 'domains/ports';
 import { ToggleFavoriteStateOfHotelForUserUseCase } from 'domains/use-cases';
 
 
-export class FavoriteService implements
-  GetFavoriteHotelListQuery,
-  ToggleFavoriteStateOfHotelForUserUseCase {
+export class FavoriteService implements ToggleFavoriteStateOfHotelForUserUseCase {
   constructor(
     private readonly _favoriteHotelLoaderService: LoadFavoriteHotelListPort,
     private readonly _favoriteHotelStateLoaderService: LoadUserStateOfHotelPort,
@@ -14,11 +16,14 @@ export class FavoriteService implements
     private readonly _favoriteHotelStateDeleterService: DeleteUserHotelStatePort
   ) {}
 
-  public async getFavoriteHotelList(userId: string): Promise<HotelEntity[]> {
-    return this._favoriteHotelLoaderService.loadFavoriteHotelList(userId);
-  }
-
   public async toggleFavoriteStateOfHotelForUser(userId: string, hotelId: string): Promise<FavoriteEntity> {
+    /*
+    * получить hotel by id
+    * - проверить hotel на существование, иначе пробросить ошибку
+    * - изменить состояние isFavorite
+    * - если после этого значение isFavorite = true, то сохранить записть для текуего пользователя иначе удалить
+    * */
+
     let hotelUserState = await this._favoriteHotelStateLoaderService.loadUserStateOfHotel(userId, hotelId);
     if (!hotelUserState) {
       hotelUserState = FavoriteEntity.create({

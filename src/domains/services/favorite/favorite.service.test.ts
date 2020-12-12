@@ -15,43 +15,6 @@ describe(`Favorite Service`, () => {
     favoriteEntity = FavoriteEntity.create(favoriteParams);
   });
 
-  describe(`getFavoriteHotelList method`, () => {
-    it(`should call loadFavoriteHotelList method`, async () => {
-      const loadFavoriteHotelList = jest.fn();
-      const hotelService = new FavoriteService(
-        {loadFavoriteHotelList},
-        null,
-        null,
-        null
-      );
-      await hotelService.getFavoriteHotelList(favoriteParams.userId);
-      expect(loadFavoriteHotelList).toHaveBeenCalledTimes(1);
-    });
-
-    it(`should call loadFavoriteHotelList method with params`, async () => {
-      const loadFavoriteHotelList = jest.fn();
-      const hotelService = new FavoriteService(
-        {loadFavoriteHotelList},
-        null,
-        null,
-        null
-      );
-      await hotelService.getFavoriteHotelList(favoriteParams.userId);
-      expect(loadFavoriteHotelList).toHaveBeenCalledWith(favoriteParams.userId);
-    });
-
-    it(`should return result of loadFavoriteHotelList method`, async () => {
-      const hotelService = new FavoriteService(
-        {loadFavoriteHotelList: jest.fn().mockReturnValue(favoriteEntity)},
-        null,
-        null,
-        null
-      );
-      const result = await hotelService.getFavoriteHotelList(favoriteParams.userId);
-      expect(result).toEqual(favoriteEntity);
-    });
-  });
-
   describe(`toggleFavoriteHotelForUser method`, () => {
     it(`should call loadUserStateOfHotel method`, async () => {
       const loadUserStateOfHotel = jest.fn();

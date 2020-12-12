@@ -63,54 +63,6 @@ describe('FavoriteController', () => {
     expect(controller).toBeDefined();
   });
 
-  describe(`GET`, () => {
-    const favoriteUrl = `/api/favorite`;
-
-    describe(`/api/favorite end-point`, () => {
-      it(`status code should be 200`, async () => {
-        const result = await request(app.getHttpServer())
-          .get(favoriteUrl)
-          .send()
-          .set(`Cookie`, `access-token=test`);
-        expect(result.status).toBe(HttpStatus.OK);
-      });
-
-      it(`status code should be 401 if user is unauthorized`, async () => {
-        jest.spyOn(service, `getFavoriteHotelList`).mockImplementationOnce(async () => {
-          throw new JsonWebTokenError({
-            type: EJsonWebTokenType.IS_NOT_EXISTED,
-            message: `test`,
-          });
-        });
-        const result = await request(app.getHttpServer())
-          .get(favoriteUrl)
-          .send();
-        expect(result.status).toBe(HttpStatus.UNAUTHORIZED);
-      });
-
-      describe(`getFavoriteHotelList method of FavoriteControllerService`, () => {
-        it(`should call`, async () => {
-          const getFavoriteHotelList = jest.spyOn(service, `getFavoriteHotelList`).mockImplementationOnce(async () => null);
-          await request(app.getHttpServer())
-            .get(favoriteUrl)
-            .send()
-            .set(`Cookie`, `access-token=test`);
-          expect(getFavoriteHotelList).toHaveBeenCalledTimes(1);
-        });
-
-        it(`should call with params`, async () => {
-          const getFavoriteHotelList = jest.spyOn(service, `getFavoriteHotelList`).mockImplementationOnce(async () => null);
-          const accessToken = `test`;
-          await request(app.getHttpServer())
-            .get(favoriteUrl)
-            .send()
-            .set(`Cookie`, `access-token=${accessToken}`);
-          expect(getFavoriteHotelList).toHaveBeenCalledWith(accessToken);
-        });
-      });
-    })
-  });
-
   describe(`POST`, () => {
     describe(`/api/favorite/hotelId`, () => {
       const favoriteUrl = `/api/favorite?hotelId=test`;

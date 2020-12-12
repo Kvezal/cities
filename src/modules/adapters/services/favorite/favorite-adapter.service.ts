@@ -4,19 +4,20 @@ import { Repository } from 'typeorm';
 
 import {
   DeleteUserHotelStatePort,
-  LoadFavoriteHotelListPort,
   LoadUserStateOfHotelPort,
   SaveUserHotelStatePort,
 } from 'domains/ports';
-import { FavoriteEntity, HotelEntity } from 'domains/entities';
-import { FavoriteMapper, FavoriteOrmEntity } from 'modules/adapters';
+import { FavoriteEntity } from 'domains/entities';
+import {
+  FavoriteMapper,
+  FavoriteOrmEntity,
+} from 'modules/adapters';
 
 import { HotelAdapterService } from '../hotel';
 
 
 @Injectable()
 export class FavoriteAdapterService implements
-  LoadFavoriteHotelListPort,
   LoadUserStateOfHotelPort,
   SaveUserHotelStatePort,
   DeleteUserHotelStatePort {
@@ -36,18 +37,6 @@ export class FavoriteAdapterService implements
       }
     );
     return ormEntity && FavoriteMapper.mapToDomain(ormEntity);
-  }
-
-  public async loadFavoriteHotelList(userId: string): Promise<HotelEntity[]> {
-    const favoriteOrmEntities = await this._favoriteRepository.find({
-      loadRelationIds: true,
-      where: { userId },
-    });
-    if (favoriteOrmEntities.length === 0) {
-      return [];
-    }
-    const hotelIds = favoriteOrmEntities.map((favoriteOrmEntity: FavoriteOrmEntity) => favoriteOrmEntity.hotelId);
-    return this._hotelService.findHotelByIds(hotelIds);
   }
 
   public async saveUserHotelState(favoriteEntity: FavoriteEntity): Promise<FavoriteEntity> {

@@ -1,8 +1,19 @@
-import { Inject, Injectable } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 
-import { FavoriteEntity, HotelEntity } from 'domains/entities';
-import { AuthService, authServiceSymbol, FavoriteService, favoriteServiceSymbol } from 'domains/services';
-import { FavoriteMapper, FavoriteOrmEntity, HotelMapper, HotelOrmEntity } from 'modules/adapters';
+import { FavoriteEntity } from 'domains/entities';
+import {
+  AuthService,
+  authServiceSymbol,
+  FavoriteService,
+  favoriteServiceSymbol,
+} from 'domains/services';
+import {
+  FavoriteMapper,
+  FavoriteOrmEntity,
+} from 'modules/adapters';
 
 
 @Injectable()
@@ -11,14 +22,6 @@ export class FavoriteControllerService {
     @Inject(authServiceSymbol) private readonly _authService: AuthService,
     @Inject(favoriteServiceSymbol) private readonly _favoriteService: FavoriteService
   ) {}
-
-
-  public async getFavoriteHotelList(accessToken: string): Promise<HotelOrmEntity[]> {
-    const userParams = await this._authService.decodeAccessToken(accessToken);
-    const hotelEntities: HotelEntity[] = await this._favoriteService.getFavoriteHotelList(userParams.id);
-    return hotelEntities.map((hotelEntity: HotelEntity) => HotelMapper.mapToOrmEntity(hotelEntity));
-  }
-
 
   public async toggleFavoriteStatus(hotelId: string, accessToken: string): Promise<FavoriteOrmEntity> {
     const userParams = await this._authService.decodeAccessToken(accessToken);
