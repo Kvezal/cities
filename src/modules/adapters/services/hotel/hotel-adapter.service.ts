@@ -65,7 +65,6 @@ export class HotelAdapterService implements LoadHotelListPort,
 
   public async loadHotelList(sortParams: IHotelSortingParams): Promise<HotelEntity[]> {
     const hotelOrmEntities: HotelOrmEntity[] = await this.getHotelList(sortParams);
-    console.log(hotelOrmEntities);
     return hotelOrmEntities.map((hotelOrmEntity: HotelOrmEntity) => HotelMapper.mapToDomain(hotelOrmEntity));
   }
 

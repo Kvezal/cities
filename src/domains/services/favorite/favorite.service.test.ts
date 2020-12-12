@@ -15,7 +15,7 @@ describe(`Favorite Service`, () => {
     favoriteEntity = FavoriteEntity.create(favoriteParams);
   });
 
-  describe(`toggleFavoriteHotelForUser method`, () => {
+  describe(`toggleHotelFavoriteState method`, () => {
     it(`should call loadUserStateOfHotel method`, async () => {
       const loadUserStateOfHotel = jest.fn();
       const hotelService = new FavoriteService(
@@ -24,7 +24,7 @@ describe(`Favorite Service`, () => {
         {saveUserHotelState: () => null},
         null
       );
-      await hotelService.toggleFavoriteStateOfHotelForUser(favoriteParams.userId, favoriteParams.hotelId);
+      await hotelService.toggleHotelFavoriteState(favoriteParams.userId, favoriteParams.hotelId);
       expect(loadUserStateOfHotel).toHaveBeenCalledTimes(1);
     });
 
@@ -36,7 +36,7 @@ describe(`Favorite Service`, () => {
         {saveUserHotelState: () => null},
         null
       );
-      await hotelService.toggleFavoriteStateOfHotelForUser(favoriteParams.userId, favoriteParams.hotelId);
+      await hotelService.toggleHotelFavoriteState(favoriteParams.userId, favoriteParams.hotelId);
       expect(loadUserStateOfHotel).toHaveBeenCalledWith(favoriteParams.userId, favoriteParams.hotelId);
     });
 
@@ -48,7 +48,7 @@ describe(`Favorite Service`, () => {
         null,
         {deleteUserHotelState: async() => null}
       );
-      await hotelService.toggleFavoriteStateOfHotelForUser(favoriteParams.userId, favoriteParams.hotelId);
+      await hotelService.toggleHotelFavoriteState(favoriteParams.userId, favoriteParams.hotelId);
       expect(favoriteEntity.toggleFavoriteStateOfHotel).toHaveBeenCalledTimes(1);
     });
 
@@ -62,7 +62,7 @@ describe(`Favorite Service`, () => {
           {saveUserHotelState},
           null
         );
-        await hotelService.toggleFavoriteStateOfHotelForUser(favoriteParams.userId, favoriteParams.hotelId);
+        await hotelService.toggleHotelFavoriteState(favoriteParams.userId, favoriteParams.hotelId);
         expect(saveUserHotelState).toHaveBeenCalledTimes(1);
       });
 
@@ -75,7 +75,7 @@ describe(`Favorite Service`, () => {
           {saveUserHotelState},
           null
         );
-        await hotelService.toggleFavoriteStateOfHotelForUser(favoriteParams.userId, favoriteParams.hotelId);
+        await hotelService.toggleHotelFavoriteState(favoriteParams.userId, favoriteParams.hotelId);
         expect(saveUserHotelState).toHaveBeenCalledWith(favoriteEntity);
       });
 
@@ -88,7 +88,7 @@ describe(`Favorite Service`, () => {
           null
         );
         const toggleFavoriteStateOfHotelForUserResult =
-          await hotelService.toggleFavoriteStateOfHotelForUser(favoriteParams.userId, favoriteParams.hotelId);
+          await hotelService.toggleHotelFavoriteState(favoriteParams.userId, favoriteParams.hotelId);
         expect(toggleFavoriteStateOfHotelForUserResult).toEqual(favoriteEntity);
       });
     });
@@ -102,7 +102,7 @@ describe(`Favorite Service`, () => {
           null,
           {deleteUserHotelState}
         );
-        await hotelService.toggleFavoriteStateOfHotelForUser(favoriteParams.userId, favoriteParams.hotelId);
+        await hotelService.toggleHotelFavoriteState(favoriteParams.userId, favoriteParams.hotelId);
         expect(deleteUserHotelState).toHaveBeenCalledTimes(1);
       });
 
@@ -115,7 +115,7 @@ describe(`Favorite Service`, () => {
           null,
           {deleteUserHotelState}
         );
-        await hotelService.toggleFavoriteStateOfHotelForUser(favoriteParams.userId, favoriteParams.hotelId);
+        await hotelService.toggleHotelFavoriteState(favoriteParams.userId, favoriteParams.hotelId);
         expect(deleteUserHotelState).toHaveBeenCalledWith(updatedFavoriteEntity);
       });
 
@@ -128,7 +128,7 @@ describe(`Favorite Service`, () => {
           {deleteUserHotelState: async () => null}
         );
         const toggleFavoriteStateOfHotelForUserResult =
-          await hotelService.toggleFavoriteStateOfHotelForUser(favoriteParams.userId, favoriteParams.hotelId);
+          await hotelService.toggleHotelFavoriteState(favoriteParams.userId, favoriteParams.hotelId);
         expect(toggleFavoriteStateOfHotelForUserResult).toEqual(updatedFavoriteEntity);
       });
     });

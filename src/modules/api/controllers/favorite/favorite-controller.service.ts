@@ -25,7 +25,7 @@ export class FavoriteControllerService {
 
   public async toggleFavoriteStatus(hotelId: string, accessToken: string): Promise<FavoriteOrmEntity> {
     const userParams = await this._authService.decodeAccessToken(accessToken);
-    const favoriteEntity: FavoriteEntity = await this._favoriteService.toggleFavoriteStateOfHotelForUser(userParams.id, hotelId);
+    const favoriteEntity: FavoriteEntity = await this._favoriteService.toggleHotelFavoriteState(userParams.id, hotelId);
     return FavoriteMapper.mapToOrmEntity(favoriteEntity);
   }
 }

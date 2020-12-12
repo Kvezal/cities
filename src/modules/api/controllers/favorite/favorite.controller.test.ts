@@ -41,7 +41,7 @@ describe('FavoriteController', () => {
           provide: favoriteServiceSymbol,
           useValue: {
             getFavoriteHotelList: async () => [],
-            toggleFavoriteStateOfHotelForUser: async () => favoriteParams,
+            toggleHotelFavoriteState: async () => favoriteParams,
           },
         },
         {

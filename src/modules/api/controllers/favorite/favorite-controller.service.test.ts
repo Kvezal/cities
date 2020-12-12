@@ -1,10 +1,28 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import {
+  Test,
+  TestingModule,
+} from '@nestjs/testing';
 
-import { AuthService, authServiceSymbol, FavoriteService, favoriteServiceSymbol } from 'domains/services';
+import {
+  AuthService,
+  authServiceSymbol,
+  FavoriteService,
+  favoriteServiceSymbol,
+} from 'domains/services';
 
 import { FavoriteControllerService } from './favorite-controller.service';
-import { FavoriteEntity, HotelEntity, IFavorite, IHotel, IJsonWebTokenParams } from 'domains/entities';
-import { FavoriteMapper, HotelMapper, HotelOrmEntity } from 'modules/adapters';
+import {
+  FavoriteEntity,
+  HotelEntity,
+  IFavorite,
+  IHotel,
+  IJsonWebTokenParams,
+} from 'domains/entities';
+import {
+  FavoriteMapper,
+  HotelMapper,
+  HotelOrmEntity,
+} from 'modules/adapters';
 
 
 const jsonWebTokenParams: IJsonWebTokenParams = {
@@ -109,7 +127,7 @@ describe('FavoriteControllerService', () => {
           provide: favoriteServiceSymbol,
           useValue: {
             getFavoriteHotelList: async () => Array(hotelCount).fill(hotelEntity),
-            toggleFavoriteStateOfHotelForUser: async () => favoriteEntity,
+            toggleHotelFavoriteState: async () => favoriteEntity,
           },
         },
       ],
@@ -139,15 +157,15 @@ describe('FavoriteControllerService', () => {
       });
     });
 
-    describe(`toggleFavoriteStateOfHotelForUser method of FavoriteService`, () => {
+    describe(`toggleHotelFavoriteState method of FavoriteService`, () => {
       it(`should call`, async () => {
-        const toggleFavoriteStatus = jest.spyOn(favoriteService, `toggleFavoriteStateOfHotelForUser`);
+        const toggleFavoriteStatus = jest.spyOn(favoriteService, `toggleHotelFavoriteState`);
         await service.toggleFavoriteStatus(hotelParams.id, accessToken);
         expect(toggleFavoriteStatus).toHaveBeenCalledTimes(1);
       });
 
       it(`should call with params`, async () => {
-        const toggleFavoriteStatus = jest.spyOn(favoriteService, `toggleFavoriteStateOfHotelForUser`);
+        const toggleFavoriteStatus = jest.spyOn(favoriteService, `toggleHotelFavoriteState`);
         await service.toggleFavoriteStatus(hotelParams.id, accessToken);
         expect(toggleFavoriteStatus).toHaveBeenCalledWith(jsonWebTokenParams.id, hotelParams.id);
       });

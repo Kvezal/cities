@@ -5,10 +5,10 @@ import {
   LoadUserStateOfHotelPort,
   SaveUserHotelStatePort,
 } from 'domains/ports';
-import { ToggleFavoriteStateOfHotelForUserUseCase } from 'domains/use-cases';
+import { ToggleHotelFavoriteStateUseCase } from 'domains/use-cases';
 
 
-export class FavoriteService implements ToggleFavoriteStateOfHotelForUserUseCase {
+export class FavoriteService implements ToggleHotelFavoriteStateUseCase {
   constructor(
     private readonly _favoriteHotelLoaderService: LoadFavoriteHotelListPort,
     private readonly _favoriteHotelStateLoaderService: LoadUserStateOfHotelPort,
@@ -16,7 +16,7 @@ export class FavoriteService implements ToggleFavoriteStateOfHotelForUserUseCase
     private readonly _favoriteHotelStateDeleterService: DeleteUserHotelStatePort
   ) {}
 
-  public async toggleFavoriteStateOfHotelForUser(userId: string, hotelId: string): Promise<FavoriteEntity> {
+  public async toggleHotelFavoriteState(userId: string, hotelId: string): Promise<FavoriteEntity> {
     /*
     * получить hotel by id
     * - проверить hotel на существование, иначе пробросить ошибку
