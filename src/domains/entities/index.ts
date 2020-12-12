@@ -1,6 +1,5 @@
 export { CityEntity, ICity } from './city';
 export { CommentEntity, IComment } from './comment';
-export { FavoriteEntity, IFavorite } from './favorite';
 export { FeatureEntity, IFeature } from './feature';
 export { HotelEntity, IHotel } from './hotel';
 export { HotelTypeEntity, IHotelType } from './hotel-type';

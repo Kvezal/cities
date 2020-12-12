@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { CityOrmEntity } from './city.orm-entity';
 import { CommentOrmEntity } from './comment.orm-entity';
-import { FavoriteOrmEntity } from './favorite.orm-entity';
 import { FeatureOrmEntity } from './feature.orm-entity';
 import { HotelOrmEntity } from './hotel.orm-entity';
 import { HotelTypeOrmEntity } from './hotel-type.orm-entity';
@@ -20,7 +19,6 @@ import { UserTypeOrmEntity } from './user-type.orm-entity';
     TypeOrmModule.forFeature([
       CityOrmEntity,
       CommentOrmEntity,
-      FavoriteOrmEntity,
       FeatureOrmEntity,
       HotelOrmEntity,
       HotelTypeOrmEntity,

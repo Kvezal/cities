@@ -1,6 +1,5 @@
 export { CityMapper } from './city';
 export { CommentViewMapper } from './comment-view';
-export { FavoriteMapper } from './favorite';
 export { FeatureMapper } from './feature';
 export { HotelMapper } from './hotel';
 export { HotelTypeMapper } from './hotel-type';

@@ -7,7 +7,6 @@ import { CityAdapterService } from './city';
 import { CommentAdapterService } from './comment';
 import { HotelAdapterService } from './hotel';
 import { UserAdapterService } from './user';
-import { FavoriteAdapterService } from './favorite';
 import { RatingAdapterService } from './rating';
 import { UserTypeAdapterService } from './user-type';
 
@@ -21,7 +20,6 @@ import { UserTypeAdapterService } from './user-type';
     AuthAdapterService,
     CityAdapterService,
     CommentAdapterService,
-    FavoriteAdapterService,
     HotelAdapterService,
     RatingAdapterService,
     UserAdapterService,
@@ -31,7 +29,6 @@ import { UserTypeAdapterService } from './user-type';
     AuthAdapterService,
     CityAdapterService,
     CommentAdapterService,
-    FavoriteAdapterService,
     HotelAdapterService,
     RatingAdapterService,
     UserAdapterService,

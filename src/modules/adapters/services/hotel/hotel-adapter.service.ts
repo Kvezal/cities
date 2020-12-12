@@ -4,35 +4,35 @@ import { Repository } from 'typeorm';
 
 import { HotelEntity } from 'domains/entities';
 import {
+  ESortingFilter,
   ESortingType,
   IHotelSortingParams,
 } from 'domains/interfaces';
 import {
   LoadHotelByIdPort,
   LoadHotelListPort,
+  UpdateHotelPort,
 } from 'domains/ports';
 import { HotelMapper } from 'modules/adapters/mappers';
 import {
   CityOrmEntity,
   CommentOrmEntity,
-  FavoriteOrmEntity,
   HotelOrmEntity,
-  ImageOrmEntity,
   LocationOrmEntity,
   RatingOrmEntity,
   UserOrmEntity,
-  UserTypeOrmEntity,
 } from 'modules/adapters/orm-entities';
 import {
   EOrderType,
   IOrderParams,
 } from './hotel-adapter.interface';
-import { ESortingFilter } from 'domains/interfaces/hotel-sorting.interface';
 
 
 @Injectable()
-export class HotelAdapterService implements LoadHotelListPort,
-  LoadHotelByIdPort {
+export class HotelAdapterService implements
+  LoadHotelListPort,
+  LoadHotelByIdPort,
+  UpdateHotelPort {
   private readonly _hotelOrderParamsMap = new Map<ESortingType, IOrderParams>([
     [ESortingType.POPULAR, {
       condition: `COALESCE(comments.count * rating.value, 0)`,
@@ -53,8 +53,7 @@ export class HotelAdapterService implements LoadHotelListPort,
   ]);
 
   constructor(
-    @InjectRepository(HotelOrmEntity) private readonly _hotelRepository: Repository<HotelOrmEntity>,
-    @InjectRepository(RatingOrmEntity) private readonly _ratingRepository: Repository<RatingOrmEntity>,
+    @InjectRepository(HotelOrmEntity) private readonly _hotelRepository: Repository<HotelOrmEntity>
   ) {
   }
 
@@ -65,37 +64,17 @@ export class HotelAdapterService implements LoadHotelListPort,
 
   public async loadHotelList(sortParams: IHotelSortingParams): Promise<HotelEntity[]> {
     const hotelOrmEntities: HotelOrmEntity[] = await this.getHotelList(sortParams);
+    console.log(hotelOrmEntities);
     return hotelOrmEntities.map((hotelOrmEntity: HotelOrmEntity) => HotelMapper.mapToDomain(hotelOrmEntity));
   }
 
-  public async findHotelByIds(hotelIds: string[]): Promise<HotelEntity[]> {
-    const favoritesHotelOrmEntities: HotelOrmEntity[] = await this._hotelRepository.findByIds(hotelIds);
-    const favoritesHotelOrmEntitiesWithRating = await this.getHotelsWithRatingByIds(favoritesHotelOrmEntities);
-    return favoritesHotelOrmEntitiesWithRating.map(
-      (favoritesHotelOrmEntity: HotelOrmEntity) => HotelMapper.mapToDomain(favoritesHotelOrmEntity),
-    );
-  }
-
-  public async getHotelsWithRatingByIds(hotelOrmEntities: HotelOrmEntity[]): Promise<HotelOrmEntity[]> {
-    const hotelIds = hotelOrmEntities.map((hotelOrmEntity: HotelEntity) => hotelOrmEntity.id);
-    const ratings = await this._ratingRepository.createQueryBuilder()
-      .select(`ratings.hotelId`, `hotelId`)
-      .addSelect(`CAST(ROUND(AVG(ratings.value), 1) AS float)`, `value`)
-      .from(RatingOrmEntity, `ratings`)
-      .where(`ratings.hotelId IN (:...hotelIds)`, { hotelIds })
-      .groupBy(`ratings."hotelId"`)
-      .execute();
-    return hotelOrmEntities.map((hotelOrmEntity: HotelOrmEntity) => {
-      const ratingOrmEntity = ratings.find(rating => rating.hotelId === hotelOrmEntity.id);
-      hotelOrmEntity.rating = ratingOrmEntity && ratingOrmEntity.value || 0;
-      return hotelOrmEntity;
-    });
+  public async updateHotel(hotelEntity: HotelEntity): Promise<HotelEntity> {
+    return null;
   }
 
   public async getHotelList(sortParams: IHotelSortingParams): Promise<HotelOrmEntity[]> {
-    const { cityId, hotelId, type = ESortingType.POPULAR, filter, userId } = sortParams;
+    const { cityId, hotelId, type = ESortingType.POPULAR, filter, userId /*= `2a4a6d1a-eb9b-4b4a-bee5-c7728b78001f`*/ } = sortParams;
     const orderParams = this._hotelOrderParamsMap.get(type);
-    // const userId = `07bda126-335a-4ccf-be00-85d0fd57617a`;
 
     return this._hotelRepository
       .createQueryBuilder(`hotels`)
@@ -115,13 +94,16 @@ export class HotelAdapterService implements LoadHotelListPort,
         `cities.value AS city`,
         `locations.value AS location`,
         `users.value AS host`,
-        `favorites IS NOT NULL AS "isFavorite"`,
+        `favorites.list AS favorites`
       ])
       .leftJoin((subQuery) => {
         return subQuery
           .select([
             `hotels.id AS "hotelId"`,
-            `COALESCE(JSON_AGG(features) FILTER (WHERE features IS NOT NULL), '[]') AS list`,
+            `COALESCE(
+              JSON_AGG(features) FILTER (WHERE features IS NOT NULL),
+              '[]'
+            ) AS list`,
           ])
           .from(HotelOrmEntity, `hotels`)
           .leftJoin(`hotels.features`, `features`)
@@ -131,7 +113,10 @@ export class HotelAdapterService implements LoadHotelListPort,
         return subQuery
           .select([
             `hotels.id AS "hotelId"`,
-            `COALESCE(JSON_AGG(images) FILTER (WHERE images IS NOT NULL), '[]') AS list`,
+            `COALESCE(
+              JSON_AGG(images) FILTER (WHERE images IS NOT NULL),
+              '[]'
+            ) AS list`,
           ])
           .from(HotelOrmEntity, `hotels`)
           .leftJoin(`hotels.images`, `images`)
@@ -141,7 +126,12 @@ export class HotelAdapterService implements LoadHotelListPort,
         return subQuery
           .select([
             `ratings."hotelId" AS "hotelId"`,
-            `CAST(ROUND(AVG(ratings.value), 1) AS float) AS value`,
+            `CAST(
+              ROUND(
+                AVG(ratings.value),
+                1
+              ) AS float
+            ) AS value`,
           ])
           .from(RatingOrmEntity, `ratings`)
           .groupBy(`ratings.hotelId`);
@@ -189,26 +179,53 @@ export class HotelAdapterService implements LoadHotelListPort,
             ) AS value`,
           ])
           .from(UserOrmEntity, `users`)
-          .leftJoin(ImageOrmEntity, `images`, `images.id = users.imageId`)
-          .leftJoin(UserTypeOrmEntity, `types`, `types.id = users.typeId`);
+          .leftJoin(`users.image`, `images`)
+          .leftJoin(`users.type`, `types`);
       }, `users`, `users.id = hotels."hostId"`)
       .leftJoin((subQuery) => {
         return subQuery
           .select([
             `comments.hotelId AS "hotelId"`,
-            `COUNT(comments)AS count`,
+            `COUNT(comments) AS count`,
           ])
           .from(CommentOrmEntity, `comments`)
           .groupBy(`comments."hotelId"`);
       }, `comments`, `comments."hotelId" = hotels.id`)
       .leftJoin((subQuery) => {
         return subQuery
-          .from(FavoriteOrmEntity, `favorites`)
-          .where(userId ? `favorites."userId" = :userId` : `FALSE`, {userId})
+          .select([
+            `hotels.id AS "hotelId"`,
+            `COALESCE(
+              JSON_AGG(
+                JSON_BUILD_OBJECT(
+                  'id', users.id,
+                  'name', users.name,
+                  'password', users.password,
+                  'image', TO_JSON(images),
+                  'type', TO_JSON(types)
+                )
+              ) FILTER (WHERE users IS NOT NULL),
+              '[]'
+            ) AS list`,
+          ])
+          .from(HotelOrmEntity, `hotels`)
+          .leftJoin(`hotels.favorites`, `users`)
+          .leftJoin(`users.image`, `images`)
+          .leftJoin(`users.type`, `types`)
+          .groupBy(`hotels.id`);
       }, `favorites`, `favorites."hotelId" = hotels.id`)
+      .leftJoin((subQuery) => {
+        return subQuery
+          .select([
+            `hotels.id AS "hotelId"`,
+          ])
+          .from(HotelOrmEntity, `hotels`)
+          .leftJoin(`hotels.favorites`, `users`)
+          .where(`users.id = :userId`, {userId})
+      }, `isFavorite`, `"isFavorite"."hotelId" = hotels.id`)
       .where(cityId ? `hotels.cityId = :cityId` : `TRUE`, { cityId })
       .andWhere(hotelId ? `hotels.id = :hotelId` : `TRUE`, { hotelId })
-      .andWhere(filter === ESortingFilter.FAVORITE ? `favorites IS NOT NULL` : `TRUE`)
+      .andWhere(filter === ESortingFilter.FAVORITE ? `"isFavorite" IS NOT NULL` : `TRUE`)
       .orderBy(orderParams.condition, orderParams.type)
       .getRawMany();
   }

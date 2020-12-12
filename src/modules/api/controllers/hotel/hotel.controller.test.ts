@@ -29,7 +29,7 @@ describe('HotelController', () => {
           useValue: {
             getHotelList: async () => [],
             getHotelById: async () => null,
-            getNearbyHotelList: async () => [],
+            toggleHotelFavoriteState: async () => null,
           },
         },
       ],

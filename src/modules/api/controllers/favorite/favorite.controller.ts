@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 
-import { FavoriteOrmEntity } from 'modules/adapters';
+import { HotelOrmEntity } from 'modules/adapters';
 import { JsonWebTokenExceptionFilter } from 'modules/api/filters';
 
 import { EApiRouteName } from '../api-route-names.enum';
@@ -25,7 +25,7 @@ export class FavoriteController {
   @Post()
   @UseFilters(JsonWebTokenExceptionFilter)
   @HttpCode(HttpStatus.OK)
-  public async toggleFavoriteStatus(@Query(`hotelId`) hotelId: string, @Req() request: Request): Promise<FavoriteOrmEntity> {
+  public async toggleFavoriteStatus(@Query(`hotelId`) hotelId: string, @Req() request: Request): Promise<HotelOrmEntity> {
     const accessToken = request.cookies?.[`access-token`];
     return this._favoriteControllerService.toggleFavoriteStatus(hotelId, accessToken);
   }

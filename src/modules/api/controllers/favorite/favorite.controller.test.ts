@@ -1,14 +1,29 @@
-import { HttpStatus, INestApplication } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
+import {
+  HttpStatus,
+  INestApplication,
+} from '@nestjs/common';
+import {
+  Test,
+  TestingModule,
+} from '@nestjs/testing';
 import * as cookieParser from 'cookie-parser';
 import * as request from 'supertest';
 
-import { IFavorite, IJsonWebTokenParams } from 'domains/entities';
-import { authServiceSymbol, favoriteServiceSymbol } from 'domains/services';
+import {
+  IHotel,
+  IJsonWebTokenParams,
+} from 'domains/entities';
+import {
+  authServiceSymbol,
+  hotelServiceSymbol,
+} from 'domains/services';
 
 import { FavoriteController } from './favorite.controller';
 import { FavoriteControllerService } from './favorite-controller.service';
-import { EJsonWebTokenType, JsonWebTokenError } from '../../../../domains/exceptions/json-web-token';
+import {
+  EJsonWebTokenType,
+  JsonWebTokenError,
+} from 'domains/exceptions/json-web-token';
 
 
 const jsonWebTokenParams: IJsonWebTokenParams = {
@@ -18,10 +33,70 @@ const jsonWebTokenParams: IJsonWebTokenParams = {
   image: null,
 };
 
-const favoriteParams: IFavorite = {
-  value: true,
-  userId: `1`,
-  hotelId: `1`,
+const hotelParams: IHotel = {
+  id: `1`,
+  title: `title`,
+  description: `description`,
+  bedroomCount: 4,
+  maxAdultCount: 2,
+  price: 150,
+  isPremium: true,
+  rating: 3,
+  features: [
+    {
+      id: `1`,
+      title: `title`,
+    },
+    {
+      id: `2`,
+      title: `title`,
+    },
+  ],
+  type: {
+    id: `1`,
+    title: `title`,
+  },
+  city: {
+    id: `1`,
+    title: `title`,
+    location: {
+      id: `1`,
+      latitude: 52.370216,
+      longitude: 4.895168,
+      zoom: 10,
+    },
+  },
+  location: {
+    id: `1`,
+    latitude: 52.370216,
+    longitude: 4.895168,
+    zoom: 10,
+  },
+  host: {
+    id: `1`,
+    name: `name`,
+    email: `email@gmail.com`,
+    password: `password`,
+    type: {
+      id: `1`,
+      title: `title`,
+    },
+    image: {
+      id: `1`,
+      title: `title`,
+    },
+  },
+  images: [
+    {
+      id: `1`,
+      title: `title`,
+    },
+    {
+      id: `2`,
+      title: `title`,
+    },
+  ],
+  favorites: [],
 };
 
 
@@ -38,10 +113,10 @@ describe('FavoriteController', () => {
       providers: [
         FavoriteControllerService,
         {
-          provide: favoriteServiceSymbol,
+          provide: hotelServiceSymbol,
           useValue: {
-            getFavoriteHotelList: async () => [],
-            toggleHotelFavoriteState: async () => favoriteParams,
+            getHotelList: async () => [],
+            toggleHotelFavoriteState: async () => hotelParams,
           },
         },
         {

@@ -127,4 +127,10 @@ export class HotelOrmEntity {
   )
   @JoinTable()
   public images: ImageOrmEntity[];
+
+  @ManyToMany(
+    () => UserOrmEntity
+  )
+  @JoinTable()
+  public favorites: UserOrmEntity[];
 }

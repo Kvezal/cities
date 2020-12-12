@@ -4,6 +4,7 @@ import {
   HotelTypeEntity,
   ILocation,
   ImageEntity,
+  IUser,
   LocationEntity,
   UserEntity,
 } from 'domains/entities';
@@ -11,6 +12,21 @@ import {
 import { HotelEntity } from './hotel.entity';
 import { IHotel } from './hotel.interface';
 
+
+const userParams: IUser = {
+  id: `1`,
+  name: `name`,
+  email: `email@gmail.com`,
+  password: `password`,
+  type: {
+    id: `1`,
+    title: `title`,
+  },
+  image: {
+    id: `1`,
+    title: `title`,
+  },
+};
 
 const hotelParams: IHotel = {
   id: `1`,
@@ -75,6 +91,7 @@ const hotelParams: IHotel = {
       title: `title`,
     }
   ],
+  favorites: [userParams],
 };
 
 const hotelLocations = [
@@ -148,6 +165,7 @@ describe(`Hotel entity`, () => {
         LocationEntity.create(hotelParams.location),
         UserEntity.create(hotelParams.host),
         hotelParams.images.map(ImageEntity.create),
+        hotelParams.favorites.map(UserEntity.create)
       );
     });
 
@@ -172,7 +190,7 @@ describe(`Hotel entity`, () => {
     });
 
     it.each(
-      [`features`, `type`, `city`, `location`, `host`, `images`],
+      [`features`, `type`, `city`, `location`, `host`, `images`, `favorites`],
     )(`should create a new Hotel instance with %p property`, (property) => {
       expect(hotel).toHaveProperty(property);
     });
@@ -199,6 +217,19 @@ describe(`Hotel entity`, () => {
       const nearbyHotels = hotel.getNearbyHotelList(hotelList);
       const nearestLocationIds = nearbyHotels.map((hotel) => hotel.location.id);
       expect(nearestLocationIds).toEqual([`7`, `8`, `2`]);
+    });
+  });
+
+  describe(`toggleFavorite method`, () => {
+    const hotel = HotelEntity.create(hotelParams);
+    const user = UserEntity.create(userParams);
+
+    it(`should change favorites property`, () => {
+      expect(hotel.favorites).toHaveLength(1);
+      hotel.toggleFavorite(user);
+      expect(hotel.favorites).toHaveLength(0);
+      hotel.toggleFavorite(user);
+      expect(hotel.favorites).toHaveLength(1);
     });
   });
 });

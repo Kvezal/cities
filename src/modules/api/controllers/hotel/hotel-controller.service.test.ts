@@ -81,6 +81,7 @@ const hotelParams: IHotel = {
       title: `title`,
     },
   ],
+  favorites: [],
 };
 
 describe('HotelControllerService', () => {

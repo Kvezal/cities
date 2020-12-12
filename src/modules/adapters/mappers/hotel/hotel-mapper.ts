@@ -1,6 +1,16 @@
-import { FeatureEntity, HotelEntity, ImageEntity } from 'domains/entities';
+import {
+  FeatureEntity,
+  HotelEntity,
+  ImageEntity,
+  UserEntity,
+} from 'domains/entities';
 
-import { FeatureOrmEntity, ImageOrmEntity, HotelOrmEntity } from '../../orm-entities';
+import {
+  FeatureOrmEntity,
+  ImageOrmEntity,
+  HotelOrmEntity,
+  UserOrmEntity,
+} from '../../orm-entities';
 import { CityMapper} from '../city';
 import { FeatureMapper } from '../feature';
 import { HotelTypeMapper } from '../hotel-type';
@@ -26,6 +36,7 @@ export class HotelMapper {
       location: LocationMapper.mapToDomain(ormEntity.location),
       host: UserMapper.mapToDomain(ormEntity.host),
       images: ormEntity.images.map((image: ImageOrmEntity) => ImageMapper.mapToDomain(image)),
+      favorites: ormEntity.favorites.map((favorite: UserOrmEntity) => UserMapper.mapToDomain(favorite)),
     });
   }
 
@@ -45,6 +56,7 @@ export class HotelMapper {
     ormEntity.location = LocationMapper.mapToOrmEntity(domain.location);
     ormEntity.host = UserMapper.mapToOrmEntity(domain.host);
     ormEntity.images = domain.images.map((image: ImageEntity) => ImageMapper.mapToOrmEntity(image));
+    ormEntity.favorites = domain.favorites.map((favorite: UserEntity) => UserMapper.mapToOrmEntity(favorite));
     return ormEntity;
   }
 }

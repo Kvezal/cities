@@ -76,6 +76,22 @@ const hotelParams: IHotel = {
       title: `title`,
     }
   ],
+  favorites: [
+    {
+      id: `1`,
+      name: `name`,
+      email: `email@gmail.com`,
+      password: `password`,
+      type: {
+        id: `1`,
+        title: `title`,
+      },
+      image: {
+        id: `1`,
+        title: `title`,
+      },
+    }
+  ],
 };
 
 const userParams: IUser = {

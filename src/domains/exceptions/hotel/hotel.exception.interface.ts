@@ -1,0 +1,15 @@
+export enum EHotelField {
+  ID = `id`,
+  TITLE = `title`,
+  DESCRIPTION = `description`,
+  BED_ROOM_COUNT = `bedroomCount`,
+  MAX_ADULT_COUNT = `maxAdultCount`,
+  PRICE = `price`,
+  IS_PREMIUM = `isPremium`,
+  RATING = `rating`,
+  TYPE = `type`,
+  CITY = `city`,
+  LOCATION = `location`,
+  HOST = `host`,
+  IMAGES = `images`,
+}

@@ -4,7 +4,8 @@ import { EntityTarget } from 'typeorm/common/EntityTarget';
 import { v4 as uuidv4 } from 'uuid';
 
 import {
-  CityOrmEntity, CommentOrmEntity, FavoriteOrmEntity,
+  CityOrmEntity,
+  CommentOrmEntity,
   FeatureOrmEntity,
   HotelOrmEntity,
   HotelTypeOrmEntity,
@@ -15,8 +16,16 @@ import {
   UserTypeOrmEntity,
 } from '../../../../modules/adapters/orm-entities';
 import { userParams } from '../data';
-import { getRandomEmail, getRandomInt, getRandomString, shuffle } from '../utils';
-import { IDatabaseFillerParams, ICityParam } from './database-filler.interface';
+import {
+  getRandomEmail,
+  getRandomInt,
+  getRandomString,
+  shuffle,
+} from '../utils';
+import {
+  ICityParam,
+  IDatabaseFillerParams,
+} from './database-filler.interface';
 
 
 export class DatabaseFiller {
@@ -43,7 +52,7 @@ export class DatabaseFiller {
       this._userOrmEntities = await this.fillUsersTable(count);
       this._hotelOrmEntities = await this.fillHotelsTable(count);
       await this.fillRatingsTable();
-      await this.fillFavoritesTable();
+      // await this.fillFavoritesTable();
       await this.fillCommentsTable();
     }
   }
@@ -117,6 +126,8 @@ export class DatabaseFiller {
 
 
   public async fillHotelsTable(count: number): Promise<HotelOrmEntity[]> {
+    const standardUsers = this._userOrmEntities.filter((user: UserOrmEntity) => user.type.title === `standard`);
+
     const hotelOrmEntities: HotelOrmEntity[] = Array(count).fill(``).map(() => {
       const city = this._cityOrmEntities[getRandomInt(0, this._cityOrmEntities.length - 1)];
       const locationParams = this._params.cities.find((cityParams: ICityParam) => cityParams.name === city.title);
@@ -142,6 +153,7 @@ export class DatabaseFiller {
           longitude: getRandomInt(locationParams.from.longitude * 100000, locationParams.to.longitude * 100000) / 100000,
           zoom: 10,
         },
+        favorites: standardUsers.slice(0, getRandomInt(0, standardUsers.length)),
       }
     });
 
@@ -171,22 +183,6 @@ export class DatabaseFiller {
       return acc;
     }, []);
     return this.save(RatingOrmEntity, ratingOrmEntities);
-  }
-
-
-  public async fillFavoritesTable(): Promise<FavoriteOrmEntity[]> {
-    const standardUsers: UserOrmEntity[] = this._userOrmEntities.filter((user: UserOrmEntity) => user.type.title === `standard`);
-    const favoriteOrmEntities: FavoriteOrmEntity[] = standardUsers.reduce((acc: FavoriteOrmEntity[], user: UserOrmEntity) => {
-      const favoriteEntities: FavoriteOrmEntity[] = shuffle(this._hotelOrmEntities)
-        .slice(0, getRandomInt(0, this._hotelOrmEntities.length - 1))
-        .map((hotel: HotelOrmEntity): FavoriteOrmEntity => ({
-          hotelId: hotel.id,
-          userId: user.id,
-        }));
-      acc.push(...favoriteEntities);
-      return acc;
-    }, []);
-    return this.save(FavoriteOrmEntity, favoriteOrmEntities);
   }
 
 

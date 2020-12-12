@@ -6,23 +6,17 @@ import {
 import {
   AuthService,
   authServiceSymbol,
-  FavoriteService,
-  favoriteServiceSymbol,
+  HotelService,
+  hotelServiceSymbol,
 } from 'domains/services';
 
 import { FavoriteControllerService } from './favorite-controller.service';
 import {
-  FavoriteEntity,
   HotelEntity,
-  IFavorite,
   IHotel,
   IJsonWebTokenParams,
 } from 'domains/entities';
-import {
-  FavoriteMapper,
-  HotelMapper,
-  HotelOrmEntity,
-} from 'modules/adapters';
+import { HotelMapper } from 'modules/adapters';
 
 
 const jsonWebTokenParams: IJsonWebTokenParams = {
@@ -30,12 +24,6 @@ const jsonWebTokenParams: IJsonWebTokenParams = {
   name: `name`,
   email: `email@gmail.com`,
   image: null,
-};
-
-const favoriteParams: IFavorite = {
-  value: true,
-  userId: `1`,
-  hotelId: `1`,
 };
 
 const hotelParams: IHotel = {
@@ -101,17 +89,15 @@ const hotelParams: IHotel = {
       title: `title`,
     }
   ],
+  favorites: [],
 };
 
 describe('FavoriteControllerService', () => {
   let service: FavoriteControllerService;
-  let favoriteService: FavoriteService;
   let authService: AuthService;
+  let hotelService: HotelService;
   const accessToken = `access-token`;
   const hotelEntity: HotelEntity = HotelEntity.create(hotelParams);
-  const hotelOrmEntity: HotelOrmEntity = HotelMapper.mapToOrmEntity(hotelEntity);
-  const favoriteEntity: FavoriteEntity = FavoriteEntity.create(favoriteParams);
-  const hotelCount = 3;
 
   beforeEach(async () => {
     const testModule: TestingModule = await Test.createTestingModule({
@@ -124,10 +110,9 @@ describe('FavoriteControllerService', () => {
           },
         },
         {
-          provide: favoriteServiceSymbol,
+          provide: hotelServiceSymbol,
           useValue: {
-            getFavoriteHotelList: async () => Array(hotelCount).fill(hotelEntity),
-            toggleHotelFavoriteState: async () => favoriteEntity,
+            toggleHotelFavoriteState: async () => hotelEntity,
           },
         },
       ],
@@ -135,10 +120,10 @@ describe('FavoriteControllerService', () => {
 
     service = testModule.get<FavoriteControllerService>(FavoriteControllerService);
     authService = testModule.get<AuthService>(authServiceSymbol);
-    favoriteService = testModule.get<FavoriteService>(favoriteServiceSymbol);
+    hotelService = testModule.get<HotelService>(hotelServiceSymbol);
   });
 
-  it('should be defined', () => {
+  fit('should be defined', () => {
     expect(service).toBeDefined();
   });
 
@@ -159,35 +144,35 @@ describe('FavoriteControllerService', () => {
 
     describe(`toggleHotelFavoriteState method of FavoriteService`, () => {
       it(`should call`, async () => {
-        const toggleFavoriteStatus = jest.spyOn(favoriteService, `toggleHotelFavoriteState`);
+        const toggleFavoriteStatus = jest.spyOn(hotelService, `toggleHotelFavoriteState`);
         await service.toggleFavoriteStatus(hotelParams.id, accessToken);
         expect(toggleFavoriteStatus).toHaveBeenCalledTimes(1);
       });
 
       it(`should call with params`, async () => {
-        const toggleFavoriteStatus = jest.spyOn(favoriteService, `toggleHotelFavoriteState`);
+        const toggleFavoriteStatus = jest.spyOn(hotelService, `toggleHotelFavoriteState`);
         await service.toggleFavoriteStatus(hotelParams.id, accessToken);
         expect(toggleFavoriteStatus).toHaveBeenCalledWith(jsonWebTokenParams.id, hotelParams.id);
       });
     });
 
-    describe(`mapToOrmEntity method of FavoriteMapper`, () => {
+    describe(`mapToOrmEntity method of HotelMapper`, () => {
       it(`should call`, async () => {
-        FavoriteMapper.mapToOrmEntity = jest.fn(FavoriteMapper.mapToOrmEntity);
+        HotelMapper.mapToOrmEntity = jest.fn(HotelMapper.mapToOrmEntity);
         await service.toggleFavoriteStatus(hotelParams.id, accessToken);
-        expect(FavoriteMapper.mapToOrmEntity).toHaveBeenCalledTimes(1);
+        expect(HotelMapper.mapToOrmEntity).toHaveBeenCalledTimes(1);
       });
 
       it(`should call with params`, async () => {
-        FavoriteMapper.mapToOrmEntity = jest.fn(FavoriteMapper.mapToOrmEntity);
+        HotelMapper.mapToOrmEntity = jest.fn(HotelMapper.mapToOrmEntity);
         await service.toggleFavoriteStatus(hotelParams.id, accessToken);
-        expect(FavoriteMapper.mapToOrmEntity).toHaveBeenCalledWith(favoriteEntity);
+        expect(HotelMapper.mapToOrmEntity).toHaveBeenCalledWith(hotelEntity);
       });
     });
 
     it(`should return correct result`, async () => {
-      const favoriteOrmEntity = FavoriteMapper.mapToOrmEntity(favoriteEntity);
-      FavoriteMapper.mapToOrmEntity = jest.fn(FavoriteMapper.mapToOrmEntity).mockReturnValueOnce(favoriteOrmEntity);
+      const favoriteOrmEntity = HotelMapper.mapToOrmEntity(hotelEntity);
+      HotelMapper.mapToOrmEntity = jest.fn(HotelMapper.mapToOrmEntity).mockReturnValueOnce(favoriteOrmEntity);
       const result = await service.toggleFavoriteStatus(hotelParams.id, accessToken);
       expect(result).toBe(favoriteOrmEntity);
     });
