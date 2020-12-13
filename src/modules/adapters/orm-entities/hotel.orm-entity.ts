@@ -67,12 +67,10 @@ export class HotelOrmEntity {
   @ManyToMany(
     () => FeatureOrmEntity,
     {
-      // eager: true,
+      eager: true,
     }
   )
-  @JoinTable({
-
-  })
+  @JoinTable()
   public features: FeatureOrmEntity[];
 
 

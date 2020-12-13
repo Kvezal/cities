@@ -414,41 +414,6 @@ describe(`Database filler`, () => {
     });
   });
 
-  // describe(`fillFavoritesTable method`, () => {
-  //   let databaseFiller: DatabaseFiller;
-  //
-  //   beforeEach(async () => {
-  //     const connection: Connection = await createTestingConnection();
-  //     databaseFiller = new DatabaseFiller(connection, databaseFillerParams);
-  //     databaseFiller.fillCitiesTable = jest.fn().mockResolvedValueOnce([{
-  //       title: databaseFillerParams.cities[0].name,
-  //       location: databaseFillerParams.cities[0].location,
-  //     }]);
-  //     databaseFiller.fillUserTypesTable = async () => null;
-  //     databaseFiller.fillHotelTypesTable = async () => [];
-  //     databaseFiller.fillFeaturesTable = async () => [];
-  //     databaseFiller.fillUsersTable = async () => [];
-  //     databaseFiller.fillHotelsTable = async () => [];
-  //     databaseFiller.save = () => null;
-  //   });
-  //
-  //   it(`should call save method`, async () => {
-  //     const save = jest.fn();
-  //     await databaseFiller.fill(1);
-  //     databaseFiller.save = save;
-  //     await databaseFiller.fillFavoritesTable();
-  //     expect(save).toHaveBeenCalledTimes(1);
-  //   });
-  //
-  //   it(`should call save method with correct entities`, async () => {
-  //     await databaseFiller.fill(1);
-  //     const save = jest.fn();
-  //     databaseFiller.save = save;
-  //     await databaseFiller.fillFavoritesTable();
-  //     expect(save.mock.calls[0][0]).toBe(FavoriteOrmEntity);
-  //   });
-  // });
-
   describe(`fillCommentsTable method`, () => {
     let databaseFiller: DatabaseFiller;
 
