@@ -1,6 +1,9 @@
 import {
   HttpStatus,
   INestApplication,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
 } from '@nestjs/common';
 import {
   Test,
@@ -24,6 +27,13 @@ import {
   EJsonWebTokenType,
   JsonWebTokenError,
 } from 'domains/exceptions/json-web-token';
+import {
+  AccessMiddleware,
+  DecodeJsonWebTokenMiddleware,
+  InitLocalsMiddleware,
+} from 'modules/api/middlewares';
+import { APP_FILTER } from '@nestjs/core';
+import { JsonWebTokenExceptionFilter } from 'modules/api/filters';
 
 
 const jsonWebTokenParams: IJsonWebTokenParams = {
@@ -99,6 +109,44 @@ const hotelParams: IHotel = {
   favorites: [],
 };
 
+@Module({
+  controllers: [
+    FavoriteController,
+  ],
+  providers: [
+    FavoriteControllerService,
+    {
+      provide: hotelServiceSymbol,
+      useValue: {
+        getHotelList: async () => [],
+        toggleHotelFavoriteState: async () => hotelParams,
+      },
+    },
+    {
+      provide: authServiceSymbol,
+      useValue: {
+        checkAccessToken: () => true,
+        decodeAccessToken: async () => jsonWebTokenParams,
+      },
+    },
+    {
+      provide: APP_FILTER,
+      useClass: JsonWebTokenExceptionFilter,
+    }
+  ],
+})
+class TestModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): any {
+    consumer.apply(
+      cookieParser(),
+      InitLocalsMiddleware,
+      DecodeJsonWebTokenMiddleware,
+      AccessMiddleware
+    )
+      .forRoutes(FavoriteController)
+  }
+}
+
 
 describe('FavoriteController', () => {
   let app: INestApplication;
@@ -107,28 +155,9 @@ describe('FavoriteController', () => {
 
   beforeEach(async () => {
     const testModule: TestingModule = await Test.createTestingModule({
-      controllers: [
-        FavoriteController,
-      ],
-      providers: [
-        FavoriteControllerService,
-        {
-          provide: hotelServiceSymbol,
-          useValue: {
-            getHotelList: async () => [],
-            toggleHotelFavoriteState: async () => hotelParams,
-          },
-        },
-        {
-          provide: authServiceSymbol,
-          useValue: {
-            decodeAccessToken: async () => jsonWebTokenParams,
-          },
-        },
-      ],
+      imports: [TestModule],
     }).compile();
     app = testModule.createNestApplication();
-    app.use(cookieParser());
     await app.init();
     controller = testModule.get<FavoriteController>(FavoriteController);
     service = testModule.get<FavoriteControllerService>(FavoriteControllerService);
@@ -180,7 +209,7 @@ describe('FavoriteController', () => {
             .post(favoriteUrl)
             .send()
             .set(`Cookie`, `access-token=${accessToken}`);
-          expect(toggleFavoriteStatus).toHaveBeenCalledWith(`test`, accessToken);
+          expect(toggleFavoriteStatus).toHaveBeenCalledWith(jsonWebTokenParams.id, `test`);
         });
       });
     });

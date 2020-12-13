@@ -4,8 +4,6 @@ import {
 } from '@nestjs/testing';
 
 import {
-  AuthService,
-  authServiceSymbol,
   HotelService,
   hotelServiceSymbol,
 } from 'domains/services';
@@ -94,21 +92,13 @@ const hotelParams: IHotel = {
 
 describe('FavoriteControllerService', () => {
   let service: FavoriteControllerService;
-  let authService: AuthService;
   let hotelService: HotelService;
-  const accessToken = `access-token`;
   const hotelEntity: HotelEntity = HotelEntity.create(hotelParams);
 
   beforeEach(async () => {
     const testModule: TestingModule = await Test.createTestingModule({
       providers: [
         FavoriteControllerService,
-        {
-          provide: authServiceSymbol,
-          useValue: {
-            decodeAccessToken: async () => jsonWebTokenParams,
-          },
-        },
         {
           provide: hotelServiceSymbol,
           useValue: {
@@ -119,7 +109,6 @@ describe('FavoriteControllerService', () => {
     }).compile();
 
     service = testModule.get<FavoriteControllerService>(FavoriteControllerService);
-    authService = testModule.get<AuthService>(authServiceSymbol);
     hotelService = testModule.get<HotelService>(hotelServiceSymbol);
   });
 
@@ -128,30 +117,17 @@ describe('FavoriteControllerService', () => {
   });
 
   describe(`toggleFavoriteStatus method`, () => {
-    describe(`decodeAccessToken method of AuthService`, () => {
-      it(`should call`, async () => {
-        const decodeAccessToken = jest.spyOn(authService, `decodeAccessToken`);
-        await service.toggleFavoriteStatus(hotelParams.id, accessToken);
-        expect(decodeAccessToken).toHaveBeenCalledTimes(1);
-      });
-
-      it(`should call with params`, async () => {
-        const decodeAccessToken = jest.spyOn(authService, `decodeAccessToken`);
-        await service.toggleFavoriteStatus(hotelParams.id, accessToken);
-        expect(decodeAccessToken).toHaveBeenCalledWith(accessToken);
-      });
-    });
 
     describe(`toggleHotelFavoriteState method of FavoriteService`, () => {
       it(`should call`, async () => {
         const toggleFavoriteStatus = jest.spyOn(hotelService, `toggleHotelFavoriteState`);
-        await service.toggleFavoriteStatus(hotelParams.id, accessToken);
+        await service.toggleFavoriteStatus(jsonWebTokenParams.id, hotelParams.id);
         expect(toggleFavoriteStatus).toHaveBeenCalledTimes(1);
       });
 
       it(`should call with params`, async () => {
         const toggleFavoriteStatus = jest.spyOn(hotelService, `toggleHotelFavoriteState`);
-        await service.toggleFavoriteStatus(hotelParams.id, accessToken);
+        await service.toggleFavoriteStatus(jsonWebTokenParams.id, hotelParams.id);
         expect(toggleFavoriteStatus).toHaveBeenCalledWith(jsonWebTokenParams.id, hotelParams.id);
       });
     });
@@ -159,13 +135,13 @@ describe('FavoriteControllerService', () => {
     describe(`mapToOrmEntity method of HotelMapper`, () => {
       it(`should call`, async () => {
         HotelMapper.mapToOrmEntity = jest.fn(HotelMapper.mapToOrmEntity);
-        await service.toggleFavoriteStatus(hotelParams.id, accessToken);
+        await service.toggleFavoriteStatus(jsonWebTokenParams.id, hotelParams.id);
         expect(HotelMapper.mapToOrmEntity).toHaveBeenCalledTimes(1);
       });
 
       it(`should call with params`, async () => {
         HotelMapper.mapToOrmEntity = jest.fn(HotelMapper.mapToOrmEntity);
-        await service.toggleFavoriteStatus(hotelParams.id, accessToken);
+        await service.toggleFavoriteStatus(jsonWebTokenParams.id, hotelParams.id);
         expect(HotelMapper.mapToOrmEntity).toHaveBeenCalledWith(hotelEntity);
       });
     });
@@ -173,7 +149,7 @@ describe('FavoriteControllerService', () => {
     it(`should return correct result`, async () => {
       const favoriteOrmEntity = HotelMapper.mapToOrmEntity(hotelEntity);
       HotelMapper.mapToOrmEntity = jest.fn(HotelMapper.mapToOrmEntity).mockReturnValueOnce(favoriteOrmEntity);
-      const result = await service.toggleFavoriteStatus(hotelParams.id, accessToken);
+      const result = await service.toggleFavoriteStatus(jsonWebTokenParams.id, hotelParams.id);
       expect(result).toBe(favoriteOrmEntity);
     });
   });
