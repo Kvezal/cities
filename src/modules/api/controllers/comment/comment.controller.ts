@@ -1,7 +1,16 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, Req, UseFilters, ValidationPipe } from '@nestjs/common';
-import { Request } from 'express';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Req,
+  UseFilters,
+  ValidationPipe,
+} from '@nestjs/common';
 
 import { CommentViewOrmEntity } from 'modules/adapters';
+import { IRequest } from 'modules/api/middlewares';
 
 import { JsonWebTokenExceptionFilter } from '../../filters';
 import { EApiRouteName } from '../api-route-names.enum';
@@ -20,9 +29,11 @@ export class CommentController {
   @HttpCode(HttpStatus.OK)
   public async createHotelComment(
     @Body(ValidationPipe) body: CommentDto,
-    @Req() request: Request
+    @Req() request: IRequest
   ): Promise<CommentViewOrmEntity> {
-    const accessToken = request.cookies?.[`access-token`];
-    return this._commentControllerService.createHotelComment(body, accessToken);
+    return this._commentControllerService.createHotelComment({
+      ...body,
+      userId: request.locals.userId
+    });
   }
 }

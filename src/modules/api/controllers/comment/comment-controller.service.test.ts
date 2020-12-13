@@ -1,9 +1,18 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import {
+  Test,
+  TestingModule,
+} from '@nestjs/testing';
 
 import { CommentControllerService } from './comment-controller.service';
-import { AuthService, authServiceSymbol, CommentService, commentServiceSymbol } from 'domains/services';
-import { CommentDto } from 'modules/api/controllers/comment/comment.dto';
-import { CommentEntity, IComment, IJsonWebTokenParams } from 'domains/entities';
+import {
+  CommentService,
+  commentServiceSymbol,
+} from 'domains/services';
+import {
+  CommentEntity,
+  IComment,
+  IJsonWebTokenParams,
+} from 'domains/entities';
 import { CommentViewMapper } from 'modules/adapters';
 
 
@@ -14,10 +23,11 @@ const jsonWebTokenParams: IJsonWebTokenParams = {
   image: null,
 };
 
-const commentParams: CommentDto = {
+const commentParams: IComment = {
   text: Array(20).fill(`i`).join(``),
   hotelId: `000e1960-fa36-4a99-b8c0-c4eb96e823e3`,
   rating: 4,
+  userId: jsonWebTokenParams.id
 };
 
 const commentEntityParams: IComment = {
@@ -31,7 +41,6 @@ const commentEntityParams: IComment = {
 
 describe('CommentControllerService', () => {
   let service: CommentControllerService;
-  let authService: AuthService;
   let commentService: CommentService;
   const commentEntity = CommentEntity.create(commentEntityParams);
 
@@ -39,12 +48,6 @@ describe('CommentControllerService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CommentControllerService,
-        {
-          provide: authServiceSymbol,
-          useValue: {
-            decodeAccessToken: async () => jsonWebTokenParams,
-          },
-        },
         {
           provide: commentServiceSymbol,
           useValue: {
@@ -55,7 +58,6 @@ describe('CommentControllerService', () => {
     }).compile();
 
     service = module.get<CommentControllerService>(CommentControllerService);
-    authService = module.get<AuthService>(authServiceSymbol);
     commentService = module.get<CommentService>(commentServiceSymbol);
   });
 
@@ -64,52 +66,32 @@ describe('CommentControllerService', () => {
   });
 
   describe('createHotelComment method', () => {
-    const accessToken = `access-token`;
-    describe(`decodeAccessToken method of AuthService`, () => {
-      it(`should call`, async () => {
-        const decodeAccessToken = jest.spyOn(authService, `decodeAccessToken`)
-          .mockImplementationOnce(async () => jsonWebTokenParams);
-        await service.createHotelComment(commentParams, accessToken);
-        expect(decodeAccessToken).toHaveBeenCalledTimes(1);
-      });
-
-      it(`should call with params`, async () => {
-        const decodeAccessToken = jest.spyOn(authService, `decodeAccessToken`)
-          .mockImplementationOnce(async () => jsonWebTokenParams);
-        await service.createHotelComment(commentParams, accessToken);
-        expect(decodeAccessToken).toHaveBeenCalledWith(accessToken);
-      });
-    });
-
     describe(`createHotelComment method of CommentService`, () => {
       it(`should call`, async () => {
         const createHotelComment = jest.spyOn(commentService, `createHotelComment`)
           .mockImplementationOnce(async () => commentEntity);
-        await service.createHotelComment(commentParams, accessToken);
+        await service.createHotelComment(commentParams);
         expect(createHotelComment).toHaveBeenCalledTimes(1);
       });
 
       it(`should call with params`, async () => {
         const createHotelComment = jest.spyOn(commentService, `createHotelComment`)
           .mockImplementationOnce(async () => commentEntity);
-        await service.createHotelComment(commentParams, accessToken);
-        expect(createHotelComment).toHaveBeenCalledWith({
-          ...commentParams,
-          userId: jsonWebTokenParams.id,
-        });
+        await service.createHotelComment(commentParams);
+        expect(createHotelComment).toHaveBeenCalledWith(commentParams);
       });
     });
 
     describe(`mapToOrmEntity method of CommentViewMapper`, () => {
       it(`should call`, async () => {
         CommentViewMapper.mapToOrmEntity = jest.fn(CommentViewMapper.mapToOrmEntity);
-        await service.createHotelComment(commentParams, accessToken);
+        await service.createHotelComment(commentParams);
         expect(CommentViewMapper.mapToOrmEntity).toHaveBeenCalledTimes(1);
       });
 
       it(`should call with params`, async () => {
         CommentViewMapper.mapToOrmEntity = jest.fn(CommentViewMapper.mapToOrmEntity);
-        await service.createHotelComment(commentParams, accessToken);
+        await service.createHotelComment(commentParams);
         expect(CommentViewMapper.mapToOrmEntity).toHaveBeenCalledWith(commentEntity);
       });
     });
@@ -117,7 +99,7 @@ describe('CommentControllerService', () => {
     it(`should return correct result`, async () => {
       const commentOrmEntity = CommentViewMapper.mapToOrmEntity(commentEntity);
       CommentViewMapper.mapToOrmEntity = jest.fn(CommentViewMapper.mapToOrmEntity).mockReturnValue(commentOrmEntity);
-      const result = await service.createHotelComment(commentParams, accessToken);
+      const result = await service.createHotelComment(commentParams);
       expect(result).toBe(commentOrmEntity);
     });
   });

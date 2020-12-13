@@ -1,15 +1,40 @@
-import { HttpStatus, INestApplication } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
+import {
+  HttpStatus,
+  INestApplication,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
+import {
+  Test,
+  TestingModule,
+} from '@nestjs/testing';
 import * as cookieParser from 'cookie-parser';
 import * as request from 'supertest';
 
-import { CommentEntity, IComment, IJsonWebTokenParams } from 'domains/entities';
-import { authServiceSymbol, commentServiceSymbol } from 'domains/services';
+import {
+  CommentEntity,
+  IComment,
+  IJsonWebTokenParams,
+} from 'domains/entities';
+import {
+  authServiceSymbol,
+  commentServiceSymbol,
+} from 'domains/services';
 
 import { CommentController } from './comment.controller';
 import { CommentControllerService } from './comment-controller.service';
-import { CommentDto } from './comment.dto';
-import { EJsonWebTokenType, JsonWebTokenError } from 'domains/exceptions';
+import {
+  EJsonWebTokenType,
+  JsonWebTokenError,
+} from 'domains/exceptions';
+import {
+  AccessMiddleware,
+  DecodeJsonWebTokenMiddleware,
+  InitLocalsMiddleware,
+} from 'modules/api/middlewares';
+import { EApiRouteName } from 'modules/api/controllers/api-route-names.enum';
 
 
 const jsonWebTokenParams: IJsonWebTokenParams = {
@@ -19,10 +44,11 @@ const jsonWebTokenParams: IJsonWebTokenParams = {
   image: null,
 };
 
-const commentParams: CommentDto = {
+const commentParams: IComment = {
   text: Array(20).fill(`i`).join(``),
   hotelId: `000e1960-fa36-4a99-b8c0-c4eb96e823e3`,
   rating: 4,
+  userId: jsonWebTokenParams.id
 };
 
 const commentEntityParams: IComment = {
@@ -34,32 +60,51 @@ const commentEntityParams: IComment = {
   rating: commentParams.rating,
 };
 
+
+@Module({
+  controllers: [CommentController],
+  providers: [
+    CommentControllerService,
+    {
+      provide: commentServiceSymbol,
+      useValue: {
+        createHotelComment: async () => CommentEntity.create(commentEntityParams),
+      },
+    },
+    {
+      provide: authServiceSymbol,
+      useValue: {
+        checkAccessToken: () => true,
+        decodeAccessToken: async () => jsonWebTokenParams,
+      },
+    },
+  ],
+})
+class TestModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): any {
+    consumer.apply(
+      cookieParser(),
+      InitLocalsMiddleware,
+      DecodeJsonWebTokenMiddleware,
+    )
+      .forRoutes(CommentController);
+
+    consumer.apply(AccessMiddleware)
+      .forRoutes({path: EApiRouteName.COMMENT, method: RequestMethod.POST})
+  }
+}
+
 describe('CommentController', () => {
   let app: INestApplication;
   let controller: CommentController;
   let service: CommentControllerService;
+  const accessToken = `test`;
 
   beforeEach(async () => {
     const testModule: TestingModule = await Test.createTestingModule({
-      controllers: [CommentController],
-      providers: [
-        CommentControllerService,
-        {
-          provide: commentServiceSymbol,
-          useValue: {
-            createHotelComment: async () => CommentEntity.create(commentEntityParams),
-          },
-        },
-        {
-          provide: authServiceSymbol,
-          useValue: {
-            decodeAccessToken: async () => jsonWebTokenParams,
-          },
-        },
-      ],
+      imports: [TestModule],
     }).compile();
     app = testModule.createNestApplication();
-    app.use(cookieParser());
     await app.init();
     controller = testModule.get<CommentController>(CommentController);
     service = testModule.get<CommentControllerService>(CommentControllerService);
@@ -83,7 +128,7 @@ describe('CommentController', () => {
         const result = await request(app.getHttpServer())
           .post(commentUrl)
           .send(commentParams)
-          .set(`Cookie`, `access-token=test`);
+          .set(`Cookie`, `access-token=${accessToken}`);
         expect(result.status).toBe(HttpStatus.UNAUTHORIZED);
       });
 
@@ -97,7 +142,7 @@ describe('CommentController', () => {
         const result = await request(app.getHttpServer())
           .post(commentUrl)
           .send(params)
-          .set(`Cookie`, `access-token=test`);
+          .set(`Cookie`, `access-token=${accessToken}`);
         expect(result.status).toBe(HttpStatus.BAD_REQUEST);
       });
 
@@ -105,7 +150,7 @@ describe('CommentController', () => {
         const result = await request(app.getHttpServer())
           .post(commentUrl)
           .send(commentParams)
-          .set(`Cookie`, `access-token=test`);
+          .set(`Cookie`, `access-token=${accessToken}`);
         expect(result.status).toBe(HttpStatus.OK);
       });
 
@@ -115,7 +160,7 @@ describe('CommentController', () => {
           await request(app.getHttpServer())
             .post(commentUrl)
             .send(commentParams)
-            .set(`Cookie`, `access-token=test`);
+            .set(`Cookie`, `access-token=${accessToken}`);
           expect(createHotelComment).toHaveBeenCalledTimes(1);
         });
 
@@ -126,7 +171,7 @@ describe('CommentController', () => {
             .post(commentUrl)
             .send(commentParams)
             .set(`Cookie`, `access-token=${accessToken}`);
-          expect(createHotelComment).toHaveBeenCalledWith(commentParams, accessToken);
+          expect(createHotelComment).toHaveBeenCalledWith(commentParams);
         });
       });
     });
