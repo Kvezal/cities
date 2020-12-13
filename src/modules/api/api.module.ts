@@ -4,6 +4,8 @@ import { Module } from '@nestjs/common';
 import { ServeStaticModule } from '@nestjs/serve-static';
 
 import { AuthModule, CityModule, CommentModule, FavoriteModule, HotelModule } from './controllers';
+import { APP_FILTER } from '@nestjs/core';
+import { JsonWebTokenExceptionFilter } from 'modules/api/filters';
 
 
 @Module({
@@ -16,6 +18,12 @@ import { AuthModule, CityModule, CommentModule, FavoriteModule, HotelModule } fr
     CommentModule,
     FavoriteModule,
     HotelModule,
+  ],
+  providers: [
+    {
+      provide: APP_FILTER,
+      useClass: JsonWebTokenExceptionFilter,
+    }
   ],
 })
 export class ApiModule {}

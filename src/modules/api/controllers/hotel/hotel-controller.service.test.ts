@@ -11,10 +11,6 @@ import {
   HotelService,
   hotelServiceSymbol,
 } from 'domains/services';
-import {
-  HotelMapper,
-  HotelOrmEntity,
-} from 'modules/adapters';
 import { HotelControllerService } from './hotel-controller.service';
 
 
@@ -84,11 +80,47 @@ const hotelParams: IHotel = {
   favorites: [],
 };
 
+const awaitedResult = {
+  id: `1`,
+  title: `title`,
+  description: `description`,
+  bedroomCount: 4,
+  maxAdultCount: 2,
+  price: 150,
+  isPremium: true,
+  rating: 3,
+  features: [`title`, `title`],
+  type: `title`,
+  city: {
+    id: `1`,
+    title: `title`,
+    location: {
+      id: `1`,
+      latitude: 52.370216,
+      longitude: 4.895168,
+      zoom: 10,
+    },
+  },
+  location: {
+    id: `1`,
+    latitude: 52.370216,
+    longitude: 4.895168,
+    zoom: 10,
+  },
+  host: {
+    id: `1`,
+    name: `name`,
+    type: `title`,
+    image: `title`,
+  },
+  images: [`title`, `title`],
+  isFavorite: false,
+}
+
 describe('HotelControllerService', () => {
   let service: HotelControllerService;
   let hotelService: HotelService;
   const hotelEntity: HotelEntity = HotelEntity.create(hotelParams);
-  const hotelOrmEntity: HotelOrmEntity = HotelMapper.mapToOrmEntity(hotelEntity);
   const hotelCount = 5;
 
   beforeEach(async () => {
@@ -129,25 +161,9 @@ describe('HotelControllerService', () => {
       expect(getHotelList).toHaveBeenCalledWith({ cityId });
     });
 
-    describe(`mapToOrmEntity method of HotelMapper`, () => {
-      it(`should call`, async () => {
-        HotelMapper.mapToOrmEntity = jest.fn(HotelMapper.mapToOrmEntity);
-        await service.getHotelList({ cityId });
-        expect(HotelMapper.mapToOrmEntity).toHaveBeenCalledTimes(hotelCount);
-      });
-
-      it(`should call with params`, async () => {
-        HotelMapper.mapToOrmEntity = jest.fn(HotelMapper.mapToOrmEntity);
-        await service.getHotelList({ cityId });
-        for (let i = 1; i <= hotelCount; i++) {
-          expect(HotelMapper.mapToOrmEntity).toHaveBeenNthCalledWith(i, hotelEntity);
-        }
-      });
-    });
-
     it(`should return correct result`, async () => {
       const result = await service.getHotelList({ cityId });
-      expect(result).toEqual(Array(hotelCount).fill(hotelOrmEntity));
+      expect(result).toEqual(Array(hotelCount).fill(awaitedResult));
     });
   });
 
@@ -168,24 +184,10 @@ describe('HotelControllerService', () => {
       });
     });
 
-    describe(`mapToOrmEntity method of HotelMapper`, () => {
-      it(`should call`, async () => {
-        HotelMapper.mapToOrmEntity = jest.fn(HotelMapper.mapToOrmEntity);
-        await service.getHotelById(hotelId);
-        expect(HotelMapper.mapToOrmEntity).toHaveBeenCalledTimes(1);
-      });
-
-      it(`should call with params`, async () => {
-        HotelMapper.mapToOrmEntity = jest.fn(HotelMapper.mapToOrmEntity);
-        await service.getHotelById(hotelId);
-        expect(HotelMapper.mapToOrmEntity).toHaveBeenCalledWith(hotelEntity);
-      });
-    });
-
     describe(`should return correct result`, () => {
       it(`if hotel with hotelId is existed`, async () => {
         const result = await service.getHotelById(hotelId);
-        expect(result).toEqual(hotelOrmEntity);
+        expect(result).toEqual(awaitedResult);
       });
 
       it(`if hotel with hotelId isn't existed`, async () => {

@@ -20,7 +20,7 @@ export class AuthControllerService implements
   DecodeAccessTokenUseCase,
   RefreshTokenUseCase {
   constructor(
-    @Inject(ConfigService) private readonly _configService: ConfigService,
+    private readonly _configService: ConfigService,
     @Inject(authServiceSymbol) private readonly _authService: AuthService
   ) {}
 

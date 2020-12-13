@@ -142,4 +142,8 @@ export class HotelEntity {
     }
     this._favorites.splice(favoriteIndex, 1);
   }
+
+  public isFavorite(userId: string): boolean {
+    return this._favorites.some((favorite: UserEntity) => favorite.id === userId);
+  }
 }

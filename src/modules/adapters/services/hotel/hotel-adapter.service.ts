@@ -54,8 +54,7 @@ export class HotelAdapterService implements
 
   constructor(
     @InjectRepository(HotelOrmEntity) private readonly _hotelRepository: Repository<HotelOrmEntity>
-  ) {
-  }
+  ) {}
 
   public async loadHotelById(id: string): Promise<HotelEntity> {
     const hotelOrmEntity = await this.getHotelList({ hotelId: id });
@@ -64,12 +63,13 @@ export class HotelAdapterService implements
 
   public async loadHotelList(sortParams: IHotelSortingParams): Promise<HotelEntity[]> {
     const hotelOrmEntities: HotelOrmEntity[] = await this.getHotelList(sortParams);
-    console.log(hotelOrmEntities);
     return hotelOrmEntities.map((hotelOrmEntity: HotelOrmEntity) => HotelMapper.mapToDomain(hotelOrmEntity));
   }
 
   public async updateHotel(hotelEntity: HotelEntity): Promise<HotelEntity> {
-    return null;
+    const hotelOrmEntity: HotelOrmEntity = HotelMapper.mapToOrmEntity(hotelEntity);
+    await this._hotelRepository.save(hotelOrmEntity);
+    return hotelEntity;
   }
 
   public async getHotelList(sortParams: IHotelSortingParams): Promise<HotelOrmEntity[]> {

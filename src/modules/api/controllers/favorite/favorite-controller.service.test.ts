@@ -123,7 +123,7 @@ describe('FavoriteControllerService', () => {
     hotelService = testModule.get<HotelService>(hotelServiceSymbol);
   });
 
-  fit('should be defined', () => {
+  it('should be defined', () => {
     expect(service).toBeDefined();
   });
 

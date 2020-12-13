@@ -83,6 +83,7 @@ const hotelParams: IHotel = {
 
 describe(`Hotel Adapter Service`, () => {
   let service: HotelAdapterService;
+  let hotelRepository: Repository<HotelOrmEntity>;
   const hotelsParams: IHotel[] = [
     hotelParams,
     {
@@ -91,6 +92,7 @@ describe(`Hotel Adapter Service`, () => {
     }
   ];
   const hotelEntity = HotelEntity.create(hotelParams);
+  const hotelOrmEntity = HotelMapper.mapToOrmEntity(hotelEntity);
 
   beforeEach(async () => {
     const testModule: TestingModule = await Test.createTestingModule({
@@ -103,6 +105,7 @@ describe(`Hotel Adapter Service`, () => {
       ],
     }).compile();
     service = testModule.get<HotelAdapterService>(HotelAdapterService);
+    hotelRepository = testModule.get<Repository<HotelOrmEntity>>(getRepositoryToken(HotelOrmEntity));
   });
 
   describe(`loadHotelById method`, () => {
@@ -170,6 +173,42 @@ describe(`Hotel Adapter Service`, () => {
 
     it(`should return result of mapToDomain method of HotelMapper`, async () => {
       expect(hotelOrmEntityResult).toEqual([hotelEntity, hotelEntity]);
+    });
+  });
+
+  describe(`updateHotel method`, () => {
+    let hotelOrmEntityResult: HotelEntity;
+
+    beforeEach(async () => {
+      jest.spyOn(hotelRepository, `save`).mockImplementationOnce(async () => null);
+      HotelMapper.mapToOrmEntity = jest.fn(HotelMapper.mapToOrmEntity).mockReturnValue(hotelOrmEntity);
+      hotelOrmEntityResult = await service.updateHotel(hotelEntity);
+    });
+
+    describe(`mapToOrmEntity method of HotelMapper`, () => {
+      it(`should call `, async () => {
+        expect(HotelMapper.mapToOrmEntity).toHaveBeenCalledTimes(1);
+      });
+
+      it(`should call with params`, async () => {
+        expect(HotelMapper.mapToOrmEntity).toHaveBeenCalledWith(hotelEntity);
+      });
+    });
+
+    describe(`save method of HotelRepository`, () => {
+      it(`should call `, async () => {
+        const save = jest.spyOn(hotelRepository, `save`).mockImplementationOnce(async () => null);
+        expect(save).toHaveBeenCalledTimes(1);
+      });
+
+      it(`should call with params`, async () => {
+        const save = jest.spyOn(hotelRepository, `save`).mockImplementationOnce(async () => null);
+        expect(save).toHaveBeenCalledWith(hotelOrmEntity);
+      });
+    });
+
+    it(`should return result hotelEntity`, async () => {
+      expect(hotelOrmEntityResult).toEqual(hotelEntity);
     });
   });
 });
