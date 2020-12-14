@@ -5,7 +5,7 @@ import { LocationOutput } from './location-output.class';
 import { IUserOutput } from './user-output.class';
 
 
-export class HotelOut {
+export class HotelOutput {
   @ApiProperty({
     description: `hotel id`,
     example: `023dda52-f07b-47ef-a44c-2301f8743149`

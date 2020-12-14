@@ -13,6 +13,7 @@ import * as cookieParser from 'cookie-parser';
 import * as request from 'supertest';
 
 import {
+  HotelEntity,
   IHotel,
   IJsonWebTokenParams,
 } from 'domains/entities';
@@ -119,7 +120,7 @@ const hotelParams: IHotel = {
       provide: hotelServiceSymbol,
       useValue: {
         getHotelList: async () => [],
-        toggleHotelFavoriteState: async () => hotelParams,
+        toggleHotelFavoriteState: async () => HotelEntity.create(hotelParams),
       },
     },
     {

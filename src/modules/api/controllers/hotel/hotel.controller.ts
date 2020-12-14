@@ -7,23 +7,24 @@ import {
   Query,
   Req,
 } from '@nestjs/common';
-
-import {
-  ESortingFilter,
-  ESortingType,
-} from 'domains/interfaces';
-
-import { HotelOut } from 'modules/api/interfaces';
-import { IRequest } from 'modules/api/middlewares';
-
-import { EApiRouteName } from '../api-route-names.enum';
-import { HotelControllerService } from './hotel-controller.service';
 import {
   ApiOkResponse,
   ApiParam,
   ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
+
+import {
+  ESortingFilter,
+  ESortingType,
+} from 'domains/interfaces';
+
+import { HotelOutput } from 'modules/api/interfaces';
+import { IRequest } from 'modules/api/middlewares';
+
+import { EApiRouteName } from '../api-route-names.enum';
+import { HotelControllerService } from './hotel-controller.service';
+
 
 
 @ApiTags(`Hotel`)
@@ -37,7 +38,7 @@ export class HotelController {
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
     description: `return hotel list`,
-    type: HotelOut,
+    type: HotelOutput,
     isArray: true,
   })
   @ApiQuery({
@@ -72,7 +73,7 @@ export class HotelController {
     @Query(`filter`) filter: ESortingFilter,
     @Query(`type`) type: ESortingType,
     @Req() request: IRequest
-  ): Promise<HotelOut[]> {
+  ): Promise<HotelOutput[]> {
     return this._hotelControllerService.getHotelList({
       cityId,
       hotelId,
@@ -86,7 +87,7 @@ export class HotelController {
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
     description: `return hotel by id`,
-    type: HotelOut,
+    type: HotelOutput,
   })
   @ApiParam({
     name: `hotelId`,
@@ -94,7 +95,7 @@ export class HotelController {
   })
   public async getHotelById(
     @Param(`hotelId`) hotelId: string
-  ): Promise<HotelOut> {
+  ): Promise<HotelOutput> {
     return this._hotelControllerService.getHotelById(hotelId);
   }
 }

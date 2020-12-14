@@ -14,7 +14,6 @@ import {
   IHotel,
   IJsonWebTokenParams,
 } from 'domains/entities';
-import { HotelMapper } from 'modules/adapters';
 
 
 const jsonWebTokenParams: IJsonWebTokenParams = {
@@ -90,6 +89,43 @@ const hotelParams: IHotel = {
   favorites: [],
 };
 
+const expectedHotelOutput = {
+  id: `1`,
+  title: `title`,
+  description: `description`,
+  bedroomCount: 4,
+  maxAdultCount: 2,
+  price: 150,
+  isPremium: true,
+  rating: 3,
+  features: [`title`, `title`],
+  type: `title`,
+  city: {
+    id: `1`,
+    title: `title`,
+    location: {
+      id: `1`,
+      latitude: 52.370216,
+      longitude: 4.895168,
+      zoom: 10,
+    },
+  },
+  location: {
+    id: `1`,
+    latitude: 52.370216,
+    longitude: 4.895168,
+    zoom: 10,
+  },
+  host: {
+    id: `1`,
+    name: `name`,
+    type: `title`,
+    image: `title`,
+  },
+  images: [`title`, `title`],
+  isFavorite: false,
+}
+
 describe('FavoriteControllerService', () => {
   let service: FavoriteControllerService;
   let hotelService: HotelService;
@@ -132,25 +168,28 @@ describe('FavoriteControllerService', () => {
       });
     });
 
-    describe(`mapToOrmEntity method of HotelMapper`, () => {
+    describe(`transformEntityToOutputData method of HotelControllerService`, () => {
       it(`should call`, async () => {
-        HotelMapper.mapToOrmEntity = jest.fn(HotelMapper.mapToOrmEntity);
+        service.transformEntityToOutputData = jest.fn(service.transformEntityToOutputData);
         await service.toggleFavoriteStatus(jsonWebTokenParams.id, hotelParams.id);
-        expect(HotelMapper.mapToOrmEntity).toHaveBeenCalledTimes(1);
+        expect(service.transformEntityToOutputData).toHaveBeenCalledTimes(1);
       });
 
       it(`should call with params`, async () => {
-        HotelMapper.mapToOrmEntity = jest.fn(HotelMapper.mapToOrmEntity);
+        service.transformEntityToOutputData = jest.fn(service.transformEntityToOutputData);
         await service.toggleFavoriteStatus(jsonWebTokenParams.id, hotelParams.id);
-        expect(HotelMapper.mapToOrmEntity).toHaveBeenCalledWith(hotelEntity);
+        expect(service.transformEntityToOutputData).toHaveBeenCalledWith(hotelEntity, jsonWebTokenParams.id);
       });
     });
 
     it(`should return correct result`, async () => {
-      const favoriteOrmEntity = HotelMapper.mapToOrmEntity(hotelEntity);
-      HotelMapper.mapToOrmEntity = jest.fn(HotelMapper.mapToOrmEntity).mockReturnValueOnce(favoriteOrmEntity);
       const result = await service.toggleFavoriteStatus(jsonWebTokenParams.id, hotelParams.id);
-      expect(result).toBe(favoriteOrmEntity);
+      expect(result).toEqual(expectedHotelOutput);
     });
+  });
+
+  it(`transformEntityToOutputData method should return correct result`, async () => {
+    const result = await service.transformEntityToOutputData(hotelEntity, jsonWebTokenParams.id);
+    expect(result).toEqual(expectedHotelOutput);
   });
 });
