@@ -7,17 +7,17 @@ import * as request from 'supertest';
 import { IJsonWebTokenParams, JsonWebTokenEntity } from 'domains/entities';
 import { EJsonWebTokenType, EUserField, JsonWebTokenError, UserError } from 'domains/exceptions';
 import { authServiceSymbol } from 'domains/services';
+import { ConfigService } from 'modules/config';
 
 import { AuthControllerService } from './auth-controller.service';
 import { AuthController } from './auth.controller';
-import { ConfigService } from 'modules/config';
 
 
 const jsonWebTokenParams: IJsonWebTokenParams = {
   id: `1`,
   name: `name`,
   email: `email@gmail.com`,
-  image: null,
+  image: `image`,
 };
 
 
@@ -155,7 +155,7 @@ describe(`AuthController`, () => {
     describe(`/api/auth/refresh end point`, () => {
       const refreshUrl = `/api/auth/refresh`;
 
-      it(`if request with invalid refresh-token header status code should be 400 `, async () => {
+      it(`if request with invalid refresh-token header status code should be 401 `, async () => {
         jest.spyOn(service, `refreshToken`).mockImplementationOnce(async () => {
           throw new JsonWebTokenError({
             type: EJsonWebTokenType.INVALID,
@@ -166,7 +166,7 @@ describe(`AuthController`, () => {
           .post(refreshUrl)
           .send()
           .set(`refresh-token`, `refresh-token`);
-        expect(result.status).toBe(HttpStatus.BAD_REQUEST);
+        expect(result.status).toBe(HttpStatus.UNAUTHORIZED);
       });
 
       it(`if request with valid refresh-token header status code should be 201 `, async () => {

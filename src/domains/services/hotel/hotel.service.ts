@@ -49,7 +49,14 @@ export class HotelService implements
   }
 
   public async getHotelById(hotelId: string): Promise<HotelEntity> {
-    return this._hotelLoaderService.loadHotelById(hotelId);
+    const hotelEntity = await this._hotelLoaderService.loadHotelById(hotelId);
+    if (!hotelEntity) {
+      throw new HotelException({
+        field: EHotelField.ID,
+        message: `Hotel with ${hotelId} id doesn't exist`,
+      })
+    }
+    return hotelEntity;
   }
 
   public async toggleHotelFavoriteState(userId: string, hotelId: string): Promise<HotelEntity> {

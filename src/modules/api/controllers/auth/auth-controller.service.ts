@@ -1,7 +1,10 @@
-import { Inject, Injectable } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { Response } from 'express';
 
-import { IJsonWebTokenParams, JsonWebTokenEntity } from 'domains/entities';
+import { JsonWebTokenEntity } from 'domains/entities';
 import { IUserAuthenticate } from 'domains/interfaces';
 import {
   AuthenticateUserUseCase,
@@ -9,8 +12,12 @@ import {
   DecodeAccessTokenUseCase,
   RefreshTokenUseCase,
 } from 'domains/use-cases';
-import { AuthService, authServiceSymbol } from 'domains/services';
+import {
+  AuthService,
+  authServiceSymbol,
+} from 'domains/services';
 import { ConfigService } from 'modules/config';
+import { JsonWebTokenParams } from 'modules/api/interfaces';
 
 
 @Injectable()
@@ -32,7 +39,7 @@ export class AuthControllerService implements
     return this._authService.checkAccessToken(token);
   }
 
-  public async decodeAccessToken(token: string): Promise<IJsonWebTokenParams> {
+  public async decodeAccessToken(token: string): Promise<JsonWebTokenParams> {
     return this._authService.decodeAccessToken(token);
   }
 

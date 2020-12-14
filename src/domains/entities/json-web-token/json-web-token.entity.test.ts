@@ -12,10 +12,7 @@ describe(`Json Web Token entity`, () => {
     id: `1`,
     name: `name`,
     email: `email@gmail.com`,
-    image: {
-      id: `1`,
-      title: `title`,
-    },
+    image: `image`,
   };
 
   describe(`constructor`, () => {

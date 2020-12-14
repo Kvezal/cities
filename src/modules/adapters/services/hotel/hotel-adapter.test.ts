@@ -212,5 +212,3 @@ describe(`Hotel Adapter Service`, () => {
     });
   });
 });
-
-

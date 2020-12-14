@@ -18,10 +18,6 @@ import {
   EHotelField,
   HotelException,
 } from 'domains/exceptions/hotel';
-import {
-  EUserField,
-  UserError,
-} from 'domains/exceptions';
 
 
 const userParams: IUser = {
@@ -313,8 +309,23 @@ describe(`Hotel Service`, () => {
   });
 
   describe(`getHotelById method`, () => {
+    it(`should throw error if hotel with id doesn't exist`, async () => {
+      const loadHotelById = jest.fn().mockResolvedValue(null);
+      const hotelService = new HotelService(
+        null,
+        {loadHotelById},
+        null,
+        null
+      );
+       ;
+      await expect(hotelService.getHotelById(hotelParams.id)).rejects.toThrow(new HotelException({
+        field: EHotelField.ID,
+        message: `Hotel with ${hotelParams.id} id doesn't exist`,
+      }));
+    });
+
     it(`should call loadHotelById method`, async () => {
-      const loadHotelById = jest.fn();
+      const loadHotelById = jest.fn().mockResolvedValue(hotelEntity);
       const hotelService = new HotelService(
         null,
         {loadHotelById},
@@ -363,16 +374,7 @@ describe(`Hotel Service`, () => {
       await expect(hotelService.toggleHotelFavoriteState(userEntity.id, hotelParams.id)).rejects
         .toThrow(new HotelException({
           field: EHotelField.ID,
-          message: `Hotel with ${hotelParams.id} doesn't exist`,
-        }));
-    });
-
-    it(`should throw HotelException if user doesn't exist`, async () => {
-      userLoaderService.loadUserById = jest.fn(userLoaderService.loadUserById).mockImplementationOnce(async () => null);
-      await expect(hotelService.toggleHotelFavoriteState(userEntity.id, hotelParams.id)).rejects
-        .toThrow(new UserError({
-          field: EUserField.ID,
-          message: `User with ${userParams.id} doesn't exist`,
+          message: `Hotel with ${hotelParams.id} id doesn't exist`,
         }));
     });
 

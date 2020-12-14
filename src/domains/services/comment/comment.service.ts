@@ -5,6 +5,10 @@ import {
   RatingEntity,
 } from 'domains/entities';
 import {
+  CommentError,
+  ECommentField,
+} from 'domains/exceptions';
+import {
   ICommentCreate,
   ICommentSorting,
 } from 'domains/interfaces';
@@ -19,10 +23,6 @@ import {
 } from 'domains/ports';
 import { GetHotelCommentListQuery } from 'domains/queries';
 import { CreateHotelCommentUseCase } from 'domains/use-cases';
-import {
-  CommentError,
-  ECommentField,
-} from 'domains/exceptions';
 
 
 export class CommentService implements

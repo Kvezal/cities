@@ -2,9 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { IJsonWebTokenParams, JsonWebTokenEntity } from 'domains/entities';
 import { AuthService, authServiceSymbol } from 'domains/services';
+import { AuthLoginDto } from 'modules/api/interfaces';
 import { ConfigService } from 'modules/config';
 
-import { AuthLoginDto } from './auth.dto';
 import { AuthControllerService } from './auth-controller.service';
 
 
