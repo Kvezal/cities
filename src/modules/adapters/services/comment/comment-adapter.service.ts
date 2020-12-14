@@ -14,7 +14,7 @@ import {
   RatingOrmEntity,
   UserOrmEntity,
 } from '../../orm-entities';
-import { CommentViewMapper } from '../../mappers';
+import { CommentMapper } from '../../mappers';
 import { HotelAdapterService } from '../hotel';
 
 
@@ -30,12 +30,12 @@ export class CommentAdapterService implements
   public async loadHotelCommentList(commentSortingParams: ICommentSorting): Promise<CommentEntity[]> {
     const commentOrmEntities: CommentOrmEntity[] = await this.getCommentHotelList(commentSortingParams);
     return commentOrmEntities.map(
-      (commentOrmEntity: CommentOrmEntity) => CommentViewMapper.mapToDomain(commentOrmEntity)
+      (commentOrmEntity: CommentOrmEntity) => CommentMapper.mapToDomain(commentOrmEntity)
     );
   }
 
   public async saveHotelComment(entity: CommentEntity): Promise<CommentEntity> {
-    const ormEntity = CommentViewMapper.mapToOrmEntity(entity);
+    const ormEntity = CommentMapper.mapToOrmEntity(entity);
     await this._commentRepository.save(ormEntity);
     return entity;
   }

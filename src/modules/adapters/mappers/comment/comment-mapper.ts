@@ -5,7 +5,7 @@ import { UserMapper } from '../user';
 import { HotelMapper } from '../hotel';
 
 
-export class CommentViewMapper {
+export class CommentMapper {
   static mapToDomain(ormEntity: CommentOrmEntity): CommentEntity {
     return CommentEntity.create({
       id: ormEntity.id,

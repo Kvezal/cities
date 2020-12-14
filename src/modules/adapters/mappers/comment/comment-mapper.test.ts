@@ -12,7 +12,7 @@ import {
   UserMapper,
 } from 'modules/adapters';
 
-import { CommentViewMapper } from './comment-view-mapper';
+import { CommentMapper } from './comment-mapper';
 
 
 
@@ -93,7 +93,7 @@ const commentParams: IComment = {
   hotel: hotelParams,
 };
 
-describe(`Comment View Mapper`, () => {
+describe(`CommentMapper`, () => {
   const commentEntity: CommentEntity = CommentEntity.create(commentParams);
   const userEntity: UserEntity = UserEntity.create(commentParams.user);
   const hotelEntity: HotelEntity = HotelEntity.create(commentParams.hotel);
@@ -108,13 +108,13 @@ describe(`Comment View Mapper`, () => {
   describe(`mapToDomain`, () => {
     it('should call create method of CommentEntity', function() {
       CommentEntity.create = jest.fn(CommentEntity.create);
-      CommentViewMapper.mapToDomain(ormEntity);
+      CommentMapper.mapToDomain(ormEntity);
       expect(CommentEntity.create).toHaveBeenCalledTimes(1);
     });
 
     it('should call create method of CommentEntity with params', function() {
       CommentEntity.create = jest.fn(CommentEntity.create);
-      CommentViewMapper.mapToDomain(ormEntity);
+      CommentMapper.mapToDomain(ormEntity);
       expect(CommentEntity.create).toHaveBeenCalledWith({
         ...commentParams,
         hotel: hotelEntity,
@@ -124,14 +124,14 @@ describe(`Comment View Mapper`, () => {
 
     it('should return create method result of CommentEntity', function() {
       CommentEntity.create = jest.fn(CommentEntity.create).mockReturnValue(commentEntity);
-      const result = CommentViewMapper.mapToDomain(ormEntity);
+      const result = CommentMapper.mapToDomain(ormEntity);
       expect(result).toEqual(commentEntity);
     });
   });
 
   describe(`mapToOrmEntity`, () => {
     it('should return CommentViewOrmEntity', function() {
-      const result = CommentViewMapper.mapToOrmEntity(commentEntity);
+      const result = CommentMapper.mapToOrmEntity(commentEntity);
       expect(result).toEqual(ormEntity);
     });
 
@@ -143,7 +143,7 @@ describe(`Comment View Mapper`, () => {
       `user`,
       `hotel`
     ])('should have %p property in result', function(property: string) {
-      const result = CommentViewMapper.mapToOrmEntity(commentEntity);
+      const result = CommentMapper.mapToOrmEntity(commentEntity);
       expect(result).toHaveProperty(property);
     });
   });
