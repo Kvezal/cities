@@ -14,7 +14,11 @@ export class IUserOutput {
   })
   name: string;
 
-  @ApiProperty({description: `user type`, enum: [`standard`, `pro`]})
+  @ApiProperty({
+    description: `user type`,
+    example: `standard`,
+    enum: [`standard`, `pro`]
+  })
   type: string;
 
   @ApiProperty({

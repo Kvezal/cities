@@ -18,7 +18,7 @@ import {
   ICommentCreate,
   ICommentSorting,
 } from 'domains/interfaces';
-import { ICommentOut } from 'modules/api/controllers/comment/comment.interface';
+import { CommentOutput } from 'modules/api/interfaces';
 
 
 const commentSortingParams: ICommentSorting = {
@@ -109,7 +109,7 @@ const commentEntityParams: IComment = {
   rating: commentParams.rating,
 };
 
-const expectedCommentOutput: ICommentOut = {
+const expectedCommentOutput: CommentOutput = {
   id: commentEntityParams.id,
   text: commentEntityParams.text,
   createdAt: commentEntityParams.createdAt,
@@ -229,7 +229,7 @@ describe('CommentControllerService', () => {
         .mockResolvedValueOnce([commentEntity]);
       service.transformEntityToOutputData = jest.fn(service.transformEntityToOutputData)
         .mockReturnValue(expectedCommentOutput);
-      const result: ICommentOut[] = await service.getHotelCommentList(commentSortingParams);
+      const result: CommentOutput[] = await service.getHotelCommentList(commentSortingParams);
       expect(result).toEqual([expectedCommentOutput]);
     });
   });

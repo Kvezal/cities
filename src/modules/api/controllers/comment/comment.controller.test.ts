@@ -30,6 +30,7 @@ import {
   commentServiceSymbol,
 } from 'domains/services';
 import { JsonWebTokenExceptionFilter } from 'modules/api/filters';
+import { CommentDto } from 'modules/api/interfaces';
 import {
   AccessMiddleware,
   DecodeJsonWebTokenMiddleware,
@@ -40,7 +41,6 @@ import {
 import { EApiRouteName } from '../api-route-names.enum';
 import { CommentController } from './comment.controller';
 import { CommentControllerService } from './comment-controller.service';
-import { CommentDto } from 'modules/api/controllers/comment/comment.dto';
 
 
 const userParams: IUser = {
@@ -236,12 +236,12 @@ describe('CommentController', () => {
         expect(result.status).toBe(HttpStatus.BAD_REQUEST);
       });
 
-      it(`status code should be 200`, async () => {
+      it(`status code should be 201`, async () => {
         const result = await request(app.getHttpServer())
           .post(commentUrl)
           .send(commentParams)
           .set({ cookie: `access-token=${accessToken}` });
-        expect(result.status).toBe(HttpStatus.OK);
+        expect(result.status).toBe(HttpStatus.CREATED);
       });
 
       describe(`createHotelComment method of CommentControllerService`, () => {

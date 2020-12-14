@@ -12,8 +12,7 @@ import {
   ICommentCreate,
   ICommentSorting,
 } from 'domains/interfaces';
-
-import { ICommentOut } from './comment.interface';
+import { CommentOutput } from 'modules/api/interfaces';
 
 
 @Injectable()
@@ -22,17 +21,17 @@ export class CommentControllerService {
     @Inject(commentServiceSymbol) private readonly _commentService: CommentService
   ) {}
 
-  public async getHotelCommentList(commentSortingParams: ICommentSorting): Promise<ICommentOut[]> {
+  public async getHotelCommentList(commentSortingParams: ICommentSorting): Promise<CommentOutput[]> {
     const commentEntities: CommentEntity[] = await this._commentService.getHotelCommentList(commentSortingParams);
     return commentEntities.map((commentEntity: CommentEntity) => this.transformEntityToOutputData(commentEntity));
   }
 
-  public async createHotelComment(params: ICommentCreate): Promise<ICommentOut> {
+  public async createHotelComment(params: ICommentCreate): Promise<CommentOutput> {
     const commentEntity: CommentEntity = await this._commentService.createHotelComment(params);
     return this.transformEntityToOutputData(commentEntity);
   }
 
-  public transformEntityToOutputData(commentEntity: CommentEntity): ICommentOut {
+  public transformEntityToOutputData(commentEntity: CommentEntity): CommentOutput {
     return {
       id: commentEntity.id,
       text: commentEntity.text,
