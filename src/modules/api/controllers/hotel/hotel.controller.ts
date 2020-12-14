@@ -13,12 +13,20 @@ import {
   ESortingType,
 } from 'domains/interfaces';
 
-import { EApiRouteName } from '../api-route-names.enum';
-import { IHotelOut } from './hotel.interface';
-import { HotelControllerService } from './hotel-controller.service';
+import { HotelOut } from 'modules/api/interfaces';
 import { IRequest } from 'modules/api/middlewares';
 
+import { EApiRouteName } from '../api-route-names.enum';
+import { HotelControllerService } from './hotel-controller.service';
+import {
+  ApiOkResponse,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 
+
+@ApiTags(`Hotel`)
 @Controller(EApiRouteName.HOTEL)
 export class HotelController {
   constructor(
@@ -27,13 +35,44 @@ export class HotelController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    description: `return hotel list`,
+    type: HotelOut,
+    isArray: true,
+  })
+  @ApiQuery({
+    name: `cityId`,
+    description: `lets to get hotel in the city with id`,
+    example: `023dda52-f07b-47ef-a44c-2301f8743149`,
+    required: false,
+  })
+  @ApiQuery({
+    name: `hotelId`,
+    description: `lets to get hotel with id (depends of filter)`,
+    example: `023dda52-f07b-47ef-a44c-2301f8743149`,
+    required: false,
+  })
+  @ApiQuery({
+    name: `filter`,
+    description: `lets filter hotels (nearby - closer to hotelId, favorite - return favorite for authorized user)`,
+    example: ESortingFilter.FAVORITE,
+    enum: ESortingFilter,
+    required: false,
+  })
+  @ApiQuery({
+    name: `type`,
+    description: `lets filter hotels by sorting type`,
+    example: ESortingType.POPULAR,
+    enum: ESortingType,
+    required: false,
+  })
   public async getHotelList(
     @Query(`cityId`) cityId: string,
     @Query(`hotelId`) hotelId: string,
     @Query(`filter`) filter: ESortingFilter,
     @Query(`type`) type: ESortingType,
     @Req() request: IRequest
-  ): Promise<IHotelOut[]> {
+  ): Promise<HotelOut[]> {
     return this._hotelControllerService.getHotelList({
       cityId,
       hotelId,
@@ -45,9 +84,17 @@ export class HotelController {
 
   @Get(`:hotelId`)
   @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    description: `return hotel by id`,
+    type: HotelOut,
+  })
+  @ApiParam({
+    name: `hotelId`,
+    description: `lets to get hotel by id`,
+  })
   public async getHotelById(
     @Param(`hotelId`) hotelId: string
-  ): Promise<IHotelOut> {
+  ): Promise<HotelOut> {
     return this._hotelControllerService.getHotelById(hotelId);
   }
 }

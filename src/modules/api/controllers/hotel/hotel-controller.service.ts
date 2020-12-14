@@ -17,8 +17,7 @@ import {
   CityMapper,
   LocationMapper,
 } from 'modules/adapters';
-
-import { IHotelOut } from './hotel.interface';
+import { HotelOut } from 'modules/api/interfaces';
 
 
 @Injectable()
@@ -28,21 +27,21 @@ export class HotelControllerService {
   ) {}
 
 
-  public async getHotelList(sortingParams: IHotelSortingParams): Promise<IHotelOut[]> {
+  public async getHotelList(sortingParams: IHotelSortingParams): Promise<HotelOut[]> {
     const hotelEntities: HotelEntity[] = await this._hotelService.getHotelList(sortingParams);
     return hotelEntities.map(
-      (hotelEntity: HotelEntity): IHotelOut => (this._transformEntityToOutputData(hotelEntity, sortingParams.userId))
+      (hotelEntity: HotelEntity): HotelOut => (this.transformEntityToOutputData(hotelEntity, sortingParams.userId))
     );
   }
 
 
-  public async getHotelById(hotelId: string): Promise<IHotelOut> {
+  public async getHotelById(hotelId: string): Promise<HotelOut> {
     const hotelEntity: HotelEntity = await this._hotelService.getHotelById(hotelId);
-    return hotelEntity && this._transformEntityToOutputData(hotelEntity);
+    return hotelEntity && this.transformEntityToOutputData(hotelEntity);
   }
 
 
-  private _transformEntityToOutputData(hotelEntity: HotelEntity, userId: string = null): IHotelOut {
+  public transformEntityToOutputData(hotelEntity: HotelEntity, userId: string = null): HotelOut {
     return {
       id: hotelEntity.id,
       title: hotelEntity.title,

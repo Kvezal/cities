@@ -11,6 +11,7 @@ import {
   HotelService,
   hotelServiceSymbol,
 } from 'domains/services';
+
 import { HotelControllerService } from './hotel-controller.service';
 
 
@@ -149,16 +150,36 @@ describe('HotelControllerService', () => {
   describe(`getHotelList`, () => {
     const cityId = `test`;
 
-    it(`should call`, async () => {
-      const getHotelList = jest.spyOn(hotelService, `getHotelList`);
-      await service.getHotelList({ cityId });
-      expect(getHotelList).toHaveBeenCalledTimes(1);
+    describe(`getHotelList method of HotelService`, () => {
+      it(`should call`, async () => {
+        const getHotelList = jest.spyOn(hotelService, `getHotelList`);
+        await service.getHotelList({ cityId });
+        expect(getHotelList).toHaveBeenCalledTimes(1);
+      });
+
+      it(`should call with params`, async () => {
+        const getHotelList = jest.spyOn(hotelService, `getHotelList`);
+        await service.getHotelList({ cityId });
+        expect(getHotelList).toHaveBeenCalledWith({ cityId });
+      });
     });
 
-    it(`should call with params`, async () => {
-      const getHotelList = jest.spyOn(hotelService, `getHotelList`);
-      await service.getHotelList({ cityId });
-      expect(getHotelList).toHaveBeenCalledWith({ cityId });
+    describe(`transformEntityToOutputData`, () => {
+      it(`should call`, async () => {
+        service.transformEntityToOutputData = jest.fn(service.transformEntityToOutputData);
+        await service.getHotelList({ cityId });
+        expect(service.transformEntityToOutputData).toHaveBeenCalledTimes(hotelCount);
+      });
+
+      it(`should call with params`, async () => {
+        service.transformEntityToOutputData = jest.fn(service.transformEntityToOutputData);
+        await service.getHotelList({ cityId });
+        expect(service.transformEntityToOutputData).toHaveBeenNthCalledWith(1, hotelEntity, undefined);
+        expect(service.transformEntityToOutputData).toHaveBeenNthCalledWith(2, hotelEntity, undefined);
+        expect(service.transformEntityToOutputData).toHaveBeenNthCalledWith(3, hotelEntity, undefined);
+        expect(service.transformEntityToOutputData).toHaveBeenNthCalledWith(4, hotelEntity, undefined);
+        expect(service.transformEntityToOutputData).toHaveBeenNthCalledWith(5, hotelEntity, undefined);
+      });
     });
 
     it(`should return correct result`, async () => {
@@ -184,6 +205,20 @@ describe('HotelControllerService', () => {
       });
     });
 
+    describe(`transformEntityToOutputData`, () => {
+      it(`should call`, async () => {
+        service.transformEntityToOutputData = jest.fn(service.transformEntityToOutputData);
+        await service.getHotelById(hotelId);
+        expect(service.transformEntityToOutputData).toHaveBeenCalledTimes(1);
+      });
+
+      it(`should call with params`, async () => {
+        service.transformEntityToOutputData = jest.fn(service.transformEntityToOutputData);
+        await service.getHotelById(hotelId);
+        expect(service.transformEntityToOutputData).toBeCalledWith(hotelEntity);
+      });
+    });
+
     describe(`should return correct result`, () => {
       it(`if hotel with hotelId is existed`, async () => {
         const result = await service.getHotelById(hotelId);
@@ -196,5 +231,10 @@ describe('HotelControllerService', () => {
         expect(result).toBe(null);
       });
     });
+  });
+
+  it(`transformEntityToOutputData should return correct result`, async () => {
+    const result = await service.transformEntityToOutputData(hotelEntity);
+    expect(result).toEqual(expectedHotelOutput);
   });
 });
