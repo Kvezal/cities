@@ -5,8 +5,15 @@ export enum ESortingType {
   LOW_PRICE = `low-price`,
 }
 
+export enum ESortingFilter {
+  NEARBY = `nearby`,
+  FAVORITE = `favorite`,
+}
+
 export interface IHotelSortingParams {
   cityId?: string,
   userId?: string,
+  hotelId?: string,
   type?: ESortingType,
+  filter?: ESortingFilter,
 }

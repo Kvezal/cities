@@ -6,9 +6,13 @@ import { ConfigService } from './config.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(ConfigService.getTypeOrmConfig(process.env))
+    TypeOrmModule.forRoot(ConfigService.getTypeOrmConfig(process.env)),
   ],
+  providers: [
+    ConfigService,
+  ],
+  exports: [
+    ConfigService,
+  ]
 })
-export class ConfigModule {
-
-}
+export class ConfigModule {}

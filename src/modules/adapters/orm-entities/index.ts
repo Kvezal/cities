@@ -1,6 +1,5 @@
 export { CityOrmEntity } from './city.orm-entity';
 export { CommentOrmEntity } from './comment.orm-entity';
-export { FavoriteOrmEntity } from './favorite.orm-entity';
 export { FeatureOrmEntity } from './feature.orm-entity';
 export { HotelOrmEntity } from './hotel.orm-entity';
 export { HotelTypeOrmEntity } from './hotel-type.orm-entity';

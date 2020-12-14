@@ -1,0 +1,1 @@
+export { InitLocalsMiddleware } from './init-locals.middleware';

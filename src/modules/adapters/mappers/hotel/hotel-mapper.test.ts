@@ -75,6 +75,7 @@ const ormEntity: IHotel = {
       title: `title`,
     }
   ],
+  favorites: [],
 };
 
 describe(`Hotel Mapper`, () => {

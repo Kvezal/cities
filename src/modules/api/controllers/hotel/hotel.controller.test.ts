@@ -1,11 +1,17 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import {
+  HttpStatus,
+  INestApplication,
+} from '@nestjs/common';
+import {
+  Test,
+  TestingModule,
+} from '@nestjs/testing';
 import * as request from 'supertest';
 
 import { hotelServiceSymbol } from 'domains/services';
 
 import { HotelController } from './hotel.controller';
 import { HotelControllerService } from './hotel-controller.service';
-import { HttpStatus, INestApplication } from '@nestjs/common';
 
 
 describe('HotelController', () => {
@@ -23,10 +29,10 @@ describe('HotelController', () => {
           useValue: {
             getHotelList: async () => [],
             getHotelById: async () => null,
-            getNearbyHotelList: async () => [],
+            toggleHotelFavoriteState: async () => null,
           },
         },
-      ]
+      ],
     }).compile();
     app = testModule.createNestApplication();
     await app.init();
@@ -64,7 +70,7 @@ describe('HotelController', () => {
             await request(app.getHttpServer())
               .get(`${hotelUrl}?hotelId=test`)
               .send();
-            expect(getHotelList).toHaveBeenCalledWith(undefined, `test`);
+            expect(getHotelList).toHaveBeenCalledWith({ hotelId: `test` });
           });
         });
       });
@@ -91,7 +97,7 @@ describe('HotelController', () => {
             await request(app.getHttpServer())
               .get(`${hotelUrl}?cityId=test`)
               .send();
-            expect(getHotelList).toHaveBeenCalledWith(`test`, undefined);
+            expect(getHotelList).toHaveBeenCalledWith({ cityId: `test` });
           });
         });
       });

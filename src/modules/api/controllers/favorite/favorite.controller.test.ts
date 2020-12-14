@@ -1,14 +1,39 @@
-import { HttpStatus, INestApplication } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
+import {
+  HttpStatus,
+  INestApplication,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+} from '@nestjs/common';
+import {
+  Test,
+  TestingModule,
+} from '@nestjs/testing';
 import * as cookieParser from 'cookie-parser';
 import * as request from 'supertest';
 
-import { IFavorite, IJsonWebTokenParams } from 'domains/entities';
-import { authServiceSymbol, favoriteServiceSymbol } from 'domains/services';
+import {
+  IHotel,
+  IJsonWebTokenParams,
+} from 'domains/entities';
+import {
+  authServiceSymbol,
+  hotelServiceSymbol,
+} from 'domains/services';
 
 import { FavoriteController } from './favorite.controller';
 import { FavoriteControllerService } from './favorite-controller.service';
-import { EJsonWebTokenType, JsonWebTokenError } from '../../../../domains/exceptions/json-web-token';
+import {
+  EJsonWebTokenType,
+  JsonWebTokenError,
+} from 'domains/exceptions/json-web-token';
+import {
+  AccessMiddleware,
+  DecodeJsonWebTokenMiddleware,
+  InitLocalsMiddleware,
+} from 'modules/api/middlewares';
+import { APP_FILTER } from '@nestjs/core';
+import { JsonWebTokenExceptionFilter } from 'modules/api/filters';
 
 
 const jsonWebTokenParams: IJsonWebTokenParams = {
@@ -18,11 +43,109 @@ const jsonWebTokenParams: IJsonWebTokenParams = {
   image: null,
 };
 
-const favoriteParams: IFavorite = {
-  value: true,
-  userId: `1`,
-  hotelId: `1`,
+const hotelParams: IHotel = {
+  id: `1`,
+  title: `title`,
+  description: `description`,
+  bedroomCount: 4,
+  maxAdultCount: 2,
+  price: 150,
+  isPremium: true,
+  rating: 3,
+  features: [
+    {
+      id: `1`,
+      title: `title`,
+    },
+    {
+      id: `2`,
+      title: `title`,
+    },
+  ],
+  type: {
+    id: `1`,
+    title: `title`,
+  },
+  city: {
+    id: `1`,
+    title: `title`,
+    location: {
+      id: `1`,
+      latitude: 52.370216,
+      longitude: 4.895168,
+      zoom: 10,
+    },
+  },
+  location: {
+    id: `1`,
+    latitude: 52.370216,
+    longitude: 4.895168,
+    zoom: 10,
+  },
+  host: {
+    id: `1`,
+    name: `name`,
+    email: `email@gmail.com`,
+    password: `password`,
+    type: {
+      id: `1`,
+      title: `title`,
+    },
+    image: {
+      id: `1`,
+      title: `title`,
+    },
+  },
+  images: [
+    {
+      id: `1`,
+      title: `title`,
+    },
+    {
+      id: `2`,
+      title: `title`,
+    },
+  ],
+  favorites: [],
 };
+
+@Module({
+  controllers: [
+    FavoriteController,
+  ],
+  providers: [
+    FavoriteControllerService,
+    {
+      provide: hotelServiceSymbol,
+      useValue: {
+        getHotelList: async () => [],
+        toggleHotelFavoriteState: async () => hotelParams,
+      },
+    },
+    {
+      provide: authServiceSymbol,
+      useValue: {
+        checkAccessToken: () => true,
+        decodeAccessToken: async () => jsonWebTokenParams,
+      },
+    },
+    {
+      provide: APP_FILTER,
+      useClass: JsonWebTokenExceptionFilter,
+    }
+  ],
+})
+class TestModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): any {
+    consumer.apply(
+      cookieParser(),
+      InitLocalsMiddleware,
+      DecodeJsonWebTokenMiddleware,
+      AccessMiddleware
+    )
+      .forRoutes(FavoriteController)
+  }
+}
 
 
 describe('FavoriteController', () => {
@@ -32,28 +155,9 @@ describe('FavoriteController', () => {
 
   beforeEach(async () => {
     const testModule: TestingModule = await Test.createTestingModule({
-      controllers: [
-        FavoriteController,
-      ],
-      providers: [
-        FavoriteControllerService,
-        {
-          provide: favoriteServiceSymbol,
-          useValue: {
-            getFavoriteHotelList: async () => [],
-            toggleFavoriteStateOfHotelForUser: async () => favoriteParams,
-          },
-        },
-        {
-          provide: authServiceSymbol,
-          useValue: {
-            decodeAccessToken: async () => jsonWebTokenParams,
-          },
-        },
-      ],
+      imports: [TestModule],
     }).compile();
     app = testModule.createNestApplication();
-    app.use(cookieParser());
     await app.init();
     controller = testModule.get<FavoriteController>(FavoriteController);
     service = testModule.get<FavoriteControllerService>(FavoriteControllerService);
@@ -61,54 +165,6 @@ describe('FavoriteController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
-  });
-
-  describe(`GET`, () => {
-    const favoriteUrl = `/api/favorite`;
-
-    describe(`/api/favorite end-point`, () => {
-      it(`status code should be 200`, async () => {
-        const result = await request(app.getHttpServer())
-          .get(favoriteUrl)
-          .send()
-          .set(`Cookie`, `access-token=test`);
-        expect(result.status).toBe(HttpStatus.OK);
-      });
-
-      it(`status code should be 401 if user is unauthorized`, async () => {
-        jest.spyOn(service, `getFavoriteHotelList`).mockImplementationOnce(async () => {
-          throw new JsonWebTokenError({
-            type: EJsonWebTokenType.IS_NOT_EXISTED,
-            message: `test`,
-          });
-        });
-        const result = await request(app.getHttpServer())
-          .get(favoriteUrl)
-          .send();
-        expect(result.status).toBe(HttpStatus.UNAUTHORIZED);
-      });
-
-      describe(`getFavoriteHotelList method of FavoriteControllerService`, () => {
-        it(`should call`, async () => {
-          const getFavoriteHotelList = jest.spyOn(service, `getFavoriteHotelList`).mockImplementationOnce(async () => null);
-          await request(app.getHttpServer())
-            .get(favoriteUrl)
-            .send()
-            .set(`Cookie`, `access-token=test`);
-          expect(getFavoriteHotelList).toHaveBeenCalledTimes(1);
-        });
-
-        it(`should call with params`, async () => {
-          const getFavoriteHotelList = jest.spyOn(service, `getFavoriteHotelList`).mockImplementationOnce(async () => null);
-          const accessToken = `test`;
-          await request(app.getHttpServer())
-            .get(favoriteUrl)
-            .send()
-            .set(`Cookie`, `access-token=${accessToken}`);
-          expect(getFavoriteHotelList).toHaveBeenCalledWith(accessToken);
-        });
-      });
-    })
   });
 
   describe(`POST`, () => {
@@ -153,7 +209,7 @@ describe('FavoriteController', () => {
             .post(favoriteUrl)
             .send()
             .set(`Cookie`, `access-token=${accessToken}`);
-          expect(toggleFavoriteStatus).toHaveBeenCalledWith(`test`, accessToken);
+          expect(toggleFavoriteStatus).toHaveBeenCalledWith(jsonWebTokenParams.id, `test`);
         });
       });
     });

@@ -7,8 +7,6 @@ import {
   cityServiceSymbol,
   CommentService,
   commentServiceSymbol,
-  FavoriteService,
-  favoriteServiceSymbol,
   HotelService,
   hotelServiceSymbol,
   UserService,
@@ -20,7 +18,6 @@ import {
   CommonAdapterModule,
   CommentAdapterService,
   CityAdapterService,
-  FavoriteAdapterService,
   HotelAdapterService,
   UserAdapterService,
   UserTypeAdapterService,
@@ -82,19 +79,20 @@ import {
       ]
     },
     {
-      provide: favoriteServiceSymbol,
-      useFactory: (favoriteAdapterService: FavoriteAdapterService) => new FavoriteService(
-        favoriteAdapterService,
-        favoriteAdapterService,
-        favoriteAdapterService,
-        favoriteAdapterService
-      ),
-      inject: [FavoriteAdapterService],
-    },
-    {
       provide: hotelServiceSymbol,
-      useFactory: (hotelAdapterService: HotelAdapterService) => new HotelService(hotelAdapterService, hotelAdapterService),
-      inject: [HotelAdapterService],
+      useFactory: (
+        hotelAdapterService: HotelAdapterService,
+        userAdapterService: UserAdapterService
+      ) => new HotelService(
+        hotelAdapterService,
+        hotelAdapterService,
+        userAdapterService,
+        hotelAdapterService
+      ),
+      inject: [
+        HotelAdapterService,
+        UserAdapterService,
+      ],
     },
     {
       provide: userServiceSymbol,
@@ -108,7 +106,6 @@ import {
     commentServiceSymbol,
     hotelServiceSymbol,
     userServiceSymbol,
-    favoriteServiceSymbol,
   ],
 })
 export class AdapterModule {

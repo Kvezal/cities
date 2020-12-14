@@ -1,0 +1,1 @@
+export { DecodeJsonWebTokenMiddleware } from './decode-json-web-token.middleware';

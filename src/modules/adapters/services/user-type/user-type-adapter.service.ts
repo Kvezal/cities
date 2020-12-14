@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 import { UserTypeEntity } from 'domains/entities';
 import { LoadUserTypeByTitlePort } from 'domains/ports';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { UserTypeMapper, UserTypeOrmEntity } from 'modules/adapters';
+
+import { UserTypeMapper } from '../../mappers';
+import { UserTypeOrmEntity } from '../../orm-entities';
 
 
 @Injectable()
