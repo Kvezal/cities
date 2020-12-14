@@ -8,6 +8,8 @@ import {
   UseFilters,
 } from '@nestjs/common';
 import {
+  ApiBadRequestResponse,
+  ApiCookieAuth,
   ApiHeader,
   ApiOkResponse,
   ApiQuery,
@@ -16,7 +18,10 @@ import {
 } from '@nestjs/swagger';
 
 import { JsonWebTokenExceptionFilter } from 'modules/api/filters';
-import { HotelOutput } from 'modules/api/interfaces';
+import {
+  CommentOutput,
+  HotelOutput,
+} from 'modules/api/interfaces';
 import { IRequest } from 'modules/api/middlewares';
 
 import { EApiRouteName } from '../api-route-names.enum';
@@ -33,8 +38,15 @@ export class FavoriteController {
   @Post()
   @UseFilters(JsonWebTokenExceptionFilter)
   @HttpCode(HttpStatus.OK)
+
+
+  @ApiCookieAuth(`accessToken`)
   @ApiOkResponse({description: `should toggle favorite status for authorized user`})
   @ApiUnauthorizedResponse({description: `should return authorization error`})
+  @ApiBadRequestResponse({
+    description: `should return bad request if parameters are invalid`,
+    type: CommentOutput,
+  })
   @ApiHeader({
     name: `cookie`,
     description: `should contain access token or refresh one`,

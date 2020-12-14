@@ -10,9 +10,13 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import {
+  ApiBadRequestResponse,
+  ApiCookieAuth,
+  ApiCreatedResponse,
   ApiOkResponse,
   ApiQuery,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 
 import { IRequest } from 'modules/api/middlewares';
@@ -53,6 +57,13 @@ export class CommentController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @ApiCookieAuth(`accessToken`)
+  @ApiCreatedResponse({
+    description: `should create hotel comments`,
+    type: CommentOutput,
+  })
+  @ApiUnauthorizedResponse({description: `should return error if user unauthorized`})
+  @ApiBadRequestResponse({ description: `should return bad request if parameters are invalid` })
   public async createHotelComment(
     @Body(ValidationPipe) body: CommentDto,
     @Req() request: IRequest
