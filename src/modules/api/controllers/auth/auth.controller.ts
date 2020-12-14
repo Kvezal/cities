@@ -6,21 +6,36 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  UseFilters,
-  ValidationPipe,
   Req,
   Res,
+  UseFilters,
+  ValidationPipe,
 } from '@nestjs/common';
-import { Response, Request } from 'express';
+import {
+  ApiCookieAuth,
+  ApiCreatedResponse,
+  ApiHeader,
+  ApiNoContentResponse,
+  ApiOkResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
+import {
+  Request,
+  Response,
+} from 'express';
 
-import { IJsonWebTokenParams } from 'domains/entities';
-
-import { Filter, JsonWebTokenExceptionFilter } from '../../filters';
+import {
+  Filter,
+  JsonWebTokenExceptionFilter,
+} from '../../filters';
 import { EApiRouteName } from '../api-route-names.enum';
 import { AuthLoginDto } from './auth.dto';
 import { AuthControllerService } from './auth-controller.service';
+import { JsonWebTokenParams } from 'modules/api/controllers/auth/auth.interface';
 
 
+@ApiTags(`Auth`)
 @Controller(EApiRouteName.AUTH)
 export class AuthController {
   constructor(
@@ -31,6 +46,15 @@ export class AuthController {
   @Post(`login`)
   @UseFilters(Filter)
   @HttpCode(HttpStatus.CREATED)
+  @ApiCreatedResponse({
+    description: `User is authorized`,
+    headers: {
+      'set-cookie': {
+        description: `should return access and refresh cookies`,
+        required: true,
+      },
+    },
+  })
   public async login(
     @Body(ValidationPipe) body: AuthLoginDto,
     @Res() response: Response
@@ -41,9 +65,17 @@ export class AuthController {
   }
 
 
+
   @Head(`check`)
   @UseFilters(JsonWebTokenExceptionFilter)
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiNoContentResponse({description: `user is authorized`})
+  @ApiUnauthorizedResponse({description: `user is unauthorized`})
+  @ApiCookieAuth(`accessToken`)
+  @ApiHeader({
+    name: `cookie`,
+    description: `should contain access token or refresh one`,
+  })
   public async check(
     @Req() request: Request
   ): Promise<void> {
@@ -52,20 +84,46 @@ export class AuthController {
   }
 
 
+
   @Get(`decode`)
   @UseFilters(JsonWebTokenExceptionFilter)
   @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({
+    description: `should return decoded access token`,
+    type: JsonWebTokenParams,
+  })
+  @ApiUnauthorizedResponse({description: `user is unauthorized`})
+  @ApiCookieAuth(`accessToken`)
+  @ApiHeader({
+    name: `cookie`,
+    description: `should contain access token or refresh one`
+  })
   public async decode(
     @Req() request: Request
-  ): Promise<IJsonWebTokenParams> {
+  ): Promise<JsonWebTokenParams> {
     const accessToken = request.cookies[`access-token`];
     return this._authControllerService.decodeAccessToken(accessToken);
   }
 
 
   @Post(`refresh`)
-  @UseFilters(Filter)
+  @UseFilters(JsonWebTokenExceptionFilter)
   @HttpCode(HttpStatus.CREATED)
+  @ApiOkResponse({
+    description: `user authorization token updated`,
+    headers: {
+      'set-cookie': {
+        description: `should return access and refresh cookies`,
+        required: true,
+      },
+    },
+  })
+  @ApiUnauthorizedResponse({description: `user is unauthorized`})
+  @ApiCookieAuth(`accessToken`)
+  @ApiHeader({
+    name: `cookie`,
+    description: `should contain refresh token`
+  })
   public async refresh(
     @Req() request: Request,
     @Res() response: Response

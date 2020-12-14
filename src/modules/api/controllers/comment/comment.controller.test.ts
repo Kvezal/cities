@@ -62,7 +62,7 @@ const jsonWebTokenParams: IJsonWebTokenParams = {
   id: userParams.id,
   name: userParams.name,
   email: userParams.email,
-  image: userParams.image,
+  image: userParams.image.title,
 };
 
 const hotelParams: IHotel = {

@@ -53,7 +53,7 @@ export class AuthService implements
       id: userEntity.id,
       name: userEntity.name,
       email: userEntity.email,
-      image: userEntity.image,
+      image: userEntity.image.title,
     });
     await this._jsonWebTokenSaverService.saveJsonWebToken(jsonWebTokenEntity.refreshToken);
     return jsonWebTokenEntity;

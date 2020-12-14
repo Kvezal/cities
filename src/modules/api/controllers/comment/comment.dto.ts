@@ -1,4 +1,5 @@
 import { IsNumber, IsString, Length, Max, MaxLength, Min, MinLength } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 
 export const comment = {
@@ -16,15 +17,30 @@ export const comment = {
 };
 
 export class CommentDto {
+  @ApiProperty({
+    description: `comment text`,
+    example: `This is a comment example to describe a user impression`,
+    required: true,
+  })
   @IsString()
   @MinLength(comment.text.MIN_LENGTH)
   @MaxLength(comment.text.MAX_LENGTH)
   public text: string;
 
+  @ApiProperty({
+    description: `identifier of the commented hotel`,
+    example: `023dda52-f07b-47ef-a44c-2301f8743149`,
+    required: true,
+  })
   @IsString()
   @Length(comment.hotelId.LENGTH)
   public hotelId: string;
 
+  @ApiProperty({
+    description: `hotel rating`,
+    example: 5,
+    required: true,
+  })
   @IsNumber()
   @Min(comment.rating.MIN)
   @Max(comment.rating.MAX)

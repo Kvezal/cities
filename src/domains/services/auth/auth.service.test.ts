@@ -19,25 +19,28 @@ const authenticateParam: IUserAuthenticate = {
   password: `password`,
 };
 
-const jsonWebTokenEntityParams: IJsonWebTokenParams = {
-  id: `1`,
-  name: `name`,
-  email: `email@gmail.com`,
-  image: {
-    id: `1`,
-    title: `title`,
-  },
-};
-
 const userTypeParams: IUserType = {
   id: `1`,
   title: `title`,
 };
 
 const userEntityParams: IUser = {
-  ...jsonWebTokenEntityParams,
+  id: `1`,
+  name: `name`,
+  email: `email@gmail.com`,
   password: `password`,
   type: userTypeParams,
+  image: {
+    id: `1`,
+    title: `image`,
+  },
+};
+
+const jsonWebTokenEntityParams: IJsonWebTokenParams = {
+  id: userEntityParams.id,
+  name: userEntityParams.name,
+  email: userEntityParams.email,
+  image: userEntityParams.image.title,
 };
 
 describe(`Auth service`, () => {
@@ -175,7 +178,7 @@ describe(`Auth service`, () => {
           id: userEntity.id,
           name: userEntity.name,
           email: userEntity.email,
-          image: userEntity.image,
+          image: userEntity.image.title,
         });
       });
     });
@@ -197,12 +200,7 @@ describe(`Auth service`, () => {
 
       it(`should call with params`, async () => {
         const saveJsonWebToken = jest.fn();
-        const jsonWebTokenEntity = JsonWebTokenEntity.generate({
-          id: userEntity.id,
-          name: userEntity.name,
-          email: userEntity.name,
-          image: userEntity.image,
-        });
+        const jsonWebTokenEntity = JsonWebTokenEntity.generate(jsonWebTokenEntityParams);
         JsonWebTokenEntity.generate = jest.fn(JsonWebTokenEntity.generate).mockReturnValueOnce(jsonWebTokenEntity);
         const authService = new AuthService(
           {loadUserByEmail: jest.fn().mockReturnValue(userEntity)},
