@@ -1,16 +1,26 @@
 import { CommentEntity, HotelEntity, IComment, IHotel, IUser, RatingEntity, UserEntity } from 'domains/entities';
-import { ICommentSorting } from 'domains/interfaces';
+import {
+  ICommentCreate,
+  ICommentSorting,
+} from 'domains/interfaces';
 
 import { CommentService } from './comment.service';
+import { Uuid } from 'domains/utils';
 
 
-const commentParams: IComment = {
+const userParams: IUser = {
   id: `1`,
-  text: `text`,
-  createdAt: new Date(),
-  rating: 4,
-  hotelId: `1`,
-  userId: `1`,
+  name: `name`,
+  email: `email@gmail.com`,
+  password: `password`,
+  image: {
+    id: `1`,
+    title: `title`,
+  },
+  type: {
+    id: `1`,
+    title: `title`,
+  },
 };
 
 const hotelParams: IHotel = {
@@ -52,20 +62,7 @@ const hotelParams: IHotel = {
     longitude: 4.895168,
     zoom: 10,
   },
-  host: {
-    id: `1`,
-    name: `name`,
-    email: `email@gmail.com`,
-    password: `password`,
-    type: {
-      id: `1`,
-      title: `title`,
-    },
-    image: {
-      id: `1`,
-      title: `title`,
-    },
-  },
+  host: userParams,
   images: [
     {
       id: `1`,
@@ -76,37 +73,23 @@ const hotelParams: IHotel = {
       title: `title`,
     }
   ],
-  favorites: [
-    {
-      id: `1`,
-      name: `name`,
-      email: `email@gmail.com`,
-      password: `password`,
-      type: {
-        id: `1`,
-        title: `title`,
-      },
-      image: {
-        id: `1`,
-        title: `title`,
-      },
-    }
-  ],
+  favorites: [userParams],
 };
 
-const userParams: IUser = {
+const commentParams: IComment = {
   id: `1`,
-  name: `name`,
-  email: `email@gmail.com`,
-  password: `password`,
-  image: {
-    id: `1`,
-    title: `title`,
-  },
-  type: {
-    id: `1`,
-    title: `title`,
-  },
+  text: `text`,
+  createdAt: new Date(),
+  rating: 4,
+  hotel: hotelParams,
+  user: userParams,
+};
+
+const commentCreateParams: ICommentCreate = {
+  text: `text`,
+  rating: 4,
+  hotelId: hotelParams.id,
+  userId: userParams.id,
 };
 
 const commentSortingParams: ICommentSorting = {
@@ -167,8 +150,8 @@ describe(`Comment Service`, () => {
     const hotelEntity = HotelEntity.create(hotelParams);
     const ratingEntity = RatingEntity.create({
       value: commentParams.rating,
-      hotelId: commentParams.hotelId,
-      userId: commentParams.userId,
+      hotelId: hotelParams.id,
+      userId: userParams.id,
     });
 
     describe(`loadUserById method of UserLoaderService`, () => {
@@ -183,7 +166,7 @@ describe(`Comment Service`, () => {
           null,
           {checkRating: async () => false}
         );
-        await commentService.createHotelComment(commentParams);
+        await commentService.createHotelComment(commentCreateParams);
         expect(loadUserById).toHaveBeenCalledTimes(1);
       });
 
@@ -198,8 +181,8 @@ describe(`Comment Service`, () => {
           null,
           {checkRating: async () => false}
         );
-        await commentService.createHotelComment(commentParams);
-        expect(loadUserById).toHaveBeenCalledWith(commentParams.userId);
+        await commentService.createHotelComment(commentCreateParams);
+        expect(loadUserById).toHaveBeenCalledWith(commentCreateParams.userId);
       });
 
       it(`should throw exception if user not existed`, async () => {
@@ -212,8 +195,8 @@ describe(`Comment Service`, () => {
           null,
           null
         );
-        await expect(commentService.createHotelComment(commentParams)).rejects
-          .toThrow(new Error(`user with ${commentParams.userId} id is not existed`));
+        await expect(commentService.createHotelComment(commentCreateParams)).rejects
+          .toThrow(new Error(`user with ${commentCreateParams.userId} id is not existed`));
       });
     });
 
@@ -229,7 +212,7 @@ describe(`Comment Service`, () => {
           null,
           {checkRating: async () => false}
         );
-        await commentService.createHotelComment(commentParams);
+        await commentService.createHotelComment(commentCreateParams);
         expect(loadHotelById).toHaveBeenCalledTimes(1);
       });
 
@@ -244,8 +227,8 @@ describe(`Comment Service`, () => {
           null,
           {checkRating: async () => false}
         );
-        await commentService.createHotelComment(commentParams);
-        expect(loadHotelById).toHaveBeenCalledWith(commentParams.hotelId);
+        await commentService.createHotelComment(commentCreateParams);
+        expect(loadHotelById).toHaveBeenCalledWith(commentCreateParams.hotelId);
       });
 
       it(`should throw exception if user not existed`, async () => {
@@ -258,8 +241,8 @@ describe(`Comment Service`, () => {
           null,
           {checkRating: async () => false}
         );
-        await expect(commentService.createHotelComment(commentParams)).rejects
-          .toThrow(new Error(`hotel with ${commentParams.hotelId} id is not existed`));
+        await expect(commentService.createHotelComment(commentCreateParams)).rejects
+          .toThrow(new Error(`hotel with ${commentCreateParams.hotelId} id is not existed`));
       });
     });
 
@@ -275,7 +258,7 @@ describe(`Comment Service`, () => {
           null,
           {checkRating: async () => false}
         );
-        await commentService.createHotelComment(commentParams);
+        await commentService.createHotelComment(commentCreateParams);
         expect(RatingEntity.create).toHaveBeenCalledTimes(1);
       });
 
@@ -290,10 +273,10 @@ describe(`Comment Service`, () => {
           null,
           {checkRating: async () => false}
         );
-        await commentService.createHotelComment(commentParams);
+        await commentService.createHotelComment(commentCreateParams);
         expect(RatingEntity.create).toHaveBeenCalledWith({
-          userId: commentParams.userId,
-          hotelId: commentParams.hotelId,
+          userId: commentCreateParams.userId,
+          hotelId: commentCreateParams.hotelId,
           value: commentParams.rating,
         });
       });
@@ -311,7 +294,7 @@ describe(`Comment Service`, () => {
           null,
           {checkRating}
         );
-        await commentService.createHotelComment(commentParams);
+        await commentService.createHotelComment(commentCreateParams);
         expect(checkRating).toHaveBeenCalledTimes(1);
       });
 
@@ -326,7 +309,7 @@ describe(`Comment Service`, () => {
           null,
           {checkRating}
         );
-        await commentService.createHotelComment(commentParams);
+        await commentService.createHotelComment(commentCreateParams);
         expect(checkRating).toHaveBeenCalledWith(ratingEntity);
       });
 
@@ -342,7 +325,7 @@ describe(`Comment Service`, () => {
             {updateRating},
             {checkRating: async () => true}
           );
-          await commentService.createHotelComment(commentParams);
+          await commentService.createHotelComment(commentCreateParams);
           expect(updateRating).toHaveBeenCalledTimes(1);
         });
 
@@ -357,7 +340,7 @@ describe(`Comment Service`, () => {
             {updateRating},
             {checkRating: async () => true}
           );
-          await commentService.createHotelComment(commentParams);
+          await commentService.createHotelComment(commentCreateParams);
           expect(updateRating).toHaveBeenCalledWith(ratingEntity);
         });
       });
@@ -374,7 +357,7 @@ describe(`Comment Service`, () => {
             null,
             {checkRating: async () => false}
           );
-          await commentService.createHotelComment(commentParams);
+          await commentService.createHotelComment(commentCreateParams);
           expect(saveRating).toHaveBeenCalledTimes(1);
         });
 
@@ -389,7 +372,7 @@ describe(`Comment Service`, () => {
             null,
             {checkRating: async () => false}
           );
-          await commentService.createHotelComment(commentParams);
+          await commentService.createHotelComment(commentCreateParams);
           expect(saveRating).toHaveBeenCalledWith(ratingEntity);
         });
       });
@@ -407,11 +390,12 @@ describe(`Comment Service`, () => {
           null,
           {checkRating: async () => false}
         );
-        await commentService.createHotelComment(commentParams);
+        await commentService.createHotelComment(commentCreateParams);
         expect(CommentEntity.create).toHaveBeenCalledTimes(1);
       });
 
       it(`should call with params`, async () => {
+        Uuid.generate = jest.fn(Uuid.generate).mockReturnValueOnce(`test-id`);
         CommentEntity.create = jest
           .fn(CommentEntity.create);
         const commentService = new CommentService(
@@ -423,8 +407,13 @@ describe(`Comment Service`, () => {
           null,
           {checkRating: async () => false}
         );
-        await commentService.createHotelComment(commentParams);
-        expect(CommentEntity.create).toHaveBeenCalledWith(commentParams);
+        await commentService.createHotelComment(commentCreateParams);
+        expect(CommentEntity.create).toHaveBeenCalledWith({
+          ...commentCreateParams,
+          id: `test-id`,
+          hotel: hotelEntity,
+          user: userEntity,
+        });
       });
     });
 
@@ -440,13 +429,14 @@ describe(`Comment Service`, () => {
           null,
           {checkRating: async () => false}
         );
-        await commentService.createHotelComment(commentParams);
+        await commentService.createHotelComment(commentCreateParams);
         expect(saveHotelComment).toHaveBeenCalledTimes(1);
       });
 
       it(`should call with params`, async () => {
         const commentEntity = CommentEntity.create(commentParams);
-        const saveHotelComment = jest.fn().mockReturnValue(commentEntity);
+        CommentEntity.create = jest.fn(CommentEntity.create).mockReturnValueOnce(commentEntity);
+        const saveHotelComment = jest.fn();
         const commentService = new CommentService(
           null,
           {saveHotelComment},
@@ -456,7 +446,7 @@ describe(`Comment Service`, () => {
           null,
           {checkRating: async () => false}
         );
-        await commentService.createHotelComment(commentParams);
+        await commentService.createHotelComment(commentCreateParams);
         expect(saveHotelComment).toHaveBeenCalledWith(commentEntity);
       });
     });
@@ -472,7 +462,7 @@ describe(`Comment Service`, () => {
         null,
         {checkRating: async () => false}
       );
-      const createHotelCommentResult = await commentService.createHotelComment(commentParams);
+      const createHotelCommentResult = await commentService.createHotelComment(commentCreateParams);
       expect(createHotelCommentResult).toEqual(commentEntity);
     });
   });

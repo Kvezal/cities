@@ -9,9 +9,13 @@ import {
   SaveHotelCommentPort,
 } from 'domains/ports';
 
-import { CommentOrmEntity } from '../../orm-entities';
+import {
+  CommentOrmEntity,
+  RatingOrmEntity,
+  UserOrmEntity,
+} from '../../orm-entities';
 import { CommentViewMapper } from '../../mappers';
-import { CommentViewOrmEntity } from '../../view-orm-entities';
+import { HotelAdapterService } from '../hotel';
 
 
 @Injectable()
@@ -19,22 +23,57 @@ export class CommentAdapterService implements
   LoadHotelCommentListPort,
   SaveHotelCommentPort {
   constructor(
-    @InjectRepository(CommentViewOrmEntity) private readonly _commentWithRatingRepository: Repository<CommentViewOrmEntity>,
+    private readonly _hotelAdapterService: HotelAdapterService,
     @InjectRepository(CommentOrmEntity) private readonly _commentRepository: Repository<CommentOrmEntity>
   ) {}
 
   public async loadHotelCommentList(commentSortingParams: ICommentSorting): Promise<CommentEntity[]> {
-    const commentWithRatingOrmEntities: CommentViewOrmEntity[] = await this._commentWithRatingRepository.find({
-      where: {
-        hotelId: commentSortingParams.hotelId
-      }
-    });
-    return commentWithRatingOrmEntities.map((commentWithRatingOrmEntity: CommentViewOrmEntity) => CommentViewMapper.mapToDomain(commentWithRatingOrmEntity));
+    const commentOrmEntities: CommentOrmEntity[] = await this.getCommentHotelList(commentSortingParams);
+    return commentOrmEntities.map(
+      (commentOrmEntity: CommentOrmEntity) => CommentViewMapper.mapToDomain(commentOrmEntity)
+    );
   }
 
   public async saveHotelComment(entity: CommentEntity): Promise<CommentEntity> {
     const ormEntity = CommentViewMapper.mapToOrmEntity(entity);
     await this._commentRepository.save(ormEntity);
     return entity;
+  }
+
+  public async getCommentHotelList(commentSortingParams: ICommentSorting): Promise<CommentOrmEntity[]> {
+    const { hotelId } = commentSortingParams;
+    return await this._commentRepository
+      .createQueryBuilder(`comments`)
+      .select([
+        `comments.id AS id`,
+        `comments.text AS text`,
+        `comments.createdAt AS createdAt`,
+        `ratings.value AS rating`,
+        `TO_JSON(hotels) AS hotel`,
+        `TO_JSON(users) AS user`
+      ])
+      .leftJoin((subQuery) => {
+        return this._hotelAdapterService.getHotelListQuery(
+          subQuery,
+          { hotelId }
+        );
+      }, `hotels`, `comments.hotelId = hotels.id`)
+      .leftJoin((subQuery) => {
+        return subQuery
+          .select([
+            `users.id AS id`,
+            `users.name AS name`,
+            `users.email AS email`,
+            `TO_JSON(images) AS image`,
+            `TO_JSON(types) AS type`
+          ])
+          .from(UserOrmEntity, `users`)
+          .leftJoin(`users.image`, `images`)
+          .leftJoin(`users.type`, `types`);
+      }, `users`, `comments.userId = users.id`)
+      .leftJoin(RatingOrmEntity, `ratings`, `comments.hotelId = ratings.hotelId AND comments.userId = ratings.userId`)
+      .where(`comments.hotelId = :hotelId`, { hotelId })
+      .orderBy(`comments.createdAt`, `DESC`)
+      .getRawMany();
   }
 }

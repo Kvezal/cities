@@ -1,4 +1,4 @@
-import { IUserOut } from 'modules/api/controllers';
+import { IUserOut } from '../auth';
 import {
   CityOrmEntity,
   LocationOrmEntity,

@@ -4,24 +4,25 @@ import {
   NestModule,
 } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
-import * as cookieParser from 'cookie-parser';
 
 import { AdapterModule } from 'modules/adapters';
 import {
   AccessMiddleware,
   DecodeJsonWebTokenMiddleware,
   InitLocalsMiddleware,
+  RefreshJsonWebTokenMiddleware,
 } from 'modules/api/middlewares';
 import { JsonWebTokenExceptionFilter } from 'modules/api/filters';
+import { ConfigModule } from 'modules/config';
 
 import { FavoriteController } from './favorite.controller';
 import { FavoriteControllerService } from './favorite-controller.service';
 
 
-
 @Module({
   imports: [
     AdapterModule,
+    ConfigModule,
   ],
   controllers: [
     FavoriteController,
@@ -37,9 +38,9 @@ import { FavoriteControllerService } from './favorite-controller.service';
 export class FavoriteModule implements NestModule {
   configure(consumer: MiddlewareConsumer): any {
     consumer.apply(
-      cookieParser(),
       InitLocalsMiddleware,
       DecodeJsonWebTokenMiddleware,
+      RefreshJsonWebTokenMiddleware,
       AccessMiddleware
     )
       .forRoutes(FavoriteController)

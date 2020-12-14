@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import {
+  Repository,
+  SelectQueryBuilder,
+} from 'typeorm';
 
 import { HotelEntity } from 'domains/entities';
 import {
@@ -73,11 +76,17 @@ export class HotelAdapterService implements
   }
 
   public async getHotelList(sortParams: IHotelSortingParams): Promise<HotelOrmEntity[]> {
-    const { cityId, hotelId, type = ESortingType.POPULAR, filter, userId /*= `2a4a6d1a-eb9b-4b4a-bee5-c7728b78001f`*/ } = sortParams;
-    const orderParams = this._hotelOrderParamsMap.get(type);
+    const queryBuilder: SelectQueryBuilder<HotelOrmEntity> = this._hotelRepository
+      .manager
+      .createQueryBuilder();
 
-    return this._hotelRepository
-      .createQueryBuilder(`hotels`)
+    return this.getHotelListQuery(queryBuilder, sortParams).getRawMany();
+  }
+
+  public getHotelListQuery(queryBuilder: SelectQueryBuilder<any>, sortParams: IHotelSortingParams = {}): SelectQueryBuilder<any> {
+    const { cityId, hotelId, type = ESortingType.POPULAR, filter, userId } = sortParams;
+    const orderParams = this._hotelOrderParamsMap.get(type);
+    return queryBuilder
       .select([
         `hotels.id AS id`,
         `hotels.title AS title`,
@@ -96,6 +105,7 @@ export class HotelAdapterService implements
         `users.value AS host`,
         `favorites.list AS favorites`
       ])
+      .from(HotelOrmEntity, `hotels`)
       .leftJoin((subQuery) => {
         return subQuery
           .select([
@@ -226,7 +236,6 @@ export class HotelAdapterService implements
       .where(cityId ? `hotels.cityId = :cityId` : `TRUE`, { cityId })
       .andWhere(hotelId ? `hotels.id = :hotelId` : `TRUE`, { hotelId })
       .andWhere(filter === ESortingFilter.FAVORITE ? `"isFavorite" IS NOT NULL` : `TRUE`)
-      .orderBy(orderParams.condition, orderParams.type)
-      .getRawMany();
+      .orderBy(orderParams.condition, orderParams.type);
   }
 }

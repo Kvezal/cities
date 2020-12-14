@@ -394,6 +394,7 @@ describe(`Database filler`, () => {
       databaseFiller.fillFeaturesTable = async () => [];
       databaseFiller.fillUsersTable = async () => [];
       databaseFiller.fillHotelsTable = async () => [];
+      databaseFiller.fillCommentsTable = async () => [];
       databaseFiller.save = () => null;
     });
 
@@ -429,11 +430,11 @@ describe(`Database filler`, () => {
       databaseFiller.fillFeaturesTable = async () => [];
       databaseFiller.fillUsersTable = async () => [];
       databaseFiller.fillHotelsTable = async () => [];
-      databaseFiller.save = () => null;
+      databaseFiller.save = async () => [];
     });
 
     it(`should call save method`, async () => {
-      const save = jest.fn();
+      const save = jest.fn().mockResolvedValueOnce([]);
       await databaseFiller.fill(1);
       databaseFiller.save = save;
       await databaseFiller.fillCommentsTable();

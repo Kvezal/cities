@@ -11,32 +11,115 @@ import {
 import {
   CommentEntity,
   IComment,
-  IJsonWebTokenParams,
+  IHotel,
+  IUser,
 } from 'domains/entities';
-import { CommentViewMapper } from 'modules/adapters';
+import {
+  ICommentCreate,
+  ICommentSorting,
+} from 'domains/interfaces';
+import { ICommentOut } from 'modules/api/controllers/comment/comment.interface';
 
 
-const jsonWebTokenParams: IJsonWebTokenParams = {
+const commentSortingParams: ICommentSorting = {
+  hotelId: `1`,
+}
+
+const userParams: IUser = {
   id: `008131ec-cb07-499a-86e4-6674afa31532`,
   name: `name`,
   email: `email@gmail.com`,
-  image: null,
+  password: `password`,
+  image: {
+    id: `1`,
+    title: `title`,
+  },
+  type: {
+    id: `1`,
+    title: `title`,
+  },
 };
 
-const commentParams: IComment = {
+const hotelParams: IHotel = {
+  id: `1`,
+  title: `title`,
+  description: `description`,
+  bedroomCount: 4,
+  maxAdultCount: 2,
+  price: 150,
+  isPremium: true,
+  rating: 3,
+  features: [
+    {
+      id: `1`,
+      title: `title`,
+    },
+    {
+      id: `2`,
+      title: `title`,
+    }
+  ],
+  type: {
+    id: `1`,
+    title: `title`,
+  },
+  city: {
+    id: `1`,
+    title: `title`,
+    location: {
+      id: `1`,
+      latitude: 52.370216,
+      longitude: 4.895168,
+      zoom: 10,
+    },
+  },
+  location: {
+    id: `1`,
+    latitude: 52.370216,
+    longitude: 4.895168,
+    zoom: 10,
+  },
+  host: userParams,
+  images: [
+    {
+      id: `1`,
+      title: `title`,
+    },
+    {
+      id: `2`,
+      title: `title`,
+    }
+  ],
+  favorites: [userParams],
+};
+
+const commentParams: ICommentCreate = {
   text: Array(20).fill(`i`).join(``),
-  hotelId: `000e1960-fa36-4a99-b8c0-c4eb96e823e3`,
+  hotelId: hotelParams.id,
   rating: 4,
-  userId: jsonWebTokenParams.id
+  userId: userParams.id
 };
 
 const commentEntityParams: IComment = {
   id: `005d67a0-58c1-40a5-a664-53ed22206a6e`,
   text: commentParams.text,
   createdAt: new Date(),
-  hotelId: commentParams.hotelId,
-  userId: jsonWebTokenParams.id,
+  hotel: hotelParams,
+  user: userParams,
   rating: commentParams.rating,
+};
+
+const expectedCommentOutput: ICommentOut = {
+  id: commentEntityParams.id,
+  text: commentEntityParams.text,
+  createdAt: commentEntityParams.createdAt,
+  rating: commentEntityParams.rating,
+  user: {
+    id: userParams.id,
+    name: userParams.name,
+    type: userParams.type.title,
+    image: userParams.image.title,
+  }
 };
 
 describe('CommentControllerService', () => {
@@ -51,6 +134,7 @@ describe('CommentControllerService', () => {
         {
           provide: commentServiceSymbol,
           useValue: {
+            getHotelCommentList: async () => [commentEntity],
             createHotelComment: async () => commentEntity,
           },
         },
@@ -82,25 +166,78 @@ describe('CommentControllerService', () => {
       });
     });
 
-    describe(`mapToOrmEntity method of CommentViewMapper`, () => {
+    describe(`transformEntityToOutputData method of CommentControllerService`, () => {
       it(`should call`, async () => {
-        CommentViewMapper.mapToOrmEntity = jest.fn(CommentViewMapper.mapToOrmEntity);
+        service.transformEntityToOutputData = jest.fn(service.transformEntityToOutputData);
         await service.createHotelComment(commentParams);
-        expect(CommentViewMapper.mapToOrmEntity).toHaveBeenCalledTimes(1);
+        expect(service.transformEntityToOutputData).toHaveBeenCalledTimes(1);
       });
 
       it(`should call with params`, async () => {
-        CommentViewMapper.mapToOrmEntity = jest.fn(CommentViewMapper.mapToOrmEntity);
+        service.transformEntityToOutputData = jest.fn(service.transformEntityToOutputData);
         await service.createHotelComment(commentParams);
-        expect(CommentViewMapper.mapToOrmEntity).toHaveBeenCalledWith(commentEntity);
+        expect(service.transformEntityToOutputData).toHaveBeenCalledWith(commentEntity);
       });
     });
 
     it(`should return correct result`, async () => {
-      const commentOrmEntity = CommentViewMapper.mapToOrmEntity(commentEntity);
-      CommentViewMapper.mapToOrmEntity = jest.fn(CommentViewMapper.mapToOrmEntity).mockReturnValue(commentOrmEntity);
+      service.transformEntityToOutputData = jest.fn(service.transformEntityToOutputData)
+        .mockReturnValue(expectedCommentOutput);
       const result = await service.createHotelComment(commentParams);
-      expect(result).toBe(commentOrmEntity);
+      expect(result).toBe(expectedCommentOutput);
+    });
+  });
+
+  describe(`getHotelCommentList method`, () => {
+    describe(`getHotelCommentList method of CommentService`, () => {
+      it(`should call`, () => {
+        commentService.getHotelCommentList = jest.fn(commentService.getHotelCommentList);
+        service.getHotelCommentList(commentSortingParams);
+        expect(commentService.getHotelCommentList).toBeCalledTimes(1);
+      });
+
+      it(`should call with params`, () => {
+        commentService.getHotelCommentList = jest.fn(commentService.getHotelCommentList);
+        service.getHotelCommentList(commentSortingParams);
+        expect(commentService.getHotelCommentList).toBeCalledWith(commentSortingParams);
+      });
+    });
+
+    describe(`transformEntityToOutputData method of CommentControllerService`, () => {
+      const commentEntities = [commentEntity, commentEntity];
+
+      it(`should call`, async () => {
+        commentService.getHotelCommentList = jest.fn(commentService.getHotelCommentList)
+          .mockResolvedValueOnce(commentEntities);
+        service.transformEntityToOutputData = jest.fn(service.transformEntityToOutputData);
+        await service.getHotelCommentList(commentSortingParams);
+        expect(service.transformEntityToOutputData).toHaveBeenCalledTimes(commentEntities.length);
+      });
+
+      it(`should call with params`, async () => {
+        commentService.getHotelCommentList = jest.fn(commentService.getHotelCommentList)
+          .mockResolvedValueOnce(commentEntities);
+        service.transformEntityToOutputData = jest.fn(service.transformEntityToOutputData);
+        await service.getHotelCommentList(commentSortingParams);
+        expect(service.transformEntityToOutputData).toHaveBeenNthCalledWith(1, commentEntity);
+        expect(service.transformEntityToOutputData).toHaveBeenNthCalledWith(2, commentEntity);
+      });
+    });
+
+    it(`should return correct result`, async () => {
+      commentService.getHotelCommentList = jest.fn(commentService.getHotelCommentList)
+        .mockResolvedValueOnce([commentEntity]);
+      service.transformEntityToOutputData = jest.fn(service.transformEntityToOutputData)
+        .mockReturnValue(expectedCommentOutput);
+      const result: ICommentOut[] = await service.getHotelCommentList(commentSortingParams);
+      expect(result).toEqual([expectedCommentOutput]);
+    });
+  });
+
+  describe(`transformEntityToOutputData method`, () => {
+    it(`should return correct result`, () => {
+      const result = service.transformEntityToOutputData(commentEntity);
+      expect(result).toEqual(expectedCommentOutput)
     });
   });
 });

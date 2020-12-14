@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 
 import { OrmEntitiesModule } from '../orm-entities';
-import { ViewOrmEntitiesModule } from '../view-orm-entities';
 import { AuthAdapterService } from './auth';
 import { CityAdapterService } from './city';
 import { CommentAdapterService } from './comment';
@@ -14,7 +13,6 @@ import { UserTypeAdapterService } from './user-type';
 @Module({
   imports: [
     OrmEntitiesModule,
-    ViewOrmEntitiesModule,
   ],
   providers: [
     AuthAdapterService,

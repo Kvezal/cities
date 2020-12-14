@@ -1,5 +1,13 @@
-import { CommentEntity, IComment, RatingEntity } from 'domains/entities';
-import { ICommentSorting } from 'domains/interfaces';
+import { Uuid } from 'domains/utils';
+
+import {
+  CommentEntity,
+  RatingEntity,
+} from 'domains/entities';
+import {
+  ICommentCreate,
+  ICommentSorting,
+} from 'domains/interfaces';
 import {
   CheckRatingPort,
   LoadHotelByIdPort,
@@ -11,7 +19,10 @@ import {
 } from 'domains/ports';
 import { GetHotelCommentListQuery } from 'domains/queries';
 import { CreateHotelCommentUseCase } from 'domains/use-cases';
-import { CommentError, ECommentField } from 'domains/exceptions';
+import {
+  CommentError,
+  ECommentField,
+} from 'domains/exceptions';
 
 
 export class CommentService implements
@@ -33,7 +44,7 @@ export class CommentService implements
   }
 
 
-  public async createHotelComment(commentParams: IComment): Promise<CommentEntity> {
+  public async createHotelComment(commentParams: ICommentCreate): Promise<CommentEntity> {
     const userEntity = await this._userLoaderService.loadUserById(commentParams.userId);
     if (!userEntity) {
       throw new CommentError({
@@ -62,7 +73,12 @@ export class CommentService implements
       await this._ratingSaverService.saveRating(ratingEntity);
     }
 
-    const commentEntity = CommentEntity.create(commentParams);
+    const commentEntity = CommentEntity.create({
+      ...commentParams,
+      id: Uuid.generate(),
+      hotel: hotelEntity,
+      user: userEntity,
+    });
     return this._hotelCommentSaverService.saveHotelComment(commentEntity);
   }
 }

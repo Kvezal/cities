@@ -35,6 +35,7 @@ export class DatabaseFiller {
   private _featureOrmEntities: FeatureOrmEntity[];
   private _userOrmEntities: UserOrmEntity[];
   private _hotelOrmEntities: HotelOrmEntity[];
+  private _commentOrmEntities: CommentOrmEntity[];
 
 
   constructor(
@@ -51,9 +52,8 @@ export class DatabaseFiller {
     if (count !== 0) {
       this._userOrmEntities = await this.fillUsersTable(count);
       this._hotelOrmEntities = await this.fillHotelsTable(count);
+      this._commentOrmEntities = await this.fillCommentsTable();
       await this.fillRatingsTable();
-      // await this.fillFavoritesTable();
-      await this.fillCommentsTable();
     }
   }
 
@@ -170,18 +170,11 @@ export class DatabaseFiller {
 
 
   public async fillRatingsTable(): Promise<RatingOrmEntity[]> {
-    const standardUsers: UserOrmEntity[] = this._userOrmEntities.filter((user: UserOrmEntity) => user.type.title === `standard`);
-    const ratingOrmEntities: RatingOrmEntity[] = standardUsers.reduce((acc: RatingOrmEntity[], user: UserOrmEntity) => {
-      const ratingEntities: RatingOrmEntity[] = shuffle(this._hotelOrmEntities)
-        .slice(0, getRandomInt(0, this._hotelOrmEntities.length - 1))
-        .map((hotel: HotelOrmEntity): RatingOrmEntity => ({
-          value: getRandomInt(1, 5),
-          hotelId: hotel.id,
-          userId: user.id,
-        }));
-      acc.push(...ratingEntities);
-      return acc;
-    }, []);
+    const ratingOrmEntities: RatingOrmEntity[] = this._commentOrmEntities.map((commentOrmEntity: CommentOrmEntity) => ({
+      value: getRandomInt(1, 5),
+      hotelId: commentOrmEntity.hotel.id,
+      userId: commentOrmEntity.user.id,
+    }));
     return this.save(RatingOrmEntity, ratingOrmEntities);
   }
 

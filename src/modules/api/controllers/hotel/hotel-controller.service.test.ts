@@ -80,7 +80,7 @@ const hotelParams: IHotel = {
   favorites: [],
 };
 
-const awaitedResult = {
+const expectedHotelOutput = {
   id: `1`,
   title: `title`,
   description: `description`,
@@ -163,7 +163,7 @@ describe('HotelControllerService', () => {
 
     it(`should return correct result`, async () => {
       const result = await service.getHotelList({ cityId });
-      expect(result).toEqual(Array(hotelCount).fill(awaitedResult));
+      expect(result).toEqual(Array(hotelCount).fill(expectedHotelOutput));
     });
   });
 
@@ -187,7 +187,7 @@ describe('HotelControllerService', () => {
     describe(`should return correct result`, () => {
       it(`if hotel with hotelId is existed`, async () => {
         const result = await service.getHotelById(hotelId);
-        expect(result).toEqual(awaitedResult);
+        expect(result).toEqual(expectedHotelOutput);
       });
 
       it(`if hotel with hotelId isn't existed`, async () => {

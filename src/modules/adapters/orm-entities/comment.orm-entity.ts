@@ -16,7 +16,7 @@ export class CommentOrmEntity {
   @PrimaryColumn({
     type: 'uuid',
   })
-  public id: string;
+  public id?: string;
 
   @Column()
   public text: string;
@@ -31,9 +31,7 @@ export class CommentOrmEntity {
       cascade: [`remove`],
     }
   )
-  @JoinColumn({
-    name: `userId`,
-  })
+  @JoinColumn()
   public user: UserOrmEntity;
 
   @ManyToOne(
@@ -43,8 +41,8 @@ export class CommentOrmEntity {
       cascade: [`remove`],
     }
   )
-  @JoinColumn({
-    name: `hotelId`,
-  })
+  @JoinColumn()
   public hotel: HotelOrmEntity;
+
+  public rating?: number;
 }
