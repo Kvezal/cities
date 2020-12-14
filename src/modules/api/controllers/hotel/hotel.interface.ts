@@ -1,4 +1,4 @@
-import { IUserOut } from '../auth';
+import { IUserOutput } from 'modules/api/interfaces';
 import {
   CityOrmEntity,
   LocationOrmEntity,
@@ -18,7 +18,7 @@ export interface IHotelOut {
   type: string,
   city: CityOrmEntity,
   location: LocationOrmEntity,
-  host: IUserOut,
+  host: IUserOutput,
   images: string[],
   isFavorite: boolean,
 }

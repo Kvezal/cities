@@ -17,7 +17,7 @@ import {
   authServiceSymbol,
 } from 'domains/services';
 import { ConfigService } from 'modules/config';
-import { JsonWebTokenParams } from 'modules/api/controllers/auth/auth.interface';
+import { JsonWebTokenParams } from 'modules/api/interfaces';
 
 
 @Injectable()

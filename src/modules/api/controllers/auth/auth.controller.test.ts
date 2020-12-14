@@ -7,10 +7,10 @@ import * as request from 'supertest';
 import { IJsonWebTokenParams, JsonWebTokenEntity } from 'domains/entities';
 import { EJsonWebTokenType, EUserField, JsonWebTokenError, UserError } from 'domains/exceptions';
 import { authServiceSymbol } from 'domains/services';
+import { ConfigService } from 'modules/config';
 
 import { AuthControllerService } from './auth-controller.service';
 import { AuthController } from './auth.controller';
-import { ConfigService } from 'modules/config';
 
 
 const jsonWebTokenParams: IJsonWebTokenParams = {

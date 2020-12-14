@@ -25,14 +25,14 @@ import {
   Response,
 } from 'express';
 
+import { AuthLoginDto, JsonWebTokenParams } from 'modules/api/interfaces';
+
 import {
   Filter,
   JsonWebTokenExceptionFilter,
 } from '../../filters';
 import { EApiRouteName } from '../api-route-names.enum';
-import { AuthLoginDto } from './auth.dto';
 import { AuthControllerService } from './auth-controller.service';
-import { JsonWebTokenParams } from 'modules/api/controllers/auth/auth.interface';
 
 
 @ApiTags(`Auth`)

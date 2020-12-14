@@ -1,4 +1,4 @@
-import { IUserOut } from '../auth';
+import { IUserOutput } from 'modules/api/interfaces';
 
 
 export interface ICommentOut {
@@ -6,5 +6,5 @@ export interface ICommentOut {
   text: string,
   createdAt: Date,
   rating: number,
-  user: IUserOut,
+  user: IUserOutput,
 }

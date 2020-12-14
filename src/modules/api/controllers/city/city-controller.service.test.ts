@@ -4,6 +4,7 @@ import { CityService, cityServiceSymbol } from 'domains/services';
 import { CityControllerService } from './city-controller.service';
 import { CityMapper } from 'modules/adapters';
 import { CityEntity, ICity } from 'domains/entities';
+import { CityOutput } from 'modules/api/interfaces';
 
 
 const cityParams: ICity = {
@@ -59,19 +60,19 @@ describe('CityControllerService', () => {
       });
     });
 
-    describe(`mapToOrmEntity method of CityMapper`, () => {
+    describe(`transformEntityToOutputData method of CityControllerService`, () => {
       it(`should call`, async () => {
-        CityMapper.mapToOrmEntity = jest.fn(CityMapper.mapToOrmEntity);
+        service.transformEntityToOutputData = jest.fn(service.transformEntityToOutputData);
         await service.getCityList();
-        expect(CityMapper.mapToOrmEntity).toHaveBeenCalledTimes(3);
+        expect(service.transformEntityToOutputData).toHaveBeenCalledTimes(3);
       });
 
       it(`should call with params`, async () => {
-        CityMapper.mapToOrmEntity = jest.fn(CityMapper.mapToOrmEntity);
+        service.transformEntityToOutputData = jest.fn(service.transformEntityToOutputData);
         await service.getCityList();
-        expect(CityMapper.mapToOrmEntity).toHaveBeenNthCalledWith(1, cityEntity);
-        expect(CityMapper.mapToOrmEntity).toHaveBeenNthCalledWith(2, cityEntity);
-        expect(CityMapper.mapToOrmEntity).toHaveBeenNthCalledWith(3, cityEntity);
+        expect(service.transformEntityToOutputData).toHaveBeenNthCalledWith(1, cityEntity);
+        expect(service.transformEntityToOutputData).toHaveBeenNthCalledWith(2, cityEntity);
+        expect(service.transformEntityToOutputData).toHaveBeenNthCalledWith(3, cityEntity);
       });
     });
 
@@ -81,4 +82,11 @@ describe('CityControllerService', () => {
       expect(result).toEqual([cityOrmEntity, cityOrmEntity, cityOrmEntity]);
     });
   });
+
+  describe(`transformEntityToOutputData method`, () => {
+    it(`should return correct result`, () => {
+      const result: CityOutput = service.transformEntityToOutputData(cityParams);
+      expect(result).toEqual(cityParams);
+    });
+  })
 });
