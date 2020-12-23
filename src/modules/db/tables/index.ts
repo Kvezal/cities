@@ -1,0 +1,14 @@
+export { CitiesDbTable } from './cities';
+export { CommentsDbTable } from './comments';
+export { FavoritesDbTable } from './favorites';
+export { FeaturesDbTable } from './features';
+export { HotelsImagesDbTable } from './hotels-images';
+export { HotelTypesDbTable } from './hotel-types';
+export { HotelsDbTable } from './hotels';
+export { HotelsFeaturesDbTable } from './hotels-features';
+export { ImagesDbTable } from './images';
+export { LocationsDbTable } from './locations';
+export { RatingsDbTable } from './ratings';
+export { RefreshTokensDbTable } from './refresh-tokens';
+export { UserTypesDbTable } from './user-types';
+export { UsersDbTable } from './users';

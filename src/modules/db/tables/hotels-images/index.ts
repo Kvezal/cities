@@ -1,0 +1,1 @@
+export { HotelsImagesDbTable } from './hotels-images.db-table';

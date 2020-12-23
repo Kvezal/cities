@@ -1,0 +1,1 @@
+export { UserTypesDbTable } from './user-types.db-table';
