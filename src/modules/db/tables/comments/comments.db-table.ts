@@ -14,8 +14,8 @@ import { UsersDbTable } from '../users';
 
 const defaultParams = {
   id: ``,
-  userId: ``,
-  hotelId: ``,
+  user_id: ``,
+  hotel_id: ``,
 };
 
 @DbTable({

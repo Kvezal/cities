@@ -76,10 +76,10 @@ export class TablesDataCreator {
           id: uuidv4(),
           title: titles[getRandomInt(0, titles.length - 1)],
           description: descriptions[getRandomInt(0, descriptions.length - 1)],
-          bedroomCount: getRandomInt(1, 3),
-          maxAdultCount: getRandomInt(1, 8),
+          bedroom_count: getRandomInt(1, 3),
+          max_adult_count: getRandomInt(1, 8),
           price: getRandomInt(50, 2000),
-          isPremium: Math.random() > 0.5,
+          is_premium: Math.random() > 0.5,
           type: {
             title: types[getRandomInt(0, types.length - 1)],
           },
@@ -107,8 +107,8 @@ export class TablesDataCreator {
         .slice(0, getRandomInt(0, users.length - 1))
         .map((user: any) => ({
           id: uuidv4(),
-          userId: user.id,
-          hotelId: hotel.id,
+          user_id: user.id,
+          hotel_id: hotel.id,
           text: shuffle(this._usersData.comments)
             .slice(0, getRandomInt(0, this._usersData.comments.length - 1))
             .join(` `),
@@ -124,8 +124,8 @@ export class TablesDataCreator {
       const userFavorites = shuffle(hotels)
         .slice(0, getRandomInt(0, hotels.length - 1))
         .map((hotel: any) => ({
-          userId: user.id,
-          hotelId: hotel.id,
+          user_id: user.id,
+          hotel_id: hotel.id,
         }));
       favorites.push(...userFavorites);
       return favorites;

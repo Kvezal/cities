@@ -17,8 +17,8 @@ import { UsersDbTable } from '../users';
 
 const defaultParams = {
   id: ``,
-  isFavorite: false,
-  userId: ``,
+  is_favorite: false,
+  user_id: ``,
   title: ``,
   city: null,
   sorting: null,

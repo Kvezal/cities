@@ -13,7 +13,7 @@ SELECT
   image_list.value AS images,
   feature_list.value AS features,
   rating.value AS rating,
-  (:userId != '' AND favorite_counts.value !=0) AS isFavorite
+  (:user_id != '' AND favorite_counts.value !=0) AS isFavorite
 FROM hotels
 LEFT JOIN hotel_types ON hotels.hotel_type_id = hotel_types.id
 LEFT JOIN locations ON hotels.location_id = locations.id
@@ -109,7 +109,7 @@ WHERE
   AND (:title = '' OR hotels.title = :title)
   AND (:city::JSON->>'id' IS NULL OR cities.id = UUID(:city::JSON->>'id'))
   AND (:city::JSON->>'title' IS NULL OR cities.title = :city::JSON->>'title')
-  AND (:isFavorite = FALSE OR (:userId != '' AND favorite_counts.value !=0))
+  AND (:is_favorite = FALSE OR (:user_id != '' AND favorite_counts.value !=0))
 ORDER BY
   CASE
     WHEN (:sorting::JSON->>'type' = 'rating')

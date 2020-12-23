@@ -47,7 +47,6 @@ const displayError = (message) => {
 }
 
 const initDb = async () => {
-  console.log(EDrivers.POSTGRE_SQL);
   const connector: DbConnector = await DbConnector.init({
     driver: EDrivers.POSTGRE_SQL,
     host: process.env.DB_HOST,

@@ -1,13 +1,3 @@
---SELECT
---  comments.user_id,
---  comments.hotel_id,
---  comments.value,
---  comments.created_at
---FROM comments
---WHERE (:userId = '' OR comments.user_id = :userId::UUID)
---  AND (:hotelId = '' OR comments.hotel_id = :hotelId::UUID);
-
-
 SELECT
   comments.id AS id,
   comments.user_id AS user_id,
@@ -20,5 +10,5 @@ LEFT JOIN ratings ON
   (comments.hotel_id = ratings.hotel_id)
   AND (comments.user_id = ratings.user_id)
 WHERE (:id = '' OR comments.id = :id::UUID)
-  AND (:userId = '' OR comments.user_id = :userId::UUID)
-  AND (:hotelId = '' OR comments.hotel_id = :hotelId::UUID);
+  AND (:user_id = '' OR comments.user_id = :user_id::UUID)
+  AND (:hotel_id = '' OR comments.hotel_id = :hotel_id::UUID);

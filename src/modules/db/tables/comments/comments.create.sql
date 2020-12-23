@@ -1,6 +1,6 @@
 WITH
   comments_data(id, user_id, hotel_id, text, rating) AS (
-    VALUES [[(:id::UUID, :userId::UUID, :hotelId::UUID, :text, :rating::INTEGER)]]:list:
+    VALUES [[(:id::UUID, :user_id::UUID, :hotel_id::UUID, :text, :rating::INTEGER)]]:list:
   ),
   ratings_result AS (
     INSERT INTO ratings(user_id, hotel_id, value)

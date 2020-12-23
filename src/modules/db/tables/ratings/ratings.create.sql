@@ -1,3 +1,3 @@
 INSERT INTO ratings(user_id, hotel_id, value) VALUES
-  [[(:userId::UUID, :hotelId::UUID, :value::INTEGER)]]:list:
+  [[(:user_id::UUID, :hotel_id::UUID, :value::INTEGER)]]:list:
 RETURNING user_id, hotel_id, value;
