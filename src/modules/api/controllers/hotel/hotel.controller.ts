@@ -56,7 +56,7 @@ export class HotelController {
     required: false,
   })
   @ApiQuery({
-    name: `type`,
+    name: `sorting`,
     description: `lets filter hotels by sorting type`,
     example: ESortingType.POPULAR,
     enum: ESortingType,
