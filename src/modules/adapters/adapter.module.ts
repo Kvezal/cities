@@ -7,6 +7,8 @@ import {
   cityServiceSymbol,
   CommentService,
   commentServiceSymbol,
+  FavoriteService,
+  favoriteServiceSymbol,
   HotelService,
   hotelServiceSymbol,
   UserService,
@@ -18,16 +20,16 @@ import {
   CommonAdapterModule,
   CommentAdapterService,
   CityAdapterService,
+  FavoriteAdapterService,
   HotelAdapterService,
   UserAdapterService,
   UserTypeAdapterService,
-  RatingAdapterService,
 } from './services';
 
 
 @Module({
   imports: [
-    CommonAdapterModule
+    CommonAdapterModule,
   ],
   providers: [
     {
@@ -42,7 +44,7 @@ import {
         userTypeAdapterService,
         authAdapterService,
         authAdapterService,
-        authAdapterService
+        authAdapterService,
       ),
       inject: [
         UserAdapterService,
@@ -61,33 +63,46 @@ import {
         commentAdapterService: CommentAdapterService,
         userAdapterService: UserAdapterService,
         hotelAdapterService: HotelAdapterService,
-        ratingAdapterService: RatingAdapterService,
       ) => new CommentService(
         commentAdapterService,
         commentAdapterService,
         userAdapterService,
         hotelAdapterService,
-        ratingAdapterService,
-        ratingAdapterService,
-        ratingAdapterService
       ),
       inject: [
         CommentAdapterService,
         UserAdapterService,
         HotelAdapterService,
-        RatingAdapterService,
-      ]
+      ],
+    },
+    {
+      provide: favoriteServiceSymbol,
+      useFactory: (
+        hotelAdapterService: HotelAdapterService,
+        userAdapterService: UserAdapterService,
+        favoriteAdapterService: FavoriteAdapterService,
+      ) => new FavoriteService(
+        hotelAdapterService,
+        userAdapterService,
+        favoriteAdapterService,
+        favoriteAdapterService,
+        favoriteAdapterService,
+      ),
+      inject: [
+        HotelAdapterService,
+        UserAdapterService,
+        FavoriteAdapterService,
+      ],
     },
     {
       provide: hotelServiceSymbol,
       useFactory: (
         hotelAdapterService: HotelAdapterService,
-        userAdapterService: UserAdapterService
+        userAdapterService: UserAdapterService,
       ) => new HotelService(
         hotelAdapterService,
         hotelAdapterService,
         userAdapterService,
-        hotelAdapterService
       ),
       inject: [
         HotelAdapterService,
@@ -104,6 +119,7 @@ import {
     authServiceSymbol,
     cityServiceSymbol,
     commentServiceSymbol,
+    favoriteServiceSymbol,
     hotelServiceSymbol,
     userServiceSymbol,
   ],

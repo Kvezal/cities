@@ -29,5 +29,5 @@ export interface IHotel {
   location: ILocation | LocationEntity;
   host: IUser | UserEntity;
   images: (IImage | ImageEntity)[];
-  favorites: (IUser | UserEntity)[];
+  isFavorite: boolean;
 }

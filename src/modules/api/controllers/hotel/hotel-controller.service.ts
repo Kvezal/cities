@@ -26,7 +26,7 @@ export class HotelControllerService {
   public async getHotelList(sortingParams: IHotelSortingParams): Promise<HotelOutput[]> {
     const hotelEntities: HotelEntity[] = await this._hotelService.getHotelList(sortingParams);
     return hotelEntities.map(
-      (hotelEntity: HotelEntity): HotelOutput => (this.transformEntityToOutputData(hotelEntity, sortingParams.userId))
+      (hotelEntity: HotelEntity): HotelOutput => (this.transformEntityToOutputData(hotelEntity))
     );
   }
 
@@ -37,7 +37,7 @@ export class HotelControllerService {
   }
 
 
-  public transformEntityToOutputData(hotelEntity: HotelEntity, userId: string = null): HotelOutput {
+  public transformEntityToOutputData(hotelEntity: HotelEntity): HotelOutput {
     return {
       id: hotelEntity.id,
       title: hotelEntity.title,
@@ -72,7 +72,7 @@ export class HotelControllerService {
         type: hotelEntity.host.type.title,
       },
       images: hotelEntity.images.map((image: ImageEntity) => image.title),
-      isFavorite: hotelEntity.isFavorite(userId),
+      isFavorite: hotelEntity.isFavorite,
     };
   }
 }

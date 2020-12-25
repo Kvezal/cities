@@ -1,98 +1,26 @@
 import { CommentEntity } from './comment.entity';
 import { IComment } from './comment.interface';
-import {
-  IHotel,
-  IUser,
-} from 'domains/entities';
 
 
-const userParams: IUser = {
-  id: `1`,
-  name: `name`,
-  email: `email@gmail.com`,
-  password: `password`,
-  type: {
-    id: `1`,
-    title: `title`,
-  },
-  image: {
-    id: `1`,
-    title: `title`,
-  },
-};
-
-const hotelParams: IHotel = {
-  id: `1`,
-  title: `title`,
-  description: `description`,
-  bedroomCount: 4,
-  maxAdultCount: 2,
-  price: 150,
-  isPremium: true,
-  rating: 3,
-  features: [
-    {
-      id: `1`,
-      title: `title`,
-    },
-    {
-      id: `2`,
-      title: `title`,
-    }
-  ],
-  type: {
-    id: `1`,
-    title: `title`,
-  },
-  city: {
-    id: `1`,
-    title: `title`,
-    location: {
-      id: `1`,
-      latitude: 52.370216,
-      longitude: 4.895168,
-      zoom: 10,
-    },
-  },
-  location: {
-    id: `1`,
-    latitude: 52.370216,
-    longitude: 4.895168,
-    zoom: 10,
-  },
-  host: {
-    id: `1`,
+const commentParams: IComment = {
+  id: `93498b22-73e4-40ab-a632-faf9ff7da893`,
+  text: `text`,
+  createdAt: new Date(),
+  hotelId: `c17dab56-94f8-4d86-9835-221b5b7291f2`,
+  user: {
+    id: `cbf10244-cae7-47ac-b385-b2ceb103051a`,
     name: `name`,
     email: `email@gmail.com`,
     password: `password`,
     type: {
-      id: `1`,
+      id: `d3db316e-dbe7-43af-b1a9-b184d4baa264`,
       title: `title`,
     },
     image: {
-      id: `1`,
+      id: `d9f29621-4739-4305-a72f-90a04542cb28`,
       title: `title`,
     },
   },
-  images: [
-    {
-      id: `1`,
-      title: `title`,
-    },
-    {
-      id: `2`,
-      title: `title`,
-    }
-  ],
-  favorites: [userParams],
-};
-
-const commentParams: IComment = {
-  id: `1`,
-  text: `text`,
-  createdAt: new Date(),
-  hotel: hotelParams,
-  user: userParams,
   rating: 4,
 };
 
@@ -104,12 +32,12 @@ describe(`Comment entity`, () => {
       comment = CommentEntity.create(commentParams);
     });
 
-    it.each([`hotel`, `user`])(`should create a new Comment instance with %p property`, (property: string) => {
-      expect(comment).toHaveProperty(property);
+    it(`should create a new Comment instance with "user" property`, () => {
+      expect(comment).toHaveProperty(`user`);
     })
 
     it.each(
-      [`id`, `text`, `date`, `rating`],
+      [`id`, `text`, `date`, `rating`, `hotelId`],
     )(`should create a new Comment instance with correct %p property`, (property) => {
       expect(comment[property]).toBe(commentParams[property]);
     });
@@ -122,8 +50,12 @@ describe(`Comment entity`, () => {
       comment = CommentEntity.create(commentParams);
     });
 
+    it(`should create a new Comment instance with "user" property`, () => {
+      expect(comment).toHaveProperty(`user`);
+    })
+
     it.each(
-      [`id`, `text`, `date`, `hotelId`, `userId`],
+      [`id`, `text`, `date`, `hotelId`],
     )(`should create a new Comment instance with correct %p property`, (property) => {
       expect(comment[property]).toBe(commentParams[property]);
     });

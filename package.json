@@ -14,11 +14,11 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest",
-    "test:watch": "jest --watch --verbose",
-    "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test": "cross-env MODE=test jest",
+    "test:watch": "cross-env MODE=test jest --watch --verbose",
+    "test:cov": "cross-env MODE=test jest --coverage",
+    "test:debug": "cross-env MODE=test node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:e2e": "cross-env MODE=test jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
     "@nestjs/common": "7.5.1",
@@ -30,21 +30,21 @@
     "class-transformer": "0.3.1",
     "class-validator": "0.12.2",
     "cookie-parser": "1.4.5",
+    "cross-env": "7.0.3",
     "dotenv": "8.2.0",
     "jsonwebtoken": "8.5.1",
+    "nd-sql": "0.1.5",
     "pg": "8.5.0",
     "reflect-metadata": "0.1.13",
     "rimraf": "3.0.2",
     "rxjs": "6.6.3",
     "swagger-ui-express": "4.1.5",
-    "typeorm": "0.2.29",
     "uuid": "8.3.1"
   },
   "devDependencies": {
     "@nestjs/cli": "7.5.2",
     "@nestjs/schematics": "7.2.1",
     "@nestjs/testing": "7.5.1",
-    "@nestjs/typeorm": "7.1.4",
     "@types/express": "4.17.8",
     "@types/jest": "26.0.10",
     "@types/node": "13.13.30",
@@ -94,6 +94,6 @@
     }
   },
   "bin": {
-    "cityapi": "./src/cli/index.js"
+    "cityapi": "./src/modules/cli/index.js"
   }
 }

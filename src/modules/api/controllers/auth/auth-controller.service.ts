@@ -8,7 +8,6 @@ import { JsonWebTokenEntity } from 'domains/entities';
 import { IUserAuthenticate } from 'domains/interfaces';
 import {
   AuthenticateUserUseCase,
-  CheckTokenUseCase,
   DecodeAccessTokenUseCase,
   RefreshTokenUseCase,
 } from 'domains/use-cases';
@@ -23,7 +22,6 @@ import { JsonWebTokenParams } from 'modules/api/interfaces';
 @Injectable()
 export class AuthControllerService implements
   AuthenticateUserUseCase,
-  CheckTokenUseCase,
   DecodeAccessTokenUseCase,
   RefreshTokenUseCase {
   constructor(
@@ -33,10 +31,6 @@ export class AuthControllerService implements
 
   public async authenticateUser(params: IUserAuthenticate): Promise<JsonWebTokenEntity> {
     return this._authService.authenticateUser(params);
-  }
-
-  public async checkAccessToken(token: string): Promise<boolean> {
-    return this._authService.checkAccessToken(token);
   }
 
   public async decodeAccessToken(token: string): Promise<JsonWebTokenParams> {

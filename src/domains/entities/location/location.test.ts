@@ -9,13 +9,6 @@ const locationParams: ILocation = {
   zoom: 10,
 };
 
-const otherLocationParams: ILocation = {
-  id: `2`,
-  latitude: 0.000009,
-  longitude: 0.000009,
-  zoom: 10,
-};
-
 describe(`Feature entity`, () => {
   describe(`constructor`, () => {
     let location: LocationEntity = null;
@@ -53,14 +46,4 @@ describe(`Feature entity`, () => {
       expect(location[property]).toBe(locationParams[property]);
     });
   });
-
-  describe(`calculateDistance method`, () => {
-    const location: LocationEntity = LocationEntity.create(locationParams);
-    const otherLocation: LocationEntity = LocationEntity.create(otherLocationParams);
-
-    it(`should calculate distance`, () => {
-      const distance = location.calculateDistance(otherLocation);
-      expect(distance).toBe(0.000005);
-    });
-  })
 });

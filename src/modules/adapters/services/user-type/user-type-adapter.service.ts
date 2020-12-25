@@ -1,24 +1,25 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import {
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 
 import { UserTypeEntity } from 'domains/entities';
 import { LoadUserTypeByTitlePort } from 'domains/ports';
 
 import { UserTypeMapper } from '../../mappers';
-import { UserTypeOrmEntity } from '../../orm-entities';
+import { UserTypesDbTable } from 'modules/db';
+import { IUserTypeTableParams } from 'modules/db/interfaces';
 
 
 @Injectable()
 export class UserTypeAdapterService implements LoadUserTypeByTitlePort {
   constructor(
-    @InjectRepository(UserTypeOrmEntity) readonly _userTypeRepository: Repository<UserTypeOrmEntity>
-  ) {}
+    @Inject(UserTypesDbTable) private readonly _userTypesDbTable: UserTypesDbTable,
+  ) {
+  }
 
   public async loadUserTypeByTitle(title: string): Promise<UserTypeEntity> {
-    const userTypeOrmEntity = await this._userTypeRepository.findOne({
-      where: {title},
-    });
-    return UserTypeMapper.mapToDomain(userTypeOrmEntity);
+    const userType: IUserTypeTableParams = await this._userTypesDbTable.findOne({ title });
+    return UserTypeMapper.mapToDomain(userType);
   }
 }

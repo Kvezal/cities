@@ -42,7 +42,8 @@ export class AuthService implements
       const userParams = await this.getUserParams(params);
       userEntity = await this.signUp(userParams);
     }
-    const isCorrectPassword = await compare(params.password, userEntity.password);
+
+    const isCorrectPassword = await compare(params.password, userEntity.password.trim());
     if (!isCorrectPassword) {
       throw new UserError({
         field: EUserField.PASSWORD,
@@ -68,7 +69,10 @@ export class AuthService implements
       password,
       id: uuidv4(),
       name: params.email.split(`@`)[0],
-      image: null,
+      image: {
+        id: uuidv4(),
+        title: null,
+      },
       type: userType,
     };
   }
@@ -81,7 +85,7 @@ export class AuthService implements
 
 
   public async checkAccessToken(accessToken: string): Promise<boolean> {
-    const isValidJsonWebToken = JsonWebTokenEntity.checkAccessToken(accessToken);
+    const isValidJsonWebToken = await JsonWebTokenEntity.checkAccessToken(accessToken);
     if (!isValidJsonWebToken) {
       throw new JsonWebTokenError({
         type: EJsonWebTokenType.INVALID,

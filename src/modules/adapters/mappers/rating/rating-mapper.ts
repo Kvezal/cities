@@ -1,22 +1,22 @@
 import { RatingEntity } from 'domains/entities';
-
-import { RatingOrmEntity } from '../../orm-entities';
+import { IRatingTableParams } from 'modules/db/interfaces';
 
 
 export class RatingMapper {
-  static mapToDomain(ormEntity: RatingOrmEntity): RatingEntity {
+  static mapToDomain(tableParams: IRatingTableParams): RatingEntity {
     return RatingEntity.create({
-      value: ormEntity.value,
-      userId: ormEntity.userId,
-      hotelId: ormEntity.hotelId,
+      value: tableParams.value,
+      userId: tableParams.user_id,
+      hotelId: tableParams.hotel_id,
     });
   }
 
-  static mapToOrmEntity(domain: RatingEntity): RatingOrmEntity {
-    const ormEntity = new RatingOrmEntity();
-    ormEntity.value = domain.value;
-    ormEntity.userId = domain.userId;
-    ormEntity.hotelId = domain.hotelId;
-    return ormEntity;
+
+  static mapToTableParams(domain: RatingEntity): IRatingTableParams {
+    return {
+      value: domain.value,
+      user_id: domain.userId,
+      hotel_id: domain.hotelId,
+    };
   }
 }

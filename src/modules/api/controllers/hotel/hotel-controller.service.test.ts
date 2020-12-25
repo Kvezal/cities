@@ -78,7 +78,7 @@ const hotelParams: IHotel = {
       title: `title`,
     },
   ],
-  favorites: [],
+  isFavorite: false,
 };
 
 const expectedHotelOutput = {
@@ -174,11 +174,11 @@ describe('HotelControllerService', () => {
       it(`should call with params`, async () => {
         service.transformEntityToOutputData = jest.fn(service.transformEntityToOutputData);
         await service.getHotelList({ cityId });
-        expect(service.transformEntityToOutputData).toHaveBeenNthCalledWith(1, hotelEntity, undefined);
-        expect(service.transformEntityToOutputData).toHaveBeenNthCalledWith(2, hotelEntity, undefined);
-        expect(service.transformEntityToOutputData).toHaveBeenNthCalledWith(3, hotelEntity, undefined);
-        expect(service.transformEntityToOutputData).toHaveBeenNthCalledWith(4, hotelEntity, undefined);
-        expect(service.transformEntityToOutputData).toHaveBeenNthCalledWith(5, hotelEntity, undefined);
+        expect(service.transformEntityToOutputData).toHaveBeenNthCalledWith(1, hotelEntity);
+        expect(service.transformEntityToOutputData).toHaveBeenNthCalledWith(2, hotelEntity);
+        expect(service.transformEntityToOutputData).toHaveBeenNthCalledWith(3, hotelEntity);
+        expect(service.transformEntityToOutputData).toHaveBeenNthCalledWith(4, hotelEntity);
+        expect(service.transformEntityToOutputData).toHaveBeenNthCalledWith(5, hotelEntity);
       });
     });
 

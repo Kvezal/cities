@@ -1,0 +1,8 @@
+{
+  "ignoreDirs": [
+    "node_modules",
+    "test",
+    ".git"
+  ],
+  "match": ".db-table."
+}

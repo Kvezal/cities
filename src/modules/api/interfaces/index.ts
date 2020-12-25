@@ -1,8 +1,9 @@
-export { AuthLoginDto } from './auth-login.dto';
-export { CityOutput } from './city-output.class';
-export { CommentDto } from './comment.dto';
-export { CommentOutput } from './comment-output.class';
-export { HotelOutput } from './hotel-output.class';
-export { JsonWebTokenParams } from './json-web-token-params.class';
-export { LocationOutput } from './location-output.class';
-export { IUserOutput } from './user-output.class';
+export * from './auth-login.dto';
+export * from './city-output.class';
+export * from './comment.dto';
+export * from './comment-output.class';
+export * from './favorite-output.class';
+export * from './hotel-output.class';
+export * from './json-web-token-params.class';
+export * from './location-output.class';
+export * from './user-output.class';

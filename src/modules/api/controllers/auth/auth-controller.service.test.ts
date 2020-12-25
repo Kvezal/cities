@@ -77,28 +77,6 @@ describe('AuthControllerService', () => {
     });
   });
 
-  describe(`checkAccessToken method`, () => {
-    const accessToken = `access-token`;
-
-    it(`should call checkAccessToken method of AuthService`, async () => {
-      const checkAccessToken = jest.spyOn(authService, `checkAccessToken`);
-      await service.checkAccessToken(accessToken);
-      expect(checkAccessToken).toHaveBeenCalledTimes(1);
-    });
-
-    it(`should call checkAccessToken method of AuthService with params`, async () => {
-      const checkAccessToken = jest.spyOn(authService, `checkAccessToken`);
-      await service.checkAccessToken(accessToken);
-      expect(checkAccessToken).toHaveBeenCalledWith(accessToken);
-    });
-
-    it(`should return result of checkAccessToken method of AuthService`, async () => {
-      jest.spyOn(authService, `checkAccessToken`).mockImplementation(async () => true);
-      const result: boolean = await service.checkAccessToken(accessToken);
-      expect(result).toBe(true);
-    });
-  });
-
   describe(`decodeAccessToken method`, () => {
     const accessToken = `access-token`;
 

@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  Head,
   HttpCode,
   HttpStatus,
   Post,
@@ -15,7 +14,6 @@ import {
   ApiCookieAuth,
   ApiCreatedResponse,
   ApiHeader,
-  ApiNoContentResponse,
   ApiOkResponse,
   ApiTags,
   ApiUnauthorizedResponse,
@@ -25,7 +23,10 @@ import {
   Response,
 } from 'express';
 
-import { AuthLoginDto, JsonWebTokenParams } from 'modules/api/interfaces';
+import {
+  AuthLoginDto,
+  JsonWebTokenParams,
+} from 'modules/api/interfaces';
 
 import {
   Filter,
@@ -63,26 +64,6 @@ export class AuthController {
     this._authControllerService.setTokens(response, jsonWebTokenEntity);
     response.send();
   }
-
-
-
-  @Head(`check`)
-  @UseFilters(JsonWebTokenExceptionFilter)
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiNoContentResponse({description: `user is authorized`})
-  @ApiUnauthorizedResponse({description: `user is unauthorized`})
-  @ApiCookieAuth(`accessToken`)
-  @ApiHeader({
-    name: `cookie`,
-    description: `should contain access token or refresh one`,
-  })
-  public async check(
-    @Req() request: Request
-  ): Promise<void> {
-    const accessToken = request.cookies[`access-token`];
-    await this._authControllerService.checkAccessToken(accessToken);
-  }
-
 
 
   @Get(`decode`)

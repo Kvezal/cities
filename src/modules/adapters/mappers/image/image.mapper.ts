@@ -1,20 +1,19 @@
 import { ImageEntity } from 'domains/entities';
-
-import { ImageOrmEntity } from '../../orm-entities';
+import { IImageTableParams } from 'modules/db/interfaces';
 
 
 export class ImageMapper {
-  static mapToDomain(ormEntity: ImageOrmEntity): ImageEntity {
+  static mapToDomain(tableParams: IImageTableParams): ImageEntity {
     return ImageEntity.create({
-      id: ormEntity.id,
-      title: ormEntity.title,
+      id: tableParams.id,
+      title: tableParams.title,
     });
   }
 
-  static mapToOrmEntity(domain: ImageEntity): ImageOrmEntity {
-    const ormEntity = new ImageOrmEntity();
-    ormEntity.id = domain.id;
-    ormEntity.title = domain.title;
-    return ormEntity;
+  static mapToTableParams(domain: ImageEntity): IImageTableParams {
+    return {
+      id: domain.id,
+      title: domain.title,
+    };
   }
 }

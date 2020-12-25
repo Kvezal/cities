@@ -1,46 +1,63 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 import { IUser, UserEntity } from 'domains/entities';
 import { UserMapper } from 'modules/adapters/mappers';
-import { UserOrmEntity } from 'modules/adapters/orm-entities';
 
 import { UserAdapterService } from './user-adapter.service';
+import { UsersDbTable } from 'modules/db';
+import { IUserTableParams } from 'modules/db/interfaces';
 
 
-const userOrmEntity: IUser = {
-  id: `1`,
+const userTableParams: IUserTableParams = {
+  id: `e8c1ee3c-0070-4902-b840-7cf94ea3c049`,
   name: `name`,
   email: `email@gmail.com`,
   password: `password`,
   type: {
-    id: `1`,
+    id: `fb847d59-7745-43ae-b7d5-c5fec95d1efc`,
     title: `title`,
   },
   image: {
-    id: `1`,
+    id: `db709632-439a-4c90-a151-044e28919754`,
     title: `title`,
+  },
+};
+
+const userEntityParams: IUser = {
+  id: userTableParams.id,
+  name: userTableParams.name,
+  email: userTableParams.email,
+  password: userTableParams.password,
+  type: {
+    id: userTableParams.type.id,
+    title: userTableParams.type.title,
+  },
+  image: {
+    id: userTableParams.image.id,
+    title: userTableParams.image.title,
   },
 };
 
 describe(`User Adapter Service`, () => {
   let service: UserAdapterService;
-  let repository: Repository<UserOrmEntity>;
-  const userEntity: UserEntity = UserEntity.create(userOrmEntity);
+  let usersDbTable: UsersDbTable;
+  const userEntity: UserEntity = UserEntity.create(userEntityParams);
 
   beforeEach(async () => {
     const testModule: TestingModule = await Test.createTestingModule({
       providers: [
         UserAdapterService,
         {
-          provide: getRepositoryToken(UserOrmEntity),
-          useClass: Repository,
+          provide: UsersDbTable,
+          useValue: {
+            findOne: async () => userTableParams,
+            createOne: async () => userTableParams,
+          },
         },
       ],
     }).compile();
     service = testModule.get<UserAdapterService>(UserAdapterService);
-    repository = testModule.get<Repository<UserOrmEntity>>(getRepositoryToken(UserOrmEntity));
+    usersDbTable = testModule.get<UsersDbTable>(UsersDbTable);
   });
 
   it(`should define service`, () => {
@@ -48,118 +65,135 @@ describe(`User Adapter Service`, () => {
   });
 
   describe(`loadUserById method`, () => {
-    it(`should call findOne method of repository`, async () => {
-      const findOne = jest.spyOn(repository, `findOne`).mockResolvedValueOnce(userOrmEntity);
-      await service.loadUserById(userOrmEntity.id);
-      expect(findOne).toHaveBeenCalledTimes(1);
+    describe(`findOne method of usersDbTable`, () => {
+      it(`should call`, async () => {
+        const findOne = jest.spyOn(usersDbTable, `findOne`);
+        await service.loadUserById(userEntityParams.id);
+        expect(findOne).toHaveBeenCalledTimes(1);
+      });
+
+      it(`should call with params`, async () => {
+        const findOne = jest.spyOn(usersDbTable, `findOne`);
+        await service.loadUserById(userEntityParams.id);
+        expect(findOne).toHaveBeenCalledWith({
+          id: userEntityParams.id,
+        });
+      });
     });
 
-    it(`should call mapToDomain method of UserMapper`, async () => {
-      jest.spyOn(repository, `findOne`).mockResolvedValueOnce(userOrmEntity);
-      UserMapper.mapToDomain = jest.fn(UserMapper.mapToDomain);
-      await service.loadUserById(userOrmEntity.id);
-      expect(UserMapper.mapToDomain).toHaveBeenCalledTimes(1);
-    });
+    describe(`mapToDomain method of UserMapper`, () => {
+      it(`should call`, async () => {
+        jest.spyOn(usersDbTable, `findOne`);
+        UserMapper.mapToDomain = jest.fn(UserMapper.mapToDomain);
+        await service.loadUserById(userEntityParams.id);
+        expect(UserMapper.mapToDomain).toHaveBeenCalledTimes(1);
+      });
 
-    it(`should call mapToDomain method of UserMapper with params`, async () => {
-      jest.spyOn(repository, `findOne`).mockResolvedValueOnce(userOrmEntity);
-      UserMapper.mapToDomain = jest.fn(UserMapper.mapToDomain);
-      await service.loadUserById(userOrmEntity.id);
-      expect(UserMapper.mapToDomain).toHaveBeenCalledWith(userOrmEntity);
+      it(`should call with params`, async () => {
+        jest.spyOn(usersDbTable, `findOne`);
+        UserMapper.mapToDomain = jest.fn(UserMapper.mapToDomain);
+        await service.loadUserById(userEntityParams.id);
+        expect(UserMapper.mapToDomain).toHaveBeenCalledWith(userEntityParams);
+      });
     });
 
     it(`should return result of mapToDomain method`, async () => {
-      jest.spyOn(repository, `findOne`).mockResolvedValueOnce(userOrmEntity);
+      jest.spyOn(usersDbTable, `findOne`);
       jest.fn(UserMapper.mapToDomain).mockReturnValue(userEntity);
-      const result = await service.loadUserById(userOrmEntity.id);
+      const result = await service.loadUserById(userEntityParams.id);
       expect(result).toEqual(userEntity);
     });
   });
 
   describe(`loadUserByEmail method`, () => {
-    it(`should call findOne method of repository`, async () => {
-      const findOne = jest.spyOn(repository, `findOne`).mockResolvedValueOnce(userOrmEntity);
-      await service.loadUserByEmail(userOrmEntity.email);
-      expect(findOne).toHaveBeenCalledTimes(1);
+    describe(`findOne method of usersDbTable`, () => {
+      it(`should call`, async () => {
+        const findOne = jest.spyOn(usersDbTable, `findOne`);
+        await service.loadUserByEmail(userEntityParams.email);
+        expect(findOne).toHaveBeenCalledTimes(1);
+      });
+
+      it(`should call with params`, async () => {
+        const findOne = jest.spyOn(usersDbTable, `findOne`);
+        await service.loadUserByEmail(userEntityParams.email);
+        expect(findOne).toHaveBeenCalledWith({
+          email: userEntityParams.email,
+        });
+      });
     });
 
-    it(`should call mapToDomain method of UserMapper`, async () => {
-      jest.spyOn(repository, `findOne`).mockResolvedValueOnce(userOrmEntity);
-      UserMapper.mapToDomain = jest.fn(UserMapper.mapToDomain);
-      await service.loadUserByEmail(userOrmEntity.email);
-      expect(UserMapper.mapToDomain).toHaveBeenCalledTimes(1);
-    });
+    describe(`mapToDomain method of UserMapper`, () => {
+      it(`should call`, async () => {
+        jest.spyOn(usersDbTable, `findOne`);
+        UserMapper.mapToDomain = jest.fn(UserMapper.mapToDomain);
+        await service.loadUserByEmail(userEntityParams.email);
+        expect(UserMapper.mapToDomain).toHaveBeenCalledTimes(1);
+      });
 
-    it(`should call mapToDomain method of UserMapper with params`, async () => {
-      jest.spyOn(repository, `findOne`).mockResolvedValueOnce(userOrmEntity);
-      UserMapper.mapToDomain = jest.fn(UserMapper.mapToDomain);
-      await service.loadUserByEmail(userOrmEntity.email);
-      expect(UserMapper.mapToDomain).toHaveBeenCalledWith(userOrmEntity);
+      it(`should call with params`, async () => {
+        jest.spyOn(usersDbTable, `findOne`);
+        UserMapper.mapToDomain = jest.fn(UserMapper.mapToDomain);
+        await service.loadUserByEmail(userEntityParams.email);
+        expect(UserMapper.mapToDomain).toHaveBeenCalledWith(userEntityParams);
+      });
     });
 
     it(`should return result of mapToDomain method`, async () => {
-      jest.spyOn(repository, `findOne`).mockResolvedValueOnce(userOrmEntity);
+      jest.spyOn(usersDbTable, `findOne`);
       jest.fn(UserMapper.mapToDomain).mockReturnValue(userEntity);
-      const result = await service.loadUserByEmail(userOrmEntity.email);
+      const result = await service.loadUserByEmail(userEntityParams.email);
       expect(result).toEqual(userEntity);
     });
   });
 
+
   describe(`saveUser method`, () => {
-    it(`should call mapToOrmEntity method of UserMapper`, async () => {
-      UserMapper.mapToOrmEntity = jest.fn(UserMapper.mapToOrmEntity);
-      jest.spyOn(repository, `create`).mockReturnValue(userOrmEntity);
-      UserMapper.mapToDomain = jest.fn(UserMapper.mapToDomain);
-      await service.saveUser(userEntity);
-      expect(UserMapper.mapToOrmEntity).toHaveBeenCalledTimes(1);
+    describe(`mapToTableParams method of UserMapper`, () => {
+      it(`should call`, async () => {
+        UserMapper.mapToTableParams = jest.fn(UserMapper.mapToTableParams);
+        await service.saveUser(userEntity);
+        expect(UserMapper.mapToTableParams).toHaveBeenCalledTimes(1);
+      });
+
+      it(`should call with params`, async () => {
+        UserMapper.mapToTableParams = jest.fn(UserMapper.mapToTableParams);
+        await service.saveUser(userEntity);
+        expect(UserMapper.mapToTableParams).toHaveBeenCalledWith(userEntity);
+      });
     });
 
-    it(`should call mapToOrmEntity method of UserMapper with params`, async () => {
-      UserMapper.mapToOrmEntity = jest.fn(UserMapper.mapToOrmEntity);
-      jest.spyOn(repository, `create`).mockReturnValue(userOrmEntity);
-      UserMapper.mapToDomain = jest.fn(UserMapper.mapToDomain);
-      await service.saveUser(userEntity);
-      expect(UserMapper.mapToOrmEntity).toHaveBeenCalledWith(userEntity);
+    describe(`createOne method of usersDbTable`, () => {
+      it(`should call`, async () => {
+        const createOne = jest.spyOn(usersDbTable, `createOne`);
+        await service.saveUser(userEntity);
+        expect(createOne).toHaveBeenCalledTimes(1);
+      });
+
+      it(`should call with params`, async () => {
+        const createOne = jest.spyOn(usersDbTable, `createOne`);
+        await service.saveUser(userEntity);
+        expect(createOne).toHaveBeenCalledWith(userTableParams);
+      });
     });
 
-    it(`should call create method of repository`, async () => {
-      UserMapper.mapToOrmEntity = jest.fn(UserMapper.mapToOrmEntity).mockReturnValue(userOrmEntity);
-      const create = jest.spyOn(repository, `create`).mockReturnValue(userOrmEntity);
-      UserMapper.mapToDomain = jest.fn(UserMapper.mapToDomain).mockReturnValue(userEntity);
-      await service.saveUser(userEntity);
-      expect(create).toHaveBeenCalledTimes(1);
-    });
+    describe(`mapToDomain method of UserMapper`, () => {
+      it(`should call`, async () => {
+        UserMapper.mapToDomain = jest.fn(UserMapper.mapToDomain);
+        await service.saveUser(userEntity);
+        expect(UserMapper.mapToDomain).toHaveBeenCalledTimes(1);
+      });
 
-    it(`should call create method of repository with params`, async () => {
-      UserMapper.mapToOrmEntity = jest.fn(UserMapper.mapToOrmEntity).mockReturnValue(userOrmEntity);
-      const create = jest.spyOn(repository, `create`).mockReturnValue(userOrmEntity);
-      UserMapper.mapToDomain = jest.fn(UserMapper.mapToDomain).mockReturnValue(userEntity);
-      await service.saveUser(userEntity);
-      expect(create).toHaveBeenCalledWith(userOrmEntity);
-    });
-
-    it(`should call mapToDomain method of UserMapper`, async () => {
-      UserMapper.mapToOrmEntity = jest.fn(UserMapper.mapToOrmEntity).mockReturnValue(userOrmEntity);
-      jest.spyOn(repository, `create`).mockReturnValue(userOrmEntity);
-      UserMapper.mapToDomain = jest.fn(UserMapper.mapToDomain);
-      await service.saveUser(userEntity);
-      expect(UserMapper.mapToDomain).toHaveBeenCalledTimes(1);
-    });
-
-    it(`should call mapToDomain method of UserMapper with params`, async () => {
-      UserMapper.mapToOrmEntity = jest.fn(UserMapper.mapToOrmEntity).mockReturnValue(userOrmEntity);
-      jest.spyOn(repository, `create`).mockReturnValue(userOrmEntity);
-      UserMapper.mapToDomain = jest.fn(UserMapper.mapToDomain);
-      await service.saveUser(userEntity);
-      expect(UserMapper.mapToDomain).toHaveBeenCalledWith(userOrmEntity);
+      it(`should call with params`, async () => {
+        UserMapper.mapToDomain = jest.fn(UserMapper.mapToDomain);
+        await service.saveUser(userEntity);
+        expect(UserMapper.mapToDomain).toHaveBeenCalledWith(userTableParams);
+      });
     });
 
     it(`should return result of  mapToDomain method of UserMapper`, async () => {
-      UserMapper.mapToOrmEntity = jest.fn(UserMapper.mapToOrmEntity).mockReturnValue(userOrmEntity);
-      jest.spyOn(repository, `create`).mockReturnValue(userOrmEntity);
       UserMapper.mapToDomain = jest.fn(UserMapper.mapToDomain).mockReturnValue(userEntity);
       const result = await service.saveUser(userEntity);
-      expect(result).toEqual(userEntity);
+      expect(result).toBe(userEntity);
     });
   });
 });

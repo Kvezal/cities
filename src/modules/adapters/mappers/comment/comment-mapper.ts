@@ -1,30 +1,29 @@
 import { CommentEntity } from 'domains/entities';
 
-import { CommentOrmEntity } from '../../orm-entities';
-import { UserMapper } from '../user';
-import { HotelMapper } from '../hotel';
+import { ICommentTableParams } from 'modules/db/interfaces';
+import { UserMapper } from 'modules/adapters';
 
 
 export class CommentMapper {
-  static mapToDomain(ormEntity: CommentOrmEntity): CommentEntity {
+  static mapToDomain(tableParams: ICommentTableParams): CommentEntity {
     return CommentEntity.create({
-      id: ormEntity.id,
-      text: ormEntity.text,
-      createdAt: ormEntity.createdAt,
-      rating: ormEntity.rating,
-      hotel: HotelMapper.mapToDomain(ormEntity.hotel),
-      user: UserMapper.mapToDomain(ormEntity.user),
+      id: tableParams.id,
+      text: tableParams.text,
+      createdAt: new Date(tableParams.created_at),
+      rating: tableParams.rating,
+      hotelId: tableParams.hotel_id,
+      user: UserMapper.mapToDomain(tableParams.user),
     });
   }
 
-  static mapToOrmEntity(domain: CommentEntity): CommentOrmEntity {
-    const ormEntity = new CommentOrmEntity();
-    ormEntity.id = domain.id;
-    ormEntity.text = domain.text;
-    ormEntity.createdAt = domain.createdAt;
-    ormEntity.rating = domain.rating;
-    ormEntity.hotel = HotelMapper.mapToOrmEntity(domain.hotel);
-    ormEntity.user = UserMapper.mapToOrmEntity(domain.user);
-    return ormEntity;
+  static mapToTableParams(domain: CommentEntity): ICommentTableParams {
+    return {
+      id: domain.id,
+      text: domain.text,
+      created_at: domain.createdAt.toISOString(),
+      rating: domain.rating,
+      hotel_id: domain.hotelId,
+      user: UserMapper.mapToTableParams(domain.user),
+    };
   }
 }

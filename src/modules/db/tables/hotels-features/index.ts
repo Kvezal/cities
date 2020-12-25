@@ -1,0 +1,1 @@
+export { HotelsFeaturesDbTable } from './hotels-features.db-table';

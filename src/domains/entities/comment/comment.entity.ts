@@ -1,8 +1,6 @@
+import { UserEntity } from 'domains/entities';
+
 import { IComment } from './comment.interface';
-import {
-  HotelEntity,
-  UserEntity,
-} from 'domains/entities';
 
 
 export class CommentEntity {
@@ -10,7 +8,7 @@ export class CommentEntity {
     private readonly _id: string,
     private readonly _text: string,
     private readonly _createdAt: Date,
-    private readonly _hotel: HotelEntity,
+    private readonly _hotelId: string,
     private readonly _user: UserEntity,
     private readonly _rating: number,
   ) {}
@@ -27,8 +25,8 @@ export class CommentEntity {
     return this._createdAt;
   }
 
-  get hotel(): HotelEntity {
-    return this._hotel;
+  get hotelId(): string {
+    return this._hotelId;
   }
 
   get user(): UserEntity {
@@ -44,7 +42,7 @@ export class CommentEntity {
       params.id,
       params.text,
       params.createdAt,
-      params.hotel instanceof HotelEntity ? params.hotel : HotelEntity.create(params.hotel),
+      params.hotelId,
       params.user instanceof UserEntity ? params.user : UserEntity.create(params.user),
       params.rating
     );

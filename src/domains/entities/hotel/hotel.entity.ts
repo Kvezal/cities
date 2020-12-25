@@ -1,4 +1,3 @@
-import { NEARBY_HOTEL_LIMIT } from 'domains/constants';
 import {
   CityEntity,
   FeatureEntity,
@@ -6,7 +5,6 @@ import {
   IFeature,
   IImage,
   ImageEntity,
-  IUser,
   LocationEntity,
   UserEntity,
 } from 'domains/entities';
@@ -30,7 +28,7 @@ export class HotelEntity {
     private readonly _location: LocationEntity,
     private readonly _host: UserEntity,
     private readonly _images: ImageEntity[],
-    private readonly _favorites: UserEntity[],
+    private readonly _isFavorite: boolean,
   ) {}
 
   get id(): string {
@@ -89,8 +87,8 @@ export class HotelEntity {
     return this._images;
   }
 
-  get favorites(): UserEntity[] {
-    return this._favorites;
+  get isFavorite(): boolean {
+    return this._isFavorite;
   }
 
   static create(params: IHotel): HotelEntity {
@@ -99,9 +97,6 @@ export class HotelEntity {
     );
     const images = params.images.map(
       (image: IImage | ImageEntity) => image instanceof ImageEntity ? image : ImageEntity.create(image)
-    );
-    const favorites = params.favorites.map(
-      (user: IUser | UserEntity) => user instanceof UserEntity ? user : UserEntity.create(user)
     );
 
     return new HotelEntity(
@@ -119,31 +114,7 @@ export class HotelEntity {
       params.location instanceof LocationEntity ? params.location : LocationEntity.create(params.location),
       params.host instanceof UserEntity ? params.host : UserEntity.create(params.host),
       images,
-      favorites,
+      params.isFavorite,
     )
-  }
-
-  public getNearbyHotelList(hotels: HotelEntity[]): HotelEntity[] {
-    return hotels
-      .filter((hotel) => this.location.id !== hotel.location.id)
-      .sort((left: HotelEntity, right: HotelEntity): number => {
-        const leftDistance = this.location.calculateDistance(left.location);
-        const rightDistance = this.location.calculateDistance(right.location);
-        return leftDistance - rightDistance;
-      })
-      .slice(0, NEARBY_HOTEL_LIMIT);
-  }
-
-  public toggleFavorite(userEntity: UserEntity): void {
-    const favoriteIndex = this._favorites.findIndex((favorite: UserEntity) => favorite.id === userEntity.id);
-    if (favoriteIndex === -1) {
-      this._favorites.push(userEntity);
-      return;
-    }
-    this._favorites.splice(favoriteIndex, 1);
-  }
-
-  public isFavorite(userId: string): boolean {
-    return this._favorites.some((favorite: UserEntity) => favorite.id === userId);
   }
 }

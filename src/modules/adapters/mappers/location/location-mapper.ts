@@ -1,10 +1,9 @@
 import { LocationEntity } from 'domains/entities';
-
-import { LocationOrmEntity } from '../../orm-entities';
+import { ILocationTableParams } from 'modules/db/interfaces';
 
 
 export class LocationMapper {
-  static mapToDomain(ormEntity: LocationOrmEntity): LocationEntity {
+  static mapToDomain(ormEntity: ILocationTableParams): LocationEntity {
     return LocationEntity.create({
       id: ormEntity.id,
       longitude: ormEntity.longitude,
@@ -13,12 +12,13 @@ export class LocationMapper {
     });
   }
 
-  static mapToOrmEntity(domain: LocationEntity): LocationOrmEntity {
-    const ormEntity = new LocationOrmEntity();
-    ormEntity.id = domain.id;
-    ormEntity.longitude = domain.longitude;
-    ormEntity.latitude = domain.latitude;
-    ormEntity.zoom = domain.zoom;
-    return ormEntity;
+
+  static mapToTableParams(domain: LocationEntity): ILocationTableParams {
+    return {
+      id: domain.id,
+      longitude: domain.longitude,
+      latitude: domain.latitude,
+      zoom: domain.zoom,
+    };
   }
 }

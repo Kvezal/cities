@@ -1,36 +1,36 @@
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-
-import { DeleteJsonWebTokenPort, CheckExistedJsonWebTokenPort, SaveJsonWebTokenPort } from 'domains/ports';
-
-import { JsonWebTokenOrmEntity } from '../../orm-entities';
-
-
-export class AuthAdapterService implements
+import { Inject } from '@nestjs/common';
+import {
+  DeleteJsonWebTokenPort,
   CheckExistedJsonWebTokenPort,
+  SaveJsonWebTokenPort,
+} from 'domains/ports';
+import { RefreshTokensDbTable } from 'modules/db';
+
+
+export class AuthAdapterService implements CheckExistedJsonWebTokenPort,
   SaveJsonWebTokenPort,
   DeleteJsonWebTokenPort {
   constructor(
-    @InjectRepository(JsonWebTokenOrmEntity) private readonly _jsonWebTokenRepository: Repository<JsonWebTokenOrmEntity>
-  ) {}
-
-  public async checkExistedJsonWebToken(refreshToken: string): Promise<boolean> {
-    const refreshTokenOrmEntity = await this._jsonWebTokenRepository.findOne({
-      token: refreshToken,
-    });
-    return Boolean(refreshTokenOrmEntity);
+    @Inject(RefreshTokensDbTable) private readonly _refreshTokensDbTable: RefreshTokensDbTable,
+  ) {
   }
 
-  public async saveJsonWebToken(refreshToken: string): Promise<void> {
-    const jsonWebTokenOrmEntity = this._jsonWebTokenRepository.create({
-      token: refreshToken,
+  public async checkExistedJsonWebToken(token: string): Promise<boolean> {
+    const refreshToken = await this._refreshTokensDbTable.findOne({
+      value: token,
     });
-    await this._jsonWebTokenRepository.save(jsonWebTokenOrmEntity);
+    return Boolean(refreshToken);
   }
 
-  public async deleteJsonWebToken(refreshToken: string): Promise<void> {
-    await this._jsonWebTokenRepository.delete({
-      token: refreshToken,
+  public async saveJsonWebToken(token: string): Promise<void> {
+    await this._refreshTokensDbTable.createOne({
+      value: token,
+    });
+  }
+
+  public async deleteJsonWebToken(token: string): Promise<void> {
+    await this._refreshTokensDbTable.removeOne({
+      value: token,
     });
   }
 }

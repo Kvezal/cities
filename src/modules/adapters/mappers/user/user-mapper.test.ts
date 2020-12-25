@@ -1,60 +1,85 @@
-import { UserEntity } from 'domains/entities';
+import {
+  IUser,
+  UserEntity,
+} from 'domains/entities';
+import { IUserTableParams } from 'modules/db/interfaces';
 
-import { ImageMapper, UserTypeMapper } from '../../mappers';
-import { UserOrmEntity } from '../../orm-entities';
+import { ImageMapper } from '../image';
+import { UserTypeMapper } from '../user-type';
 import { UserMapper } from './user-mapper';
 
 
-const ormEntity: UserOrmEntity = {
-  id: `1`,
+const userTableParams: IUserTableParams = {
+  id: `1008131ec-cb07-499a-86e4-6674afa31532`,
   name: `name`,
   email: `email@gmail.com`,
   password: `password`,
   image: {
-    id: `1`,
+    id: `1008131ec-cb07-499a-86e4-6674afa31532`,
     title: `title`,
   },
   type: {
-    id: `1`,
+    id: `1008131ec-cb07-499a-86e4-6674afa31532`,
     title: `title`,
   },
 };
 
+const userEntityParams: IUser = {
+  id: userTableParams.id,
+  name: `name`,
+  email: `email@gmail.com`,
+  password: `password`,
+  image: {
+    id: userTableParams.image.id,
+    title: `title`,
+  },
+  type: {
+    id: userTableParams.type.id,
+    title: `title`,
+  },
+};
+
+
 describe(`User Mapper`, () => {
-  const entity: UserEntity = UserEntity.create(ormEntity);
+  const userEntity: UserEntity = UserEntity.create(userEntityParams);
 
   describe(`mapToDomain`, () => {
     it('should call create method of UserEntity', function() {
       UserEntity.create = jest.fn(UserEntity.create);
-      UserMapper.mapToDomain(ormEntity);
+      UserMapper.mapToDomain(userTableParams);
       expect(UserEntity.create).toHaveBeenCalledTimes(1);
     });
 
     it('should call create method of UserEntity with params', function() {
       UserEntity.create = jest.fn(UserEntity.create);
-      UserMapper.mapToDomain(ormEntity);
+      UserMapper.mapToDomain(userTableParams);
       expect(UserEntity.create).toHaveBeenCalledWith({
-        ...ormEntity,
-        type: UserTypeMapper.mapToDomain(ormEntity.type),
-        image: ImageMapper.mapToDomain(ormEntity.image)
+        ...userEntityParams,
+        type: UserTypeMapper.mapToDomain(userEntityParams.type),
+        image: ImageMapper.mapToDomain(userEntityParams.image)
       });
     });
 
     it('should return create method result of UserEntity', function() {
-      UserEntity.create = jest.fn(UserEntity.create).mockReturnValue(entity);
-      const result = UserMapper.mapToDomain(ormEntity);
-      expect(result).toEqual(entity);
+      UserEntity.create = jest.fn(UserEntity.create).mockReturnValue(userEntity);
+      const result: UserEntity = UserMapper.mapToDomain(userTableParams);
+      expect(result).toEqual(userEntity);
+    });
+
+    it.each([`id`, `name`, `email`, `password`, `image`, `type`])('should have %p property in result', function(property: string) {
+      const result: UserEntity = UserMapper.mapToDomain(userTableParams);
+      expect(result).toHaveProperty(property);
     });
   });
 
-  describe(`mapToOrmEntity`, () => {
+  describe(`mapToTableParams`, () => {
     it('should return UserOrmEntity', function() {
-      const result = UserMapper.mapToOrmEntity(entity);
-      expect(result).toEqual(ormEntity);
+      const result: IUserTableParams = UserMapper.mapToTableParams(userEntity);
+      expect(result).toEqual(userTableParams);
     });
 
-    it.each([`id`, `name`, `email`, `password`, `image`, `type`])('should have %p property in result', function(property) {
-      const result = UserMapper.mapToOrmEntity(entity);
+    it.each([`id`, `name`, `email`, `password`, `image`, `type`])('should have %p property in result', function(property: string) {
+      const result: IUserTableParams = UserMapper.mapToTableParams(userEntity);
       expect(result).toHaveProperty(property);
     });
   });
