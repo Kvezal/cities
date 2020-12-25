@@ -1,20 +1,22 @@
 import {
   DbRequester,
+  DbTable,
+  GetSql,
   IDbCreateAllRecords,
   IDbCreateOneRecord,
   IDbFindAllRecords,
   IDbFindOneRecord,
-  IRowParams,
-  GetSql,
-  DbTable,
   SetDefaultParams,
 } from 'nd-sql';
+
+import { ICommentTableParams } from '../../interfaces';
 import { HotelsDbTable } from '../hotels';
 import { UsersDbTable } from '../users';
 
-const defaultParams = {
+
+const defaultParams: Partial<ICommentTableParams> = {
   id: ``,
-  user_id: ``,
+  user: null,
   hotel_id: ``,
 };
 
@@ -35,24 +37,24 @@ export class CommentsDbTable
   constructor(private readonly _dbRequester: DbRequester) {}
 
   @GetSql(`./comments.create.sql`)
-  public async createOne<Type>(value, sql?: string): Promise<Type> {
-    return this._dbRequester.createOne<Type>({
+  public async createOne(value: Partial<ICommentTableParams>, sql?: string): Promise<ICommentTableParams> {
+    return this._dbRequester.createOne({
       sql,
       value,
     });
   }
 
   @GetSql(`./comments.create.sql`)
-  public async createAll<Type>(list, sql?: string): Promise<Type[]> {
-    return this._dbRequester.createList<Type>({
+  public async createAll(list: ICommentTableParams[], sql?: string): Promise<ICommentTableParams[]> {
+    return this._dbRequester.createList({
       sql,
       list,
     });
   }
 
   @GetSql(`./comments.update.sql`)
-  public async updateOne<Type>(value?: Type, sql?: string): Promise<Type> {
-    return this._dbRequester.updateOne<Type>({
+  public async updateOne(value?: ICommentTableParams, sql?: string): Promise<ICommentTableParams> {
+    return this._dbRequester.updateOne({
       sql,
       value,
     });
@@ -60,8 +62,8 @@ export class CommentsDbTable
 
   @GetSql(`./comments.find.sql`)
   @SetDefaultParams(defaultParams)
-  public findOne<Type>(value?: IRowParams, sql?: string): Promise<Type> {
-    return this._dbRequester.findOne<Type>({
+  public findOne(value?: Partial<ICommentTableParams>, sql?: string): Promise<ICommentTableParams> {
+    return this._dbRequester.findOne({
       sql,
       value,
     });
@@ -69,11 +71,8 @@ export class CommentsDbTable
 
   @GetSql(`./comments.find.sql`)
   @SetDefaultParams(defaultParams)
-  public async findAll<Type>(
-    value?: IRowParams,
-    sql?: string,
-  ): Promise<Type[]> {
-    return this._dbRequester.findList<Type>({
+  public async findAll(value?: Partial<ICommentTableParams>, sql?: string): Promise<ICommentTableParams[]> {
+    return this._dbRequester.findList<ICommentTableParams>({
       sql,
       value,
     });

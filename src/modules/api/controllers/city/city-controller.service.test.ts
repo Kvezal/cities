@@ -22,7 +22,7 @@ describe('CityControllerService', () => {
   let service: CityControllerService;
   let cityService: CityService;
   const cityEntity = CityEntity.create(cityParams);
-  const cityOrmEntity = CityMapper.mapToOrmEntity(cityEntity);
+  const cityOrmEntity = CityMapper.mapToTableParams(cityEntity);
 
   beforeEach(async () => {
     const testModule: TestingModule = await Test.createTestingModule({
@@ -77,7 +77,7 @@ describe('CityControllerService', () => {
     });
 
     it(`should return correct result`, async () => {
-      CityMapper.mapToOrmEntity = jest.fn(CityMapper.mapToOrmEntity).mockReturnValue(cityOrmEntity);
+      CityMapper.mapToTableParams = jest.fn(CityMapper.mapToTableParams).mockReturnValue(cityOrmEntity);
       const result = await service.getCityList();
       expect(result).toEqual([cityOrmEntity, cityOrmEntity, cityOrmEntity]);
     });

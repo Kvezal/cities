@@ -1,23 +1,16 @@
 import {
   CommentEntity,
-  HotelEntity,
   IComment,
-  IHotel,
   IUser,
-  UserEntity,
 } from 'domains/entities';
-import {
-  CommentOrmEntity,
-  HotelMapper,
-  UserMapper,
-} from 'modules/adapters';
 
 import { CommentMapper } from './comment-mapper';
-
+import { ICommentTableParams } from 'modules/db/interfaces';
+import { UserMapper } from 'modules/adapters';
 
 
 const userParams: IUser = {
-  id: `1`,
+  id: `1008131ec-cb07-499a-86e4-6674afa31532`,
   name: `name`,
   email: `email@gmail.com`,
   password: `password`,
@@ -31,108 +24,44 @@ const userParams: IUser = {
   },
 };
 
-const hotelParams: IHotel = {
-  id: `1`,
-  title: `title`,
-  description: `description`,
-  bedroomCount: 4,
-  maxAdultCount: 2,
-  price: 150,
-  isPremium: true,
-  rating: 3,
-  features: [
-    {
-      id: `1`,
-      title: `title`,
-    },
-    {
-      id: `2`,
-      title: `title`,
-    }
-  ],
-  type: {
-    id: `1`,
-    title: `title`,
-  },
-  city: {
-    id: `1`,
-    title: `title`,
-    location: {
-      id: `1`,
-      latitude: 52.370216,
-      longitude: 4.895168,
-      zoom: 10,
-    },
-  },
-  location: {
-    id: `1`,
-    latitude: 52.370216,
-    longitude: 4.895168,
-    zoom: 10,
-  },
-  host: userParams,
-  images: [
-    {
-      id: `1`,
-      title: `title`,
-    },
-    {
-      id: `2`,
-      title: `title`,
-    }
-  ],
-  favorites: [userParams],
-};
-
-const commentParams: IComment = {
-  id: `1`,
+const commentTableParams: ICommentTableParams = {
+  id: `008131ec-cb07-499a-86e4-6674afa31532`,
   text: `text`,
-  createdAt: new Date(),
+  created_at: `2020-12-25T02:07:14.730Z`,
   rating: 4,
   user: userParams,
-  hotel: hotelParams,
+  hotel_id: `008131ec-cb07-499a-86e4-6674afa31532`,
 };
 
+const commentEntityParams: IComment = {
+  id: commentTableParams.id,
+  text: commentTableParams.text,
+  createdAt: new Date(commentTableParams.created_at),
+  rating: commentTableParams.rating,
+  user: UserMapper.mapToDomain(commentTableParams.user),
+  hotelId: commentTableParams.hotel_id,
+}
+
 describe(`CommentMapper`, () => {
-  const commentEntity: CommentEntity = CommentEntity.create(commentParams);
-  const userEntity: UserEntity = UserEntity.create(commentParams.user);
-  const hotelEntity: HotelEntity = HotelEntity.create(commentParams.hotel);
-  const ormEntity = new CommentOrmEntity();
-  ormEntity.id = commentParams.id;
-  ormEntity.text = commentParams.text;
-  ormEntity.createdAt = commentParams.createdAt;
-  ormEntity.rating = commentParams.rating;
-  ormEntity.user = UserMapper.mapToOrmEntity(userEntity);
-  ormEntity.hotel = HotelMapper.mapToOrmEntity(hotelEntity);
+  const commentEntity: CommentEntity = CommentEntity.create(commentEntityParams);
 
   describe(`mapToDomain`, () => {
     it('should call create method of CommentEntity', function() {
       CommentEntity.create = jest.fn(CommentEntity.create);
-      CommentMapper.mapToDomain(ormEntity);
+      CommentMapper.mapToDomain(commentTableParams);
       expect(CommentEntity.create).toHaveBeenCalledTimes(1);
     });
 
     it('should call create method of CommentEntity with params', function() {
       CommentEntity.create = jest.fn(CommentEntity.create);
-      CommentMapper.mapToDomain(ormEntity);
-      expect(CommentEntity.create).toHaveBeenCalledWith({
-        ...commentParams,
-        hotel: hotelEntity,
-        user: userEntity,
-      });
+      CommentMapper.mapToDomain(commentTableParams);
+      expect(CommentEntity.create).toHaveBeenCalledWith(commentEntityParams);
     });
 
     it('should return create method result of CommentEntity', function() {
       CommentEntity.create = jest.fn(CommentEntity.create).mockReturnValue(commentEntity);
-      const result = CommentMapper.mapToDomain(ormEntity);
+      const result = CommentMapper.mapToDomain(commentTableParams);
       expect(result).toEqual(commentEntity);
-    });
-  });
-
-  describe(`mapToOrmEntity`, () => {
-    it('should return CommentViewOrmEntity', function() {
-      const result = CommentMapper.mapToOrmEntity(commentEntity);
-      expect(result).toEqual(ormEntity);
     });
 
     it.each([
@@ -141,9 +70,28 @@ describe(`CommentMapper`, () => {
       `createdAt`,
       `rating`,
       `user`,
-      `hotel`
+      `hotelId`,
     ])('should have %p property in result', function(property: string) {
-      const result = CommentMapper.mapToOrmEntity(commentEntity);
+      const result = CommentMapper.mapToDomain(commentTableParams);
+      expect(result).toHaveProperty(property);
+    });
+  });
+
+  describe(`mapToTableParams`, () => {
+    it('should return CommentViewOrmEntity', function() {
+      const result = CommentMapper.mapToTableParams(commentEntity);
+      expect(result).toEqual(commentTableParams);
+    });
+
+    it.each([
+      `id`,
+      `text`,
+      `created_at`,
+      `rating`,
+      `user`,
+      `hotel_id`,
+    ])('should have %p property in result', function(property: string) {
+      const result = CommentMapper.mapToTableParams(commentEntity);
       expect(result).toHaveProperty(property);
     });
   });

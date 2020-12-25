@@ -1,23 +1,25 @@
 import { CityEntity } from 'domains/entities';
 
-import { CityOrmEntity } from '../../orm-entities';
+import { ICityTableParams } from 'modules/db/interfaces';
+
 import { LocationMapper } from '../location';
 
 
 export class CityMapper {
-  static mapToDomain(ormEntity: CityOrmEntity): CityEntity {
+  static mapToDomain(tableParams: ICityTableParams): CityEntity {
     return CityEntity.create({
-      id: ormEntity.id,
-      title: ormEntity.title,
-      location: LocationMapper.mapToDomain(ormEntity.location)
+      id: tableParams.id,
+      title: tableParams.title,
+      location: LocationMapper.mapToDomain(tableParams.location)
     });
   }
 
-  static mapToOrmEntity(domain: CityEntity): CityOrmEntity {
-    const ormEntity = new CityOrmEntity();
-    ormEntity.id = domain.id;
-    ormEntity.title = domain.title;
-    ormEntity.location = LocationMapper.mapToOrmEntity(domain.location);
-    return ormEntity;
+
+  static mapToTableParams(domain: CityEntity): ICityTableParams {
+    return {
+      id: domain.id,
+      title: domain.title,
+      location: LocationMapper.mapToTableParams(domain.location),
+    };
   }
 }

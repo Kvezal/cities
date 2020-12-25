@@ -125,7 +125,7 @@ SELECT
   image_list.value AS images,
   feature_list.value AS features,
   rating.value AS rating,
-  FALSE AS isFavorite
+  FALSE AS is_favorite
 FROM hotels_result
 LEFT JOIN hotel_types ON hotels_result.hotel_type_id = hotel_types.id
 LEFT JOIN locations_result ON hotels_result.location_id = locations_result.id

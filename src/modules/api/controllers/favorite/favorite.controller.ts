@@ -18,10 +18,7 @@ import {
 } from '@nestjs/swagger';
 
 import { JsonWebTokenExceptionFilter } from 'modules/api/filters';
-import {
-  CommentOutput,
-  HotelOutput,
-} from 'modules/api/interfaces';
+import { FavoriteOutput } from 'modules/api/interfaces';
 import { IRequest } from 'modules/api/middlewares';
 
 import { EApiRouteName } from '../api-route-names.enum';
@@ -38,15 +35,13 @@ export class FavoriteController {
   @Post()
   @UseFilters(JsonWebTokenExceptionFilter)
   @HttpCode(HttpStatus.OK)
-
-
   @ApiCookieAuth(`accessToken`)
-  @ApiOkResponse({description: `should toggle favorite status for authorized user`})
-  @ApiUnauthorizedResponse({description: `should return authorization error`})
-  @ApiBadRequestResponse({
-    description: `should return bad request if parameters are invalid`,
-    type: CommentOutput,
+  @ApiOkResponse({
+    description: `should toggle favorite status for authorized user`,
+    type: FavoriteOutput,
   })
+  @ApiUnauthorizedResponse({description: `should return authorization error`})
+  @ApiBadRequestResponse({description: `should return bad request if parameters are invalid`})
   @ApiHeader({
     name: `cookie`,
     description: `should contain access token or refresh one`,
@@ -59,7 +54,7 @@ export class FavoriteController {
   public async toggleFavoriteStatus(
     @Query(`hotelId`) hotelId: string,
     @Req() request: IRequest
-  ): Promise<HotelOutput> {
+  ): Promise<FavoriteOutput> {
     return this._favoriteControllerService.toggleFavoriteStatus(request.locals.userId, hotelId);
   }
 }

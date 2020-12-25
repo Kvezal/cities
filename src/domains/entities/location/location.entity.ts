@@ -1,5 +1,3 @@
-import { DISTANCE_ACCURACY } from 'domains/constants';
-
 import { ILocation } from './location.interface';
 
 
@@ -34,11 +32,5 @@ export class LocationEntity {
       params.longitude,
       params.zoom
     );
-  }
-
-  public calculateDistance (otherLocation: ILocation): number {
-    const diffLatitude: number = Math.round(this.latitude * DISTANCE_ACCURACY - otherLocation.latitude * DISTANCE_ACCURACY);
-    const diffLongitude: number = Math.round(this.longitude * DISTANCE_ACCURACY - otherLocation.longitude * DISTANCE_ACCURACY);
-    return ((diffLatitude ** 2 + diffLongitude ** 2) ** 0.5) / DISTANCE_ACCURACY;
   }
 }

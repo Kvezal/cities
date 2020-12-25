@@ -1,16 +1,18 @@
 import {
   DbRequester,
+  DbTable,
+  GetSql,
   IDbCreateAllRecords,
   IDbCreateOneRecord,
   IDbFindAllRecords,
   IDbFindOneRecord,
-  IRowParams,
-  GetSql,
-  DbTable,
   SetDefaultParams,
 } from 'nd-sql';
-import { HotelTypesDbTable } from '../hotel-types';
+
+import { IHotelTableParams } from 'modules/db/interfaces';
+
 import { CitiesDbTable } from '../cities';
+import { HotelTypesDbTable } from '../hotel-types';
 import { LocationsDbTable } from '../locations';
 import { UsersDbTable } from '../users';
 
@@ -21,7 +23,7 @@ const defaultParams = {
   user_id: ``,
   title: ``,
   city: null,
-  sorting: null,
+  sorting: ``,
 };
 
 @DbTable({
@@ -43,7 +45,7 @@ export class HotelsDbTable
   constructor(private readonly _dbRequester: DbRequester) {}
 
   @GetSql(`./hotels.create.sql`)
-  public async createOne<Type>(value: Type, sql?: string): Promise<Type> {
+  public async createOne(value: IHotelTableParams, sql?: string): Promise<IHotelTableParams> {
     return this._dbRequester.createOne({
       sql,
       value,
@@ -51,8 +53,8 @@ export class HotelsDbTable
   }
 
   @GetSql(`./hotels.create.sql`)
-  public createAll<Type>(list: Type[], sql?: string): Promise<Type[]> {
-    return this._dbRequester.createList<Type>({
+  public createAll(list: IHotelTableParams[], sql?: string): Promise<IHotelTableParams[]> {
+    return this._dbRequester.createList({
       sql,
       list,
     });
@@ -60,8 +62,8 @@ export class HotelsDbTable
 
   @GetSql(`./hotels.find.sql`)
   @SetDefaultParams(defaultParams)
-  public findOne<Type>(value: IRowParams, sql?: string): Promise<Type> {
-    return this._dbRequester.findOne<Type>({
+  public findOne(value: any, sql?: string): Promise<IHotelTableParams> {
+    return this._dbRequester.findOne({
       sql,
       value,
     });
@@ -69,8 +71,8 @@ export class HotelsDbTable
 
   @GetSql(`./hotels.find.sql`)
   @SetDefaultParams(defaultParams)
-  public findAll<Type>(value?: IRowParams, sql?: string): Promise<Type[]> {
-    return this._dbRequester.findList<Type>({
+  public findAll(value?: any, sql?: string): Promise<IHotelTableParams[]> {
+    return this._dbRequester.findList({
       sql,
       value,
     });

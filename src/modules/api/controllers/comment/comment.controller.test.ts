@@ -17,7 +17,6 @@ import * as request from 'supertest';
 import {
   CommentEntity,
   IComment,
-  IHotel,
   IJsonWebTokenParams,
   IUser,
 } from 'domains/entities';
@@ -65,62 +64,9 @@ const jsonWebTokenParams: IJsonWebTokenParams = {
   image: userParams.image.title,
 };
 
-const hotelParams: IHotel = {
-  id: `092841ec-cb07-499a-86e4-6674afa31532`,
-  title: `title`,
-  description: `description`,
-  bedroomCount: 4,
-  maxAdultCount: 2,
-  price: 150,
-  isPremium: true,
-  rating: 3,
-  features: [
-    {
-      id: `1`,
-      title: `title`,
-    },
-    {
-      id: `2`,
-      title: `title`,
-    }
-  ],
-  type: {
-    id: `1`,
-    title: `title`,
-  },
-  city: {
-    id: `1`,
-    title: `title`,
-    location: {
-      id: `1`,
-      latitude: 52.370216,
-      longitude: 4.895168,
-      zoom: 10,
-    },
-  },
-  location: {
-    id: `1`,
-    latitude: 52.370216,
-    longitude: 4.895168,
-    zoom: 10,
-  },
-  host: userParams,
-  images: [
-    {
-      id: `1`,
-      title: `title`,
-    },
-    {
-      id: `2`,
-      title: `title`,
-    }
-  ],
-  favorites: [userParams],
-};
-
 const commentParams: CommentDto = {
   text: Array(20).fill(`i`).join(``),
-  hotelId: hotelParams.id,
+  hotelId: `008131ec-cb07-499a-86e4-6674afa31532`,
   rating: 4,
 };
 
@@ -128,7 +74,7 @@ const commentEntityParams: IComment = {
   id: `005d67a0-58c1-40a5-a664-53ed22206a6e`,
   text: commentParams.text,
   createdAt: new Date(),
-  hotel: hotelParams,
+  hotelId: commentParams.hotelId,
   user: userParams,
   rating: commentParams.rating,
 };
@@ -194,7 +140,7 @@ describe('CommentController', () => {
 
   describe(`GET`, () => {
     describe(`/api/comment`, () => {
-      const commentUrl = `/api/comment?hotelId=${hotelParams.id}`;
+      const commentUrl = `/api/comment?hotelId=${commentParams.hotelId}`;
 
       it(`status code should be 200`, async () => {
         const result = await request(app.getHttpServer())

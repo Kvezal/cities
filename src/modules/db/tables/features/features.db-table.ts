@@ -4,14 +4,15 @@ import {
   IDbCreateOneRecord,
   IDbFindAllRecords,
   IDbFindOneRecord,
-  IRowParams,
   GetSql,
   DbTable,
   SetDefaultParams,
 } from 'nd-sql';
 
+import { IFeatureTableParams } from '../../interfaces';
 
-const defaultParams = {
+
+const defaultParams: IFeatureTableParams = {
   id: ``,
   title: ``,
 };
@@ -27,24 +28,19 @@ export class FeaturesDbTable
     IDbCreateAllRecords,
     IDbFindOneRecord,
     IDbFindAllRecords {
-  private _defaultFindParams = {
-    id: ``,
-    title: ``,
-  };
-
   constructor(private readonly _dbRequester: DbRequester) {}
 
   @GetSql(`./features.create.sql`)
-  public async createOne<Type>(value, sql?: string): Promise<Type> {
-    return this._dbRequester.createOne<Type>({
+  public async createOne(value: IFeatureTableParams, sql?: string): Promise<IFeatureTableParams> {
+    return this._dbRequester.createOne({
       sql,
       value,
     });
   }
 
   @GetSql(`./features.create.sql`)
-  public async createAll<Type>(list, sql?: string): Promise<Type[]> {
-    return this._dbRequester.createList<Type>({
+  public async createAll(list: IFeatureTableParams[], sql?: string): Promise<IFeatureTableParams[]> {
+    return this._dbRequester.createList({
       sql,
       list,
     });
@@ -52,8 +48,8 @@ export class FeaturesDbTable
 
   @GetSql(`./features.find.sql`)
   @SetDefaultParams(defaultParams)
-  public findOne<Type>(value?: IRowParams, sql?: string): Promise<Type> {
-    return this._dbRequester.findOne<Type>({
+  public findOne(value?: IFeatureTableParams, sql?: string): Promise<IFeatureTableParams> {
+    return this._dbRequester.findOne({
       sql,
       value,
     });
@@ -61,11 +57,11 @@ export class FeaturesDbTable
 
   @GetSql(`./features.find.sql`)
   @SetDefaultParams(defaultParams)
-  public async findAll<Type>(
-    value?: IRowParams,
+  public async findAll(
+    value?: IFeatureTableParams,
     sql?: string,
-  ): Promise<Type[]> {
-    return this._dbRequester.findList<Type>({
+  ): Promise<IFeatureTableParams[]> {
+    return this._dbRequester.findList({
       sql,
       value,
     });

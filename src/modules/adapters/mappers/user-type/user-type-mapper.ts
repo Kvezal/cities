@@ -1,20 +1,19 @@
 import { UserTypeEntity } from 'domains/entities';
-
-import { UserTypeOrmEntity } from '../../orm-entities';
+import { IUserTypeTableParams } from 'modules/db/interfaces';
 
 
 export class UserTypeMapper {
-  static mapToDomain(ormEntity: UserTypeOrmEntity): UserTypeEntity {
+  static mapToDomain(tableParams: IUserTypeTableParams): UserTypeEntity {
     return UserTypeEntity.create({
-      id: ormEntity.id,
-      title: ormEntity.title,
+      id: tableParams.id,
+      title: tableParams.title,
     });
   }
 
-  static mapToOrmEntity(domain: UserTypeEntity): UserTypeOrmEntity {
-    const ormEntity = new UserTypeOrmEntity();
-    ormEntity.id = domain.id;
-    ormEntity.title = domain.title;
-    return ormEntity;
+  static mapToTableParams(domain: UserTypeEntity): IUserTypeTableParams {
+    return {
+      id: domain.id,
+      title: domain.title,
+    };
   }
 }

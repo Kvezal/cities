@@ -1,16 +1,18 @@
 import {
   DbRequester,
+  DbTable,
+  GetSql,
   IDbCreateAllRecords,
   IDbCreateOneRecord,
   IDbFindAllRecords,
   IDbFindOneRecord,
-  IRowParams,
-  GetSql,
-  DbTable,
   SetDefaultParams,
 } from 'nd-sql';
 
-const defaultParams = {
+import { IImageTableParams } from '../../interfaces';
+
+
+const defaultParams: IImageTableParams = {
   id: ``,
   title: ``,
 };
@@ -27,38 +29,39 @@ export class ImagesDbTable
     IDbFindAllRecords {
   constructor(private readonly _dbRequester: DbRequester) {}
 
+
   @GetSql(`./images.create.sql`)
-  public async createOne<Type>(value, sql?: string): Promise<Type> {
-    return this._dbRequester.createOne<Type>({
+  public async createOne(value: IImageTableParams, sql?: string): Promise<IImageTableParams> {
+    return this._dbRequester.createOne({
       sql,
       value,
     });
   }
 
+
   @GetSql(`./images.create.sql`)
-  public async createAll<Type>(list, sql?: string): Promise<Type[]> {
-    return this._dbRequester.createList<Type>({
+  public async createAll(list: IImageTableParams[], sql?: string): Promise<IImageTableParams[]> {
+    return this._dbRequester.createList({
       sql,
       list,
     });
   }
 
+
   @GetSql(`./images.find.sql`)
   @SetDefaultParams(defaultParams)
-  public findOne<Type>(value?: IRowParams, sql?: string): Promise<Type> {
-    return this._dbRequester.findOne<Type>({
+  public findOne(value?: IImageTableParams, sql?: string): Promise<IImageTableParams[]> {
+    return this._dbRequester.findOne({
       sql,
       value,
     });
   }
 
+
   @GetSql(`./images.find.sql`)
   @SetDefaultParams(defaultParams)
-  public async findAll<Type>(
-    value?: IRowParams,
-    sql?: string,
-  ): Promise<Type[]> {
-    return this._dbRequester.findList<Type>({
+  public async findAll(value?: IImageTableParams, sql?: string): Promise<IImageTableParams[]> {
+    return this._dbRequester.findList({
       sql,
       value,
     });

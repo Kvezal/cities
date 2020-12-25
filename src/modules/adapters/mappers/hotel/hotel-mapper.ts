@@ -2,16 +2,14 @@ import {
   FeatureEntity,
   HotelEntity,
   ImageEntity,
-  UserEntity,
 } from 'domains/entities';
-
 import {
-  FeatureOrmEntity,
-  ImageOrmEntity,
-  HotelOrmEntity,
-  UserOrmEntity,
-} from '../../orm-entities';
-import { CityMapper} from '../city';
+  IFeatureTableParams,
+  IHotelTableParams,
+  IImageTableParams,
+} from 'modules/db/interfaces';
+
+import { CityMapper } from '../city';
 import { FeatureMapper } from '../feature';
 import { HotelTypeMapper } from '../hotel-type';
 import { ImageMapper } from '../image';
@@ -20,43 +18,43 @@ import { UserMapper } from '../user';
 
 
 export class HotelMapper {
-  static mapToDomain(ormEntity: HotelOrmEntity): HotelEntity {
+  static mapToDomain(tableParams: IHotelTableParams): HotelEntity {
     return HotelEntity.create({
-      id: ormEntity.id,
-      title: ormEntity.title,
-      description: ormEntity.description,
-      bedroomCount: ormEntity.bedroomCount,
-      maxAdultCount: ormEntity.maxAdultCount,
-      price: ormEntity.price,
-      isPremium: ormEntity.isPremium,
-      rating: ormEntity.rating,
-      features: ormEntity.features.map((feature: FeatureOrmEntity) => FeatureMapper.mapToDomain(feature)),
-      type: HotelTypeMapper.mapToDomain(ormEntity.type),
-      city: CityMapper.mapToDomain(ormEntity.city),
-      location: LocationMapper.mapToDomain(ormEntity.location),
-      host: UserMapper.mapToDomain(ormEntity.host),
-      images: ormEntity.images.map((image: ImageOrmEntity) => ImageMapper.mapToDomain(image)),
-      favorites: ormEntity.favorites.map((favorite: UserOrmEntity) => UserMapper.mapToDomain(favorite)),
+      id: tableParams.id,
+      title: tableParams.title,
+      description: tableParams.description,
+      bedroomCount: tableParams.bedroom_count,
+      maxAdultCount: tableParams.max_adult_count,
+      price: tableParams.price,
+      isPremium: tableParams.is_premium,
+      rating: tableParams.rating,
+      features: tableParams.features.map((feature: IFeatureTableParams) => FeatureMapper.mapToDomain(feature)),
+      type: HotelTypeMapper.mapToDomain(tableParams.type),
+      city: CityMapper.mapToDomain(tableParams.city),
+      location: LocationMapper.mapToDomain(tableParams.location),
+      host: UserMapper.mapToDomain(tableParams.host),
+      images: tableParams.images.map((image: IImageTableParams) => ImageMapper.mapToDomain(image)),
+      isFavorite: tableParams.is_favorite,
     });
   }
 
-  static mapToOrmEntity(domain: HotelEntity): HotelOrmEntity {
-    const ormEntity = new HotelOrmEntity();
-    ormEntity.id = domain.id;
-    ormEntity.title = domain.title;
-    ormEntity.description = domain.description;
-    ormEntity.bedroomCount = domain.bedroomCount;
-    ormEntity.maxAdultCount = domain.maxAdultCount;
-    ormEntity.price = domain.price;
-    ormEntity.isPremium = domain.isPremium;
-    ormEntity.rating = domain.rating;
-    ormEntity.features = domain.features.map((feature: FeatureEntity) => FeatureMapper.mapToOrmEntity(feature));
-    ormEntity.type = HotelTypeMapper.mapToOrmEntity(domain.type);
-    ormEntity.city = CityMapper.mapToOrmEntity(domain.city);
-    ormEntity.location = LocationMapper.mapToOrmEntity(domain.location);
-    ormEntity.host = UserMapper.mapToOrmEntity(domain.host);
-    ormEntity.images = domain.images.map((image: ImageEntity) => ImageMapper.mapToOrmEntity(image));
-    ormEntity.favorites = domain.favorites.map((favorite: UserEntity) => UserMapper.mapToOrmEntity(favorite));
-    return ormEntity;
+  static mapToTableParams(domain: HotelEntity): IHotelTableParams {
+    return {
+      id: domain.id,
+      title: domain.title,
+      description: domain.description,
+      bedroom_count: domain.bedroomCount,
+      max_adult_count: domain.maxAdultCount,
+      price: domain.price,
+      is_premium: domain.isPremium,
+      rating: domain.rating,
+      features: domain.features.map((feature: FeatureEntity) => FeatureMapper.mapToTableParams(feature)),
+      type: HotelTypeMapper.mapToTableParams(domain.type),
+      city: CityMapper.mapToTableParams(domain.city),
+      location: LocationMapper.mapToTableParams(domain.location),
+      host: UserMapper.mapToTableParams(domain.host),
+      images: domain.images.map((image: ImageEntity) => ImageMapper.mapToTableParams(image)),
+      is_favorite: domain.isFavorite
+    };
   }
 }

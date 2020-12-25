@@ -1,79 +1,39 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import {
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 
 import { CommentEntity } from 'domains/entities';
 import { ICommentSorting } from 'domains/interfaces';
 import {
-  LoadHotelCommentListPort,
-  SaveHotelCommentPort,
+  LoadCommentListPort,
+  SaveCommentPort,
 } from 'domains/ports';
+import { CommentsDbTable } from 'modules/db';
 
-import {
-  CommentOrmEntity,
-  RatingOrmEntity,
-  UserOrmEntity,
-} from '../../orm-entities';
 import { CommentMapper } from '../../mappers';
-import { HotelAdapterService } from '../hotel';
 
 
 @Injectable()
-export class CommentAdapterService implements
-  LoadHotelCommentListPort,
-  SaveHotelCommentPort {
+export class CommentAdapterService implements LoadCommentListPort,
+  SaveCommentPort {
   constructor(
-    private readonly _hotelAdapterService: HotelAdapterService,
-    @InjectRepository(CommentOrmEntity) private readonly _commentRepository: Repository<CommentOrmEntity>
-  ) {}
+    @Inject(CommentsDbTable) private readonly _commentsDbTable: CommentsDbTable,
+  ) {
+  }
 
-  public async loadHotelCommentList(commentSortingParams: ICommentSorting): Promise<CommentEntity[]> {
-    const commentOrmEntities: CommentOrmEntity[] = await this.getCommentHotelList(commentSortingParams);
-    return commentOrmEntities.map(
-      (commentOrmEntity: CommentOrmEntity) => CommentMapper.mapToDomain(commentOrmEntity)
+  public async loadCommentList(commentSortingParams: ICommentSorting): Promise<CommentEntity[]> {
+    const comments = await this._commentsDbTable.findAll({
+      hotel_id: commentSortingParams.hotelId,
+    });
+    return comments.map(
+      (commentOrmEntity) => CommentMapper.mapToDomain(commentOrmEntity),
     );
   }
 
-  public async saveHotelComment(entity: CommentEntity): Promise<CommentEntity> {
-    const ormEntity = CommentMapper.mapToOrmEntity(entity);
-    await this._commentRepository.save(ormEntity);
-    return entity;
-  }
-
-  public async getCommentHotelList(commentSortingParams: ICommentSorting): Promise<CommentOrmEntity[]> {
-    const { hotelId } = commentSortingParams;
-    return await this._commentRepository
-      .createQueryBuilder(`comments`)
-      .select([
-        `comments.id AS id`,
-        `comments.text AS text`,
-        `comments.createdAt AS createdAt`,
-        `ratings.value AS rating`,
-        `TO_JSON(hotels) AS hotel`,
-        `TO_JSON(users) AS user`
-      ])
-      .leftJoin((subQuery) => {
-        return this._hotelAdapterService.getHotelListQuery(
-          subQuery,
-          { hotelId }
-        );
-      }, `hotels`, `comments.hotelId = hotels.id`)
-      .leftJoin((subQuery) => {
-        return subQuery
-          .select([
-            `users.id AS id`,
-            `users.name AS name`,
-            `users.email AS email`,
-            `TO_JSON(images) AS image`,
-            `TO_JSON(types) AS type`
-          ])
-          .from(UserOrmEntity, `users`)
-          .leftJoin(`users.image`, `images`)
-          .leftJoin(`users.type`, `types`);
-      }, `users`, `comments.userId = users.id`)
-      .leftJoin(RatingOrmEntity, `ratings`, `comments.hotelId = ratings.hotelId AND comments.userId = ratings.userId`)
-      .where(`comments.hotelId = :hotelId`, { hotelId })
-      .orderBy(`comments.createdAt`, `DESC`)
-      .getRawMany();
+  public async saveComment(comment: CommentEntity): Promise<CommentEntity> {
+    const tableComment = CommentMapper.mapToTableParams(comment);
+    const createdTableEntity = await this._commentsDbTable.createOne(tableComment);
+    return CommentMapper.mapToDomain(createdTableEntity);
   }
 }

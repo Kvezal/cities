@@ -4,14 +4,14 @@ import {
 } from '@nestjs/testing';
 
 import {
-  HotelService,
-  hotelServiceSymbol,
+  FavoriteService,
+  favoriteServiceSymbol,
 } from 'domains/services';
 
 import { FavoriteControllerService } from './favorite-controller.service';
 import {
-  HotelEntity,
-  IHotel,
+  FavoriteEntity,
+  IFavorite,
   IJsonWebTokenParams,
 } from 'domains/entities';
 
@@ -23,129 +23,32 @@ const jsonWebTokenParams: IJsonWebTokenParams = {
   image: null,
 };
 
-const hotelParams: IHotel = {
-  id: `1`,
-  title: `title`,
-  description: `description`,
-  bedroomCount: 4,
-  maxAdultCount: 2,
-  price: 150,
-  isPremium: true,
-  rating: 3,
-  features: [
-    {
-      id: `1`,
-      title: `title`,
-    },
-    {
-      id: `2`,
-      title: `title`,
-    }
-  ],
-  type: {
-    id: `1`,
-    title: `title`,
-  },
-  city: {
-    id: `1`,
-    title: `title`,
-    location: {
-      id: `1`,
-      latitude: 52.370216,
-      longitude: 4.895168,
-      zoom: 10,
-    },
-  },
-  location: {
-    id: `1`,
-    latitude: 52.370216,
-    longitude: 4.895168,
-    zoom: 10,
-  },
-  host: {
-    id: `1`,
-    name: `name`,
-    email: `email@gmail.com`,
-    password: `password`,
-    type: {
-      id: `1`,
-      title: `title`,
-    },
-    image: {
-      id: `1`,
-      title: `title`,
-    },
-  },
-  images: [
-    {
-      id: `1`,
-      title: `title`,
-    },
-    {
-      id: `2`,
-      title: `title`,
-    }
-  ],
-  favorites: [],
-};
-
-const expectedHotelOutput = {
-  id: `1`,
-  title: `title`,
-  description: `description`,
-  bedroomCount: 4,
-  maxAdultCount: 2,
-  price: 150,
-  isPremium: true,
-  rating: 3,
-  features: [`title`, `title`],
-  type: `title`,
-  city: {
-    id: `1`,
-    title: `title`,
-    location: {
-      id: `1`,
-      latitude: 52.370216,
-      longitude: 4.895168,
-      zoom: 10,
-    },
-  },
-  location: {
-    id: `1`,
-    latitude: 52.370216,
-    longitude: 4.895168,
-    zoom: 10,
-  },
-  host: {
-    id: `1`,
-    name: `name`,
-    type: `title`,
-    image: `title`,
-  },
-  images: [`title`, `title`],
-  isFavorite: false,
+const favoriteParams: IFavorite = {
+  hotelId: `008131ec-cb07-499a-86e4-6674afa31532`,
+  userId: `008131ec-cb07-499a-86e4-6674afa31532`,
+  value: false,
 }
 
 describe('FavoriteControllerService', () => {
   let service: FavoriteControllerService;
-  let hotelService: HotelService;
-  const hotelEntity: HotelEntity = HotelEntity.create(hotelParams);
+  let favoriteService: FavoriteService;
+  const favoriteEntity: FavoriteEntity = FavoriteEntity.create(favoriteParams);
 
   beforeEach(async () => {
     const testModule: TestingModule = await Test.createTestingModule({
       providers: [
         FavoriteControllerService,
         {
-          provide: hotelServiceSymbol,
+          provide: favoriteServiceSymbol,
           useValue: {
-            toggleHotelFavoriteState: async () => hotelEntity,
+            toggleFavorite: async () => favoriteEntity,
           },
         },
       ],
     }).compile();
 
     service = testModule.get<FavoriteControllerService>(FavoriteControllerService);
-    hotelService = testModule.get<HotelService>(hotelServiceSymbol);
+    favoriteService = testModule.get<FavoriteService>(favoriteServiceSymbol);
   });
 
   it('should be defined', () => {
@@ -153,43 +56,42 @@ describe('FavoriteControllerService', () => {
   });
 
   describe(`toggleFavoriteStatus method`, () => {
-
-    describe(`toggleHotelFavoriteState method of FavoriteService`, () => {
+    describe(`toggleFavorite method of FavoriteService`, () => {
       it(`should call`, async () => {
-        const toggleFavoriteStatus = jest.spyOn(hotelService, `toggleHotelFavoriteState`);
-        await service.toggleFavoriteStatus(jsonWebTokenParams.id, hotelParams.id);
+        const toggleFavoriteStatus = jest.spyOn(favoriteService, `toggleFavorite`);
+        await service.toggleFavoriteStatus(jsonWebTokenParams.id, favoriteParams.hotelId);
         expect(toggleFavoriteStatus).toHaveBeenCalledTimes(1);
       });
 
       it(`should call with params`, async () => {
-        const toggleFavoriteStatus = jest.spyOn(hotelService, `toggleHotelFavoriteState`);
-        await service.toggleFavoriteStatus(jsonWebTokenParams.id, hotelParams.id);
-        expect(toggleFavoriteStatus).toHaveBeenCalledWith(jsonWebTokenParams.id, hotelParams.id);
+        const toggleFavoriteStatus = jest.spyOn(favoriteService, `toggleFavorite`);
+        await service.toggleFavoriteStatus(jsonWebTokenParams.id, favoriteParams.hotelId);
+        expect(toggleFavoriteStatus).toHaveBeenCalledWith(favoriteParams.userId, favoriteParams.hotelId);
       });
     });
 
     describe(`transformEntityToOutputData method of HotelControllerService`, () => {
       it(`should call`, async () => {
         service.transformEntityToOutputData = jest.fn(service.transformEntityToOutputData);
-        await service.toggleFavoriteStatus(jsonWebTokenParams.id, hotelParams.id);
+        await service.toggleFavoriteStatus(jsonWebTokenParams.id, favoriteParams.hotelId);
         expect(service.transformEntityToOutputData).toHaveBeenCalledTimes(1);
       });
 
       it(`should call with params`, async () => {
         service.transformEntityToOutputData = jest.fn(service.transformEntityToOutputData);
-        await service.toggleFavoriteStatus(jsonWebTokenParams.id, hotelParams.id);
-        expect(service.transformEntityToOutputData).toHaveBeenCalledWith(hotelEntity, jsonWebTokenParams.id);
+        await service.toggleFavoriteStatus(jsonWebTokenParams.id, favoriteParams.hotelId);
+        expect(service.transformEntityToOutputData).toHaveBeenCalledWith(favoriteEntity);
       });
     });
 
     it(`should return correct result`, async () => {
-      const result = await service.toggleFavoriteStatus(jsonWebTokenParams.id, hotelParams.id);
-      expect(result).toEqual(expectedHotelOutput);
+      const result = await service.toggleFavoriteStatus(jsonWebTokenParams.id, favoriteParams.hotelId);
+      expect(result).toEqual(favoriteParams);
     });
   });
 
   it(`transformEntityToOutputData method should return correct result`, async () => {
-    const result = await service.transformEntityToOutputData(hotelEntity, jsonWebTokenParams.id);
-    expect(result).toEqual(expectedHotelOutput);
+    const result = await service.transformEntityToOutputData(favoriteEntity);
+    expect(result).toEqual(favoriteParams);
   });
 });

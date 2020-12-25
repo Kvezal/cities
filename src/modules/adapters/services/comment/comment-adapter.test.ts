@@ -1,105 +1,68 @@
-import { Repository } from 'typeorm';
 import {
   Test,
   TestingModule,
 } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
 
 import {
   CommentEntity,
   IComment,
-  IHotel,
-  IUser,
 } from 'domains/entities';
 import { HotelAdapterService } from 'modules/adapters';
+import { CommentsDbTable } from 'modules/db';
+import { ICommentTableParams } from 'modules/db/interfaces';
 
-import { CommentOrmEntity } from '../../orm-entities';
 import { CommentMapper } from '../../mappers';
 import { CommentAdapterService } from './comment-adapter.service';
 
 
-const userParams: IUser = {
-  id: `1`,
-  name: `name`,
-  email: `email@gmail.com`,
-  password: `password`,
-  image: {
-    id: `1`,
-    title: `title`,
-  },
-  type: {
-    id: `1`,
-    title: `title`,
-  },
-};
-
-const hotelParams: IHotel = {
-  id: `1`,
-  title: `title`,
-  description: `description`,
-  bedroomCount: 4,
-  maxAdultCount: 2,
-  price: 150,
-  isPremium: true,
-  rating: 3,
-  features: [
-    {
-      id: `1`,
-      title: `title`,
-    },
-    {
-      id: `2`,
-      title: `title`,
-    }
-  ],
-  type: {
-    id: `1`,
-    title: `title`,
-  },
-  city: {
-    id: `1`,
-    title: `title`,
-    location: {
-      id: `1`,
-      latitude: 52.370216,
-      longitude: 4.895168,
-      zoom: 10,
-    },
-  },
-  location: {
-    id: `1`,
-    latitude: 52.370216,
-    longitude: 4.895168,
-    zoom: 10,
-  },
-  host: userParams,
-  images: [
-    {
-      id: `1`,
-      title: `title`,
-    },
-    {
-      id: `2`,
-      title: `title`,
-    }
-  ],
-  favorites: [userParams],
-};
-
-const commentParams: IComment = {
-  id: `1`,
+const commentTableParams: ICommentTableParams = {
+  id: `d9f29621-4739-4305-a72f-90a04542cb28`,
   text: `text`,
-  createdAt: new Date(),
+  created_at: new Date().toISOString(),
   rating: 4,
-  user: userParams,
-  hotel: hotelParams,
+  user: {
+    id: `db709632-439a-4c90-a151-044e28919754`,
+    name: `name`,
+    email: `email@gmail.com`,
+    password: `password`,
+    image: {
+      id: `e8c1ee3c-0070-4902-b840-7cf94ea3c049`,
+      title: `title`,
+    },
+    type: {
+      id: `fb847d59-7745-43ae-b7d5-c5fec95d1efc`,
+      title: `title`,
+    },
+  },
+  hotel_id: `d3db316e-dbe7-43af-b1a9-b184d4baa264`,
+};
+
+const commentEntityParams: IComment = {
+  id: commentTableParams.id,
+  text: commentTableParams.text,
+  createdAt: new Date(commentTableParams.created_at),
+  rating: commentTableParams.rating,
+  hotelId: commentTableParams.hotel_id,
+  user: {
+    id: commentTableParams.user.id,
+    name: commentTableParams.user.name,
+    email: commentTableParams.user.email,
+    password: commentTableParams.user.password,
+    image: {
+      id: commentTableParams.user.image.id,
+      title: commentTableParams.user.image.title,
+    },
+    type: {
+      id: commentTableParams.user.type.id,
+      title: commentTableParams.user.type.title,
+    },
+  },
 };
 
 describe(`Comment Adapter Service`, () => {
   let service: CommentAdapterService;
-  let commentRepositoryService: Repository<CommentOrmEntity>;
-  const commentEntity = CommentEntity.create(commentParams);
-  const commentOrmEntity = CommentMapper.mapToOrmEntity(commentEntity)
+  let commentsDbTable: CommentsDbTable;
+  const commentEntity = CommentEntity.create(commentEntityParams);
 
   beforeEach(async () => {
     const testModule: TestingModule = await Test.createTestingModule({
@@ -110,114 +73,81 @@ describe(`Comment Adapter Service`, () => {
           useValue: {},
         },
         {
-          provide: getRepositoryToken(CommentOrmEntity),
-          useClass: Repository
+          provide: CommentsDbTable,
+          useValue: {
+            findAll: async () => null,
+            createOne: async () => commentTableParams,
+          }
         },
       ],
     }).compile();
     service = testModule.get<CommentAdapterService>(CommentAdapterService);
-    commentRepositoryService = testModule.get<Repository<CommentOrmEntity>>(getRepositoryToken(CommentOrmEntity));
+    commentsDbTable = testModule.get<CommentsDbTable>(CommentsDbTable);
   });
 
-  describe(`loadHotelCommentList method`, () => {
+  describe(`loadCommentList method`, () => {
     describe(`getCommentHotelList method of CommentAdapterService`, () => {
       it(`should call`, async () => {
-        service.getCommentHotelList = jest.fn(service.getCommentHotelList).mockResolvedValueOnce([]);
-        await service.loadHotelCommentList({hotelId: `1`});
-        expect(service.getCommentHotelList).toHaveBeenCalledTimes(1);
+        const findAll = jest.spyOn(commentsDbTable, `findAll`).mockResolvedValueOnce([commentTableParams])
+        await service.loadCommentList({hotelId: `1`});
+        expect(findAll).toHaveBeenCalledTimes(1);
       });
 
       it(`should call with params`, async () => {
-        service.getCommentHotelList = jest.fn(service.getCommentHotelList).mockResolvedValueOnce([]);
-        await service.loadHotelCommentList({hotelId: `1`});
-        expect(service.getCommentHotelList).toHaveBeenCalledWith({hotelId: `1`});
+        const findAll = jest.spyOn(commentsDbTable, `findAll`).mockResolvedValueOnce([commentTableParams])
+        await service.loadCommentList({hotelId: `1`});
+        expect(findAll).toHaveBeenCalledWith({hotel_id: `1`});
       });
     });
 
     describe(`if find method result equal empty list`, () => {
       it(`shouldn't call mapToDomain of CommentViewMapper`, async () => {
         CommentMapper.mapToDomain = jest.fn(CommentMapper.mapToDomain);
-        service.getCommentHotelList = jest.fn(service.getCommentHotelList).mockResolvedValueOnce([]);
-        await service.loadHotelCommentList({hotelId: `1`});
+        jest.spyOn(commentsDbTable, `findAll`).mockResolvedValueOnce([])
+        await service.loadCommentList({hotelId: `1`});
         expect(CommentMapper.mapToDomain).toHaveBeenCalledTimes(0);
       });
 
       it(`should return empty array`, async () => {
-        service.getCommentHotelList = jest.fn(service.getCommentHotelList).mockResolvedValueOnce([]);
-        const result = await service.loadHotelCommentList({hotelId: `1`});
+        jest.spyOn(commentsDbTable, `findAll`).mockResolvedValueOnce([])
+        const result = await service.loadCommentList({hotelId: `1`});
         expect(result).toHaveLength(0);
-      });
-    });
-
-    describe(`if find method result has CommentOrmEntity`, () => {
-      const commentOrmEntities: CommentOrmEntity[] = [
-        commentOrmEntity,
-        commentOrmEntity,
-      ];
-
-      describe(`mapToDomain method of CommentViewMapper`, () => {
-        it(`should call`, async () => {
-          CommentMapper.mapToDomain = jest.fn(CommentMapper.mapToDomain);
-          service.getCommentHotelList = jest.fn(service.getCommentHotelList).mockResolvedValueOnce(commentOrmEntities);
-          await service.loadHotelCommentList({hotelId: `1`});
-          expect(CommentMapper.mapToDomain).toHaveBeenCalledTimes(2);
-        });
-
-        it(`should call with params`, async () => {
-          CommentMapper.mapToDomain = jest.fn(CommentMapper.mapToDomain);
-          service.getCommentHotelList = jest.fn(service.getCommentHotelList).mockResolvedValueOnce(commentOrmEntities);
-          await service.loadHotelCommentList({hotelId: `1`});
-          expect(CommentMapper.mapToDomain).toHaveBeenNthCalledWith(1, commentOrmEntities[0]);
-          expect(CommentMapper.mapToDomain).toHaveBeenNthCalledWith(2, commentOrmEntities[1]);
-        });
-      });
-
-      it(`should return empty array`, async () => {
-        const commentEntities: CommentEntity[] = commentOrmEntities.map(CommentMapper.mapToDomain);
-        service.getCommentHotelList = jest.fn(service.getCommentHotelList).mockResolvedValueOnce(commentOrmEntities);
-        const result = await service.loadHotelCommentList({hotelId: `1`});
-        expect(result).toEqual(commentEntities);
       });
     });
   });
 
   describe(`saveHotelComment method`, () => {
-    beforeEach(() => {
-      jest.spyOn(commentRepositoryService, `save`).mockImplementationOnce(() => null);
-    });
-
     describe(`mapToDomain method of  CommentViewMapper`, () => {
       it(`should call`, async () => {
-        CommentMapper.mapToOrmEntity = jest.fn(CommentMapper.mapToOrmEntity);
-        await service.saveHotelComment(commentEntity);
-        expect(CommentMapper.mapToOrmEntity).toHaveBeenCalledTimes(1);
+        CommentMapper.mapToTableParams = jest.fn(CommentMapper.mapToTableParams);
+        await service.saveComment(commentEntity);
+        expect(CommentMapper.mapToTableParams).toHaveBeenCalledTimes(1);
       });
 
       it(`should call with params`, async () => {
-        CommentMapper.mapToOrmEntity = jest.fn(CommentMapper.mapToOrmEntity);
-        await service.saveHotelComment(commentEntity);
-        expect(CommentMapper.mapToOrmEntity).toHaveBeenCalledWith(commentEntity);
+        CommentMapper.mapToTableParams = jest.fn(CommentMapper.mapToTableParams);
+        await service.saveComment(commentEntity);
+        expect(CommentMapper.mapToTableParams).toHaveBeenCalledWith(commentEntity);
       });
     });
 
     describe(`save method of CommentRepository`, () => {
       it(`should call`, async () => {
-        const save = jest.spyOn(commentRepositoryService, `save`).mockImplementation(() => null);
-        await service.saveHotelComment(commentEntity);
-        expect(save).toHaveBeenCalledTimes(1);
+        const createOne = jest.spyOn(commentsDbTable, `createOne`).mockImplementation(async () => commentTableParams);
+        await service.saveComment(commentEntity);
+        expect(createOne).toHaveBeenCalledTimes(1);
       });
 
       it(`should call with params`, async () => {
-        const commentOrmEntity = CommentMapper.mapToOrmEntity(commentEntity);
-        const save = jest.spyOn(commentRepositoryService, `save`).mockImplementationOnce(() => null);
-        await service.saveHotelComment(commentEntity);
-        expect(save).toHaveBeenCalledWith(commentOrmEntity);
+        const createOne = jest.spyOn(commentsDbTable, `createOne`).mockImplementationOnce(async () => commentTableParams);
+        await service.saveComment(commentEntity);
+        expect(createOne).toHaveBeenCalledWith(commentTableParams);
       });
     });
 
     it(`should return correct result`, async () => {
-      const result = await service.saveHotelComment(commentEntity);
-      expect(result).toBe(commentEntity);
+      const result = await service.saveComment(commentEntity);
+      expect(result).toEqual(commentEntity);
     });
   });
 });

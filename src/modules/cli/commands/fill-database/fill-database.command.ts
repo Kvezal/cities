@@ -1,11 +1,5 @@
-import * as dbTablesModule from '../../../db/tables';
 import { DbConnector, DbRequester, EDrivers } from 'nd-sql';
-import { ICli } from '../../cli.interface';
-import {
-  cityParams,
-  hotelParams,
-  userParams
-} from './data';
+import * as dbTablesModule from '../../../db/tables';
 import {
   CommentsDbTable,
   FavoritesDbTable,
@@ -13,6 +7,13 @@ import {
   HotelsDbTable,
   UsersDbTable
 } from '../../../db/tables';
+import { ICli } from '../../cli.interface';
+import {
+  cityParams,
+  hotelParams,
+  userParams
+} from './data';
+
 import { TablesDataCreator } from './tables-data-creator';
 
 

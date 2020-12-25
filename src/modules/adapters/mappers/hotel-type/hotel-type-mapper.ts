@@ -1,20 +1,19 @@
 import { HotelTypeEntity } from 'domains/entities';
-
-import { HotelTypeOrmEntity } from '../../orm-entities';
+import { IHotelTypeTableParams } from 'modules/db/interfaces';
 
 
 export class HotelTypeMapper {
-  static mapToDomain(ormEntity: HotelTypeOrmEntity): HotelTypeEntity {
+  static mapToDomain(tableParams: IHotelTypeTableParams): HotelTypeEntity {
     return HotelTypeEntity.create({
-      id: ormEntity.id,
-      title: ormEntity.title,
+      id: tableParams.id,
+      title: tableParams.title,
     });
   }
 
-  static mapToOrmEntity(domain: HotelTypeEntity): HotelTypeOrmEntity {
-    const ormEntity = new HotelTypeOrmEntity();
-    ormEntity.id = domain.id;
-    ormEntity.title = domain.title;
-    return ormEntity;
+  static mapToTableParams(domain: HotelTypeEntity): IHotelTypeTableParams {
+    return {
+      id: domain.id,
+      title: domain.title,
+    };
   }
 }

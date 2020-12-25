@@ -3,11 +3,12 @@ import {
   IDbCreateOneRecord,
   IDbFindOneRecord,
   IDbRemoveOneRecord,
-  IRowParams,
   GetSql,
   DbTable,
   SetDefaultParams,
 } from 'nd-sql';
+
+import { IRefreshTokenTableParams } from '../../interfaces';
 
 
 @DbTable({
@@ -21,26 +22,29 @@ export class RefreshTokensDbTable
     IDbRemoveOneRecord {
   constructor(private readonly _dbRequester: DbRequester) {}
 
+
   @GetSql(`./refresh-tokens.create.sql`)
-  public async createOne<Type>(value, sql?: string): Promise<Type> {
-    return this._dbRequester.createOne<Type>({
+  public async createOne(value: IRefreshTokenTableParams, sql?: string): Promise<IRefreshTokenTableParams> {
+    return this._dbRequester.createOne({
       sql,
       value
     });
   }
 
+
   @GetSql(`./refresh-tokens.remove.sql`)
-  public async removeOne<Type>(value, sql?: string): Promise<Type> {
-    return this._dbRequester.removeOne<Type>({
+  public async removeOne(value: IRefreshTokenTableParams, sql?: string): Promise<IRefreshTokenTableParams> {
+    return this._dbRequester.removeOne({
       sql,
       value,
     });
   }
 
+
   @GetSql(`./refresh-tokens.find.sql`)
   @SetDefaultParams({ value: `` })
-  public findOne<Type>(value?: IRowParams, sql?: string): Promise<Type> {
-    return this._dbRequester.findOne<Type>({
+  public findOne(value?: IRefreshTokenTableParams, sql?: string): Promise<IRefreshTokenTableParams> {
+    return this._dbRequester.findOne({
       sql,
       value,
     });

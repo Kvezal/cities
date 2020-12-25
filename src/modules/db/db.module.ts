@@ -5,6 +5,10 @@ import { DbConnector, DbRequester, EDrivers, IDbConnectorConfig } from "nd-sql";
 @Module({})
 export class DbModule {
   static async forRoot(config: Partial<IDbConnectorConfig>): Promise<DynamicModule> {
+    if (process.env.MODE === `test`) {
+      return;
+    }
+
     const connector: DbConnector = await DbConnector.init({
       driver: config.driver || (process.env.DB_DRIVER as EDrivers),
       host: config.host || process.env.DB_HOST,

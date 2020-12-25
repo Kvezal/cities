@@ -5,16 +5,17 @@ import {
   IDbFindAllRecords,
   IDbFindOneRecord,
   IDbUpdateOneRecord,
-  IRowParams,
   GetSql,
   DbTable,
   SetDefaultParams
 } from 'nd-sql';
+
+import { IRatingTableParams } from '../../interfaces';
 import { HotelsDbTable } from '../hotels';
 import { UsersDbTable } from '../users';
 
 
-const defaultParams = {
+const defaultParams: Partial<IRatingTableParams> = {
   user_id: ``,
   hotel_id: ``,
 };
@@ -37,24 +38,24 @@ export class RatingsDbTable
   constructor(private readonly _dbRequester: DbRequester) {}
 
   @GetSql(`./ratings.create.sql`)
-  public async createOne<Type>(value, sql?: string): Promise<Type> {
-    return this._dbRequester.createOne<Type>({
+  public async createOne(value: IRatingTableParams, sql?: string): Promise<IRatingTableParams> {
+    return this._dbRequester.createOne({
       sql,
       value,
     });
   }
 
   @GetSql(`./ratings.create.sql`)
-  public async createAll<Type>(list, sql?: string): Promise<Type[]> {
-    return this._dbRequester.createList<Type>({
+  public async createAll<Type>(list: IRatingTableParams[], sql?: string): Promise<IRatingTableParams[]> {
+    return this._dbRequester.createList({
       sql,
       list,
     });
   }
 
   @GetSql(`./ratings.update.sql`)
-  public async updateOne<Type>(value?: Type, sql?: string): Promise<Type> {
-    return this._dbRequester.updateOne<Type>({
+  public async updateOne(value?: Partial<IRatingTableParams>, sql?: string): Promise<IRatingTableParams> {
+    return this._dbRequester.updateOne({
       sql,
       value,
     });
@@ -62,8 +63,8 @@ export class RatingsDbTable
 
   @GetSql(`./ratings.find.sql`)
   @SetDefaultParams(defaultParams)
-  public findOne<Type>(value?: IRowParams, sql?: string): Promise<Type> {
-    return this._dbRequester.findOne<Type>({
+  public findOne(value?: IRatingTableParams, sql?: string): Promise<IRatingTableParams> {
+    return this._dbRequester.findOne({
       sql,
       value,
     });
@@ -71,11 +72,8 @@ export class RatingsDbTable
 
   @GetSql(`./ratings.find.sql`)
   @SetDefaultParams(defaultParams)
-  public async findAll<Type>(
-    value?: IRowParams,
-    sql?: string,
-  ): Promise<Type[]> {
-    return this._dbRequester.findList<Type>({
+  public async findAll(value?: IRatingTableParams, sql?: string): Promise<IRatingTableParams[]> {
+    return this._dbRequester.findList({
       sql,
       value,
     });

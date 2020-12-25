@@ -1,17 +1,19 @@
 import {
   DbRequester,
+  DbTable,
+  GetSql,
   IDbCreateAllRecords,
   IDbCreateOneRecord,
   IDbFindAllRecords,
   IDbFindOneRecord,
-  IRowParams,
-  GetSql,
-  DbTable,
   SetDefaultParams,
 } from 'nd-sql';
+
+import { ICityTableParams } from '../../interfaces';
 import { LocationsDbTable } from '../locations';
 
-const defaultParams = {
+
+const defaultParams: Partial<ICityTableParams> = {
   id: ``,
   title: ``,
 };
@@ -31,16 +33,16 @@ export class CitiesDbTable
   constructor(private readonly _dbRequester: DbRequester) {}
 
   @GetSql(`./cities.create.sql`)
-  public async createOne<Type>(value: Type, sql?: string): Promise<Type> {
-    return this._dbRequester.createOne({
+  public async createOne(value: ICityTableParams, sql?: string): Promise<ICityTableParams> {
+    return this._dbRequester.createOne<ICityTableParams>({
       sql,
       value,
     });
   }
 
   @GetSql(`./cities.create.sql`)
-  public createAll<Type>(list: Type[], sql?: string): Promise<Type[]> {
-    return this._dbRequester.createList<Type>({
+  public createAll(list: ICityTableParams[], sql?: string): Promise<ICityTableParams[]> {
+    return this._dbRequester.createList({
       sql,
       list,
     });
@@ -48,8 +50,8 @@ export class CitiesDbTable
 
   @GetSql(`./cities.find.sql`)
   @SetDefaultParams(defaultParams)
-  public findOne<Type>(value?: IRowParams, sql?: string): Promise<Type> {
-    return this._dbRequester.findOne<Type>({
+  public findOne(value?: Partial<ICityTableParams>, sql?: string): Promise<ICityTableParams> {
+    return this._dbRequester.findOne<ICityTableParams>({
       sql,
       value,
     });
@@ -57,8 +59,8 @@ export class CitiesDbTable
 
   @GetSql(`./cities.find.sql`)
   @SetDefaultParams(defaultParams)
-  public findAll<Type>(value?: IRowParams, sql?: string): Promise<Type[]> {
-    return this._dbRequester.findList<Type>({
+  public findAll(value?: Partial<ICityTableParams>, sql?: string): Promise<ICityTableParams[]> {
+    return this._dbRequester.findList<ICityTableParams>({
       sql,
       value,
     });

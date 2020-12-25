@@ -1,21 +1,21 @@
 import {
   DbRequester,
+  DbTable,
+  GetSql,
   IDbCreateAllRecords,
   IDbCreateOneRecord,
   IDbFindAllRecords,
   IDbFindOneRecord,
   IDbRemoveOneRecord,
-  IRowParams,
-  GetSql,
-  DbTable,
   SetDefaultParams,
 } from 'nd-sql';
-import { UsersDbTable } from '../users';
+
+import { IFavoriteTableParams } from '../../interfaces';
 import { HotelsDbTable } from '../hotels';
+import { UsersDbTable } from '../users';
 
 
-
-const defaultParams = {
+const defaultParams: IFavoriteTableParams = {
   hotel_id: ``,
   user_id: ``,
 };
@@ -38,7 +38,7 @@ export class FavoritesDbTable
   constructor(private readonly _dbRequester: DbRequester) {}
 
   @GetSql(`./favorites.create.sql`)
-  public async createOne<Type>(value: Type, sql?: string): Promise<Type> {
+  public async createOne<Type>(value: IFavoriteTableParams, sql?: string): Promise<IFavoriteTableParams> {
     return this._dbRequester.createOne({
       sql,
       value,
@@ -46,16 +46,16 @@ export class FavoritesDbTable
   }
 
   @GetSql(`./favorites.create.sql`)
-  public createAll<Type>(list: Type[], sql?: string): Promise<Type[]> {
-    return this._dbRequester.createList<Type>({
+  public createAll(list: IFavoriteTableParams[], sql?: string): Promise<IFavoriteTableParams[]> {
+    return this._dbRequester.createList({
       sql,
       list,
     });
   }
 
   @GetSql(`./favorites.remove.sql`)
-  public removeOne<Type>(value?: Type, sql?: string): Promise<Type> {
-    return this._dbRequester.removeOne<Type>({
+  public async removeOne(value?: Partial<IFavoriteTableParams>, sql?: string): Promise<IFavoriteTableParams> {
+    return this._dbRequester.removeOne({
       sql,
       value,
     });
@@ -63,8 +63,8 @@ export class FavoritesDbTable
 
   @GetSql(`./favorites.find.sql`)
   @SetDefaultParams(defaultParams)
-  public findOne<Type>(value: IRowParams, sql?: string): Promise<Type> {
-    return this._dbRequester.findOne<Type>({
+  public findOne(value: IFavoriteTableParams, sql?: string): Promise<IFavoriteTableParams> {
+    return this._dbRequester.findOne({
       sql,
       value,
     });
@@ -72,8 +72,8 @@ export class FavoritesDbTable
 
   @GetSql(`./favorites.find.sql`)
   @SetDefaultParams(defaultParams)
-  public findAll<Type>(value?: IRowParams, sql?: string): Promise<Type[]> {
-    return this._dbRequester.findList<Type>({
+  public findAll(value?: Partial<IFavoriteTableParams>, sql?: string): Promise<IFavoriteTableParams[]> {
+    return this._dbRequester.findList<IFavoriteTableParams>({
       sql,
       value,
     });

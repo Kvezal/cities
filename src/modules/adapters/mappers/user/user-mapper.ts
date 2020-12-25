@@ -1,12 +1,12 @@
 import { UserEntity } from 'domains/entities';
+import { IUserTableParams } from 'modules/db/interfaces';
 
-import { UserOrmEntity } from '../../orm-entities';
 import { UserTypeMapper } from '../user-type';
 import { ImageMapper } from '../image';
 
 
 export class UserMapper {
-  static mapToDomain(ormEntity: UserOrmEntity): UserEntity {
+  static mapToDomain(ormEntity: IUserTableParams): UserEntity {
     return UserEntity.create({
       id: ormEntity.id,
       name: ormEntity.name,
@@ -17,14 +17,15 @@ export class UserMapper {
     });
   }
 
-  static mapToOrmEntity(domain: UserEntity): UserOrmEntity {
-    const ormEntity = new UserOrmEntity();
-    ormEntity.id = domain.id;
-    ormEntity.name = domain.name;
-    ormEntity.email = domain.email;
-    ormEntity.password = domain.password;
-    ormEntity.image = domain.image && ImageMapper.mapToOrmEntity(domain.image);
-    ormEntity.type = UserTypeMapper.mapToOrmEntity(domain.type);
-    return ormEntity;
+
+  static mapToTableParams(domain: UserEntity): IUserTableParams {
+    return {
+      id: domain.id,
+      name: domain.name,
+      email: domain.email,
+      password: domain.password,
+      image: domain.image && ImageMapper.mapToTableParams(domain.image),
+      type: UserTypeMapper.mapToTableParams(domain.type),
+    };
   }
 }

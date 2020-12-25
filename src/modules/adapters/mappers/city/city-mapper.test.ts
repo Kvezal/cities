@@ -4,10 +4,10 @@ import { CityMapper, LocationMapper } from '../../mappers';
 
 
 const ormEntity = {
-  id: `1`,
+  id: `1008131ec-cb07-499a-86e4-6674afa31532`,
   title: `title`,
   location: {
-    id: `1`,
+    id: `1008131ec-cb07-499a-86e4-6674afa31532`,
     latitude: 52.370216,
     longitude: 4.895168,
     zoom: 10,
@@ -40,14 +40,14 @@ describe(`City Mapper`, () => {
     });
   });
 
-  describe(`mapToOrmEntity`, () => {
+  describe(`mapToTableParams`, () => {
     it('should return CityOrmEntity', function() {
-      const result = CityMapper.mapToOrmEntity(entity);
+      const result = CityMapper.mapToTableParams(entity);
       expect(result).toEqual(ormEntity);
     });
 
     it.each([`id`, `title`, `location`])('should have %p property in result', function(property) {
-      const result = CityMapper.mapToOrmEntity(entity);
+      const result = CityMapper.mapToTableParams(entity);
       expect(result).toHaveProperty(property);
     });
   });

@@ -1,16 +1,18 @@
 import {
   DbRequester,
+  DbTable,
+  GetSql,
   IDbCreateAllRecords,
   IDbCreateOneRecord,
   IDbFindAllRecords,
   IDbFindOneRecord,
-  IRowParams,
-  GetSql,
-  DbTable,
   SetDefaultParams,
 } from 'nd-sql';
 
-const defaultParams = {
+import { IHotelTypeTableParams } from '../../interfaces';
+
+
+const defaultParams: IHotelTypeTableParams = {
   id: ``,
   title: ``,
 };
@@ -47,8 +49,8 @@ export class HotelTypesDbTable
 
   @GetSql(`./hotel-types.find.sql`)
   @SetDefaultParams(defaultParams)
-  public findOne<Type>(value: IRowParams, sql?: string): Promise<Type> {
-    return this._dbRequester.findOne<Type>({
+  public findOne(value: IHotelTypeTableParams, sql?: string): Promise<IHotelTypeTableParams> {
+    return this._dbRequester.findOne({
       sql,
       value,
     });
@@ -56,11 +58,11 @@ export class HotelTypesDbTable
 
   @GetSql(`./hotel-types.find.sql`)
   @SetDefaultParams(defaultParams)
-  public async findAll<Type>(
-    value?: IRowParams,
+  public async findAll(
+    value?: IHotelTypeTableParams,
     sql?: string,
-  ): Promise<Type[]> {
-    return this._dbRequester.findList<Type>({
+  ): Promise<IHotelTypeTableParams[]> {
+    return this._dbRequester.findList({
       sql,
       value,
     });

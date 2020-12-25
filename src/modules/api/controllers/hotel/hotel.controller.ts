@@ -14,17 +14,13 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import {
-  ESortingFilter,
-  ESortingType,
-} from 'domains/interfaces';
+import { ESortingType } from 'domains/interfaces';
 
 import { HotelOutput } from 'modules/api/interfaces';
 import { IRequest } from 'modules/api/middlewares';
 
 import { EApiRouteName } from '../api-route-names.enum';
 import { HotelControllerService } from './hotel-controller.service';
-
 
 
 @ApiTags(`Hotel`)
@@ -54,10 +50,9 @@ export class HotelController {
     required: false,
   })
   @ApiQuery({
-    name: `filter`,
-    description: `lets filter hotels (nearby - closer to hotelId, favorite - return favorite for authorized user)`,
-    example: ESortingFilter.FAVORITE,
-    enum: ESortingFilter,
+    name: `isFavorite`,
+    description: `lets filter user favorite hotels`,
+    example: true,
     required: false,
   })
   @ApiQuery({
@@ -70,8 +65,8 @@ export class HotelController {
   public async getHotelList(
     @Query(`cityId`) cityId: string,
     @Query(`hotelId`) hotelId: string,
-    @Query(`filter`) filter: ESortingFilter,
-    @Query(`type`) type: ESortingType,
+    @Query(`isFavorite`) isFavorite: boolean,
+    @Query(`sorting`) type: ESortingType,
     @Req() request: IRequest
   ): Promise<HotelOutput[]> {
     return this._hotelControllerService.getHotelList({
@@ -79,7 +74,7 @@ export class HotelController {
       hotelId,
       userId: request?.locals?.userId,
       type,
-      filter,
+      isFavorite,
     });
   }
 

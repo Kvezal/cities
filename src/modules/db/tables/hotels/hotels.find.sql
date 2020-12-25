@@ -13,18 +13,44 @@ SELECT
   image_list.value AS images,
   feature_list.value AS features,
   rating.value AS rating,
-  (:user_id != '' AND favorite_counts.value !=0) AS isFavorite
+  (:user_id != '' AND favorite_counts.value != 0) AS is_favorite
 FROM hotels
 LEFT JOIN hotel_types ON hotels.hotel_type_id = hotel_types.id
-LEFT JOIN locations ON hotels.location_id = locations.id
-LEFT JOIN users ON hotels.host_id = users.id
+
+
+LEFT JOIN (
+  SELECT
+    locations.id,
+    ST_X(locations.coords) AS latitude,
+    ST_Y(locations.coords) AS longitude,
+    locations.zoom
+  FROM locations
+) AS locations ON hotels.location_id = locations.id
+
+
+LEFT JOIN (
+  SELECT
+    users.id,
+    users.email,
+    users.name,
+    user_types AS type,
+    images AS image
+  FROM users
+  LEFT JOIN user_types ON users.user_type_id = user_types.id
+  LEFT JOIN images ON users.image_id = images.id
+) AS users ON hotels.host_id = users.id
 
 
 LEFT JOIN (
   SELECT
     cities.id AS id,
     cities.title AS title,
-    TO_JSON(locations) AS location
+    JSON_BUILD_OBJECT(
+      'id', locations.id,
+      'latitude', ST_X(locations.coords),
+      'longitude', ST_Y(locations.coords),
+      'zoom', locations.zoom
+    ) AS location
   FROM cities
   LEFT JOIN locations ON cities.location_id = locations.id
 ) AS cities ON hotels.city_id = cities.id
@@ -101,26 +127,26 @@ LEFT JOIN (
    LEFT JOIN locations AS locations1 ON hotels2.location_id = locations1.id
    LEFT JOIN locations AS locations2 ON hotels1.location_id = locations2.id
    WHERE (:id != '' AND hotels2.id = :id::UUID)
-) AS hotel_distances ON (hotels.id = hotel_distances.hotel_id) AND (:sorting::JSON->>'type' = 'nearby')
+) AS hotel_distances ON (hotels.id = hotel_distances.hotel_id) AND (:sorting= 'nearby')
 
 
 WHERE
-  (:id = '' OR :sorting::JSON->>'type' = 'nearby' OR hotels.id = :id::UUID)
+  (:id = '' OR (:sorting= 'nearby' AND hotels.id != :id::UUID) OR hotels.id = :id::UUID)
   AND (:title = '' OR hotels.title = :title)
-  AND (:city::JSON->>'id' IS NULL OR cities.id = UUID(:city::JSON->>'id'))
-  AND (:city::JSON->>'title' IS NULL OR cities.title = :city::JSON->>'title')
-  AND (:is_favorite = FALSE OR (:user_id != '' AND favorite_counts.value !=0))
+  AND (:city::JSON->>'id' IS NULL OR :city::JSON->>'id' = '' OR cities.id = UUID(:city::JSON->>'id'))
+  AND (:city::JSON->>'title' IS NULL OR :city::JSON->>'title' = '' OR cities.title = :city::JSON->>'title')
+  AND (:is_favorite = FALSE OR (:user_id != '' AND favorite_counts.value != 0))
 ORDER BY
   CASE
-    WHEN (:sorting::JSON->>'type' = 'rating')
+    WHEN (:sorting= 'rating')
       THEN rating.value
-    WHEN (:sorting::JSON->>'type' = 'high-price')
+    WHEN (:sorting= 'high-price')
       THEN (hotels.price)
+    WHEN (:sorting= 'nearby')
+      THEN (hotel_distances.value)
   END DESC,
   CASE
-    WHEN (:sorting::JSON->>'type' = 'low-price')
+    WHEN (:sorting= 'low-price')
       THEN (hotels.price)
-    WHEN (:sorting::JSON->>'type' = 'nearby')
-      THEN (hotel_distances.value)
   END ASC,
   ((favorite_counts.value + comment_counts.value) * rating.value) DESC;

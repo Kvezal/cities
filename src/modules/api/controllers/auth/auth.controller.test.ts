@@ -245,46 +245,4 @@ describe(`AuthController`, () => {
       });
     });
   });
-
-  describe(`HEAD`, () => {
-    describe(`/api/auth/check end point`, () => {
-      const checkUrl = `/api/auth/check`;
-
-      it(`if request with valid access-token header status code should be 204`, async () => {
-        jest.spyOn(service, `checkAccessToken`).mockImplementation(async () => true);
-        const result = await request(app.getHttpServer())
-          .head(checkUrl)
-          .set(`access-token`, `access-token`)
-          .send();
-        expect(result.status).toBe(HttpStatus.NO_CONTENT);
-      });
-
-      it(`if request with invalid access-token header status code should be 401`, async () => {
-        jest.spyOn(service, `checkAccessToken`).mockImplementation(async () => {
-          throw new JsonWebTokenError({
-            type: EJsonWebTokenType.INVALID,
-            message: `JSON Web Token is invalid`,
-          });
-        });
-        const result = await request(app.getHttpServer())
-          .head(checkUrl)
-          .set(`access-token`, `access-token`)
-          .send();
-        expect(result.status).toBe(HttpStatus.UNAUTHORIZED);
-      });
-
-      it(`if request without access-token header status code should be 401`, async () => {
-        jest.spyOn(service, `checkAccessToken`).mockImplementation(async () => {
-          throw new JsonWebTokenError({
-            type: EJsonWebTokenType.INVALID,
-            message: `JSON Web Token is invalid`,
-          });
-        });
-        const result = await request(app.getHttpServer())
-          .head(checkUrl)
-          .send();
-        expect(result.status).toBe(HttpStatus.UNAUTHORIZED);
-      });
-    });
-  });
 });

@@ -4,16 +4,17 @@ import {
   IDbCreateOneRecord,
   IDbFindAllRecords,
   IDbFindOneRecord,
-  IRowParams,
   GetSql,
   DbTable,
   SetDefaultParams,
 } from 'nd-sql';
+
+import { IUserTableParams } from '../../interfaces';
 import { ImagesDbTable } from '../images';
 import { UserTypesDbTable } from '../user-types';
 
 
-const defaultParams = {
+const defaultParams: Partial<IUserTableParams> = {
   id: ``,
   name: ``,
   email: ``,
@@ -37,7 +38,7 @@ export class UsersDbTable
   constructor(private readonly _dbRequester: DbRequester) {}
 
   @GetSql(`./users.create.sql`)
-  public async createOne<Type>(value: Type, sql?: string): Promise<Type> {
+  public async createOne(value: IUserTableParams, sql?: string): Promise<IUserTableParams> {
     return this._dbRequester.createOne({
       sql,
       value,
@@ -45,8 +46,8 @@ export class UsersDbTable
   }
 
   @GetSql(`./users.create.sql`)
-  public createAll<Type>(list: Type[], sql?: string): Promise<Type[]> {
-    return this._dbRequester.createList<Type>({
+  public createAll(list: IUserTableParams[], sql?: string): Promise<IUserTableParams[]> {
+    return this._dbRequester.createList({
       sql,
       list,
     });
@@ -54,8 +55,8 @@ export class UsersDbTable
 
   @GetSql(`./users.find.sql`)
   @SetDefaultParams(defaultParams)
-  public findOne<Type>(value: IRowParams, sql?: string): Promise<Type> {
-    return this._dbRequester.findOne<Type>({
+  public findOne(value: Partial<IUserTableParams>, sql?: string): Promise<IUserTableParams> {
+    return this._dbRequester.findOne({
       sql,
       value,
     });
@@ -63,8 +64,8 @@ export class UsersDbTable
 
   @GetSql(`./users.find.sql`)
   @SetDefaultParams(defaultParams)
-  public findAll<Type>(value?: IRowParams, sql?: string): Promise<Type[]> {
-    return this._dbRequester.findList<Type>({
+  public findAll(value?: Partial<IUserTableParams>, sql?: string): Promise<IUserTableParams[]> {
+    return this._dbRequester.findList({
       sql,
       value,
     });
