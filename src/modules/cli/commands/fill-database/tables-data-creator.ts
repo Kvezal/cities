@@ -107,12 +107,13 @@ export class TablesDataCreator {
         .slice(0, getRandomInt(0, users.length - 1))
         .map((user: any) => ({
           id: uuidv4(),
-          user_id: user.id,
+          user: user,
           hotel_id: hotel.id,
           text: shuffle(this._usersData.comments)
             .slice(0, getRandomInt(0, this._usersData.comments.length - 1))
             .join(` `),
           rating: getRandomInt(1, 5),
+          created_at: new Date(),
         }));
       comments.push(...hotelComments);
       return comments;

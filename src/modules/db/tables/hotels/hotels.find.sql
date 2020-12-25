@@ -13,7 +13,7 @@ SELECT
   image_list.value AS images,
   feature_list.value AS features,
   rating.value AS rating,
-  (:user_id != '' AND favorite_counts.value != 0) AS is_favorite
+  favorite_flags.value AS is_favorite
 FROM hotels
 LEFT JOIN hotel_types ON hotels.hotel_type_id = hotel_types.id
 
@@ -130,12 +130,26 @@ LEFT JOIN (
 ) AS hotel_distances ON (hotels.id = hotel_distances.hotel_id) AND (:sorting= 'nearby')
 
 
+LEFT JOIN (
+  SELECT
+    hotels.id AS hotel_id,
+    (:user_id != '' AND EXISTS(
+      SELECT *
+      FROM favorites
+      JOIN users ON users.id = favorites.user_id
+        AND favorites.hotel_id = hotels.id
+      WHERE users.id = :user_id::UUID
+    )) AS value
+  FROM hotels
+) AS favorite_flags ON hotels.id = favorite_flags.hotel_id
+
+
 WHERE
   (:id = '' OR (:sorting= 'nearby' AND hotels.id != :id::UUID) OR hotels.id = :id::UUID)
   AND (:title = '' OR hotels.title = :title)
   AND (:city::JSON->>'id' IS NULL OR :city::JSON->>'id' = '' OR cities.id = UUID(:city::JSON->>'id'))
   AND (:city::JSON->>'title' IS NULL OR :city::JSON->>'title' = '' OR cities.title = :city::JSON->>'title')
-  AND (:is_favorite = FALSE OR (:user_id != '' AND favorite_counts.value != 0))
+  AND (:is_favorite = FALSE OR favorite_flags.value)
 ORDER BY
   CASE
     WHEN (:sorting= 'rating')

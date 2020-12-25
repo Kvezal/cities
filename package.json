@@ -33,7 +33,7 @@
     "cross-env": "7.0.3",
     "dotenv": "8.2.0",
     "jsonwebtoken": "8.5.1",
-    "nd-sql": "0.1.5",
+    "nd-sql": "0.1.6",
     "pg": "8.5.0",
     "reflect-metadata": "0.1.13",
     "rimraf": "3.0.2",

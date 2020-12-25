@@ -63,6 +63,7 @@ export class HotelsDbTable
   @GetSql(`./hotels.find.sql`)
   @SetDefaultParams(defaultParams)
   public findOne(value: any, sql?: string): Promise<IHotelTableParams> {
+    console.log(value);
     return this._dbRequester.findOne({
       sql,
       value,
@@ -72,6 +73,7 @@ export class HotelsDbTable
   @GetSql(`./hotels.find.sql`)
   @SetDefaultParams(defaultParams)
   public findAll(value?: any, sql?: string): Promise<IHotelTableParams[]> {
+    console.log(value);
     return this._dbRequester.findList({
       sql,
       value,
