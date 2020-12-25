@@ -173,8 +173,8 @@ describe(`RefreshJsonWebTokenMiddleware`, () => {
         .get(`/test`)
         .set({cookie: `refresh-token=${refreshToken}`})
         .send();
-      expect((testService.testRequest.mock.calls[0][0] as IRequest).locals)
-        .toEqual({userId: jsonWebTokenParams.id});
+      expect((testService.testRequest.mock.calls[0][0] as IRequest).locals.userId)
+        .toBe(jsonWebTokenParams.id);
     });
 
     it(`should have userId if refreshToken is undefined`, async () => {
@@ -182,8 +182,8 @@ describe(`RefreshJsonWebTokenMiddleware`, () => {
       await request(app.getHttpServer())
         .get(`/test`)
         .send();
-      expect((testService.testRequest.mock.calls[0][0] as IRequest).locals)
-        .toEqual({});
+      expect((testService.testRequest.mock.calls[0][0] as IRequest).locals.userId)
+        .toBeUndefined();
     });
   });
 })

@@ -27,7 +27,7 @@ export class RefreshJsonWebTokenMiddleware implements NestMiddleware {
     if (req.locals.userId) {
       return next();
     }
-    const refreshToken: string = req.cookies?.[`refresh-token`];
+    const refreshToken: string = req.locals.refreshToken;
     if (!refreshToken) {
       return next();
     }
@@ -38,6 +38,8 @@ export class RefreshJsonWebTokenMiddleware implements NestMiddleware {
     this.setTokens(res, jsonWebTokenEntity);
     const user: IJsonWebTokenParams = await this._authService.decodeAccessToken(jsonWebTokenEntity.accessToken).catch(() => null);
     req.locals.userId = user.id;
+    req.locals.accessToken = jsonWebTokenEntity.accessToken;
+    req.locals.refreshToken = jsonWebTokenEntity.refreshToken;
     next();
   }
 

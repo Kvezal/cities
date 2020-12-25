@@ -20,7 +20,7 @@ export class AccessMiddleware implements NestMiddleware {
 
 
   public async use(req: IRequest, res: Response, next: () => void): Promise<void> {
-    const accessToken = req.cookies?.[`access-token`];
+    const accessToken = req.locals.accessToken;
     if (!accessToken) {
       throw new JsonWebTokenError({
         type: EJsonWebTokenType.IS_NOT_EXISTED,

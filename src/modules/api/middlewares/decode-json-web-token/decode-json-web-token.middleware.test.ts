@@ -106,15 +106,13 @@ describe(`DecodeJsonWebTokenMiddleware`, () => {
       expect(authService.decodeAccessToken).toHaveBeenCalledWith(accessToken);
     });
 
-    it(`should have userId`, async () => {
+    it(`should have correct userId`, async () => {
       const test = jest.spyOn(testService, `testRequest`);
       await request(app.getHttpServer())
         .get(`/test`)
         .set({cookie: `access-token=${accessToken}`})
         .send();
-      expect((test.mock.calls[0][0] as IRequest).locals).toEqual({
-        userId: jsonWebTokenParams.id,
-      });
+      expect((test.mock.calls[0][0] as IRequest).locals.userId).toEqual(jsonWebTokenParams.id);
     });
   });
 });

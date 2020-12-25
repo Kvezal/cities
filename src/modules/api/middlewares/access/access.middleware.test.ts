@@ -24,6 +24,7 @@ import { JsonWebTokenExceptionFilter } from 'modules/api/filters';
 
 import { IRequest } from '../middlewares.interface';
 import { AccessMiddleware } from './access.middleware';
+import { InitLocalsMiddleware } from 'modules/api/middlewares';
 
 
 @Controller(`test`)
@@ -52,7 +53,7 @@ class TestController {
 })
 class TestModule implements NestModule {
   configure(consumer: MiddlewareConsumer): any {
-    consumer.apply(cookieParser(), AccessMiddleware)
+    consumer.apply(cookieParser(), InitLocalsMiddleware, AccessMiddleware)
       .forRoutes(TestController);
   }
 }

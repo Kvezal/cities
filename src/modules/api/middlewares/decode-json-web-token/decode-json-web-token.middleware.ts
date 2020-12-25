@@ -20,7 +20,7 @@ export class DecodeJsonWebTokenMiddleware implements NestMiddleware {
 
 
   public async use(req: IRequest, res: Response, next: () => void): Promise<void> {
-    const accessToken: string = req.cookies?.[`access-token`];
+    const accessToken: string = req.locals.accessToken;
     if (!accessToken) {
       return next();
     }
