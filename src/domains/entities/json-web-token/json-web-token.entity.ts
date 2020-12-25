@@ -57,6 +57,7 @@ export class JsonWebTokenEntity {
       refreshToken, process.env.JWT_REFRESH_SECRET,
       (error, tokenData) => error ? null : tokenData
     );
+    delete refreshTokenData.iat;
     return JsonWebTokenEntity.generate(refreshTokenData);
   }
 }
