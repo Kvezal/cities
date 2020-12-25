@@ -8,9 +8,13 @@ import * as cookieParser from 'cookie-parser';
 
 import { AppModule } from './app.module';
 
+const { BACKEND_PORT, FRONTEND_PORT, FRONTEND_HOST, FRONTEND_PROTOCOL } = process.env;
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {cors: {
+    credentials: true,
+    origin: `${FRONTEND_PROTOCOL}://${FRONTEND_HOST}:${FRONTEND_PORT}`,
+  }});
   app.use(cookieParser());
 
   const options = new DocumentBuilder()
@@ -24,6 +28,6 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);
-  await app.listen(3000);
+  await app.listen(BACKEND_PORT);
 }
 bootstrap();
