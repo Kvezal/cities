@@ -1,16 +1,31 @@
-import { HttpStatus, INestApplication } from '@nestjs/common';
+import {
+  HttpStatus,
+  INestApplication,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+} from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { parse } from 'cookie';
 import * as cookieParser from 'cookie-parser';
 import * as request from 'supertest';
 
-import { IJsonWebTokenParams, JsonWebTokenEntity } from 'domains/entities';
-import { EJsonWebTokenType, EUserField, JsonWebTokenError, UserError } from 'domains/exceptions';
+import {
+  IJsonWebTokenParams,
+  JsonWebTokenEntity,
+} from 'domains/entities';
+import {
+  EJsonWebTokenType,
+  EUserField,
+  JsonWebTokenError,
+  UserError,
+} from 'domains/exceptions';
 import { authServiceSymbol } from 'domains/services';
 import { ConfigService } from 'modules/config';
 
 import { AuthControllerService } from './auth-controller.service';
 import { AuthController } from './auth.controller';
+import { CommentController } from 'modules/api/controllers/comment/comment.controller';
 
 
 const jsonWebTokenParams: IJsonWebTokenParams = {
@@ -21,31 +36,43 @@ const jsonWebTokenParams: IJsonWebTokenParams = {
 };
 
 
+@Module({
+  controllers: [AuthController],
+  providers: [
+    AuthControllerService,
+    {
+      provide: authServiceSymbol,
+      useValue: {
+        authenticateUser: async () => null,
+        logout: async () => null,
+        checkAccessToken: async () => null,
+        decodeAccessToken: async () => null,
+        refreshToken: async () => null,
+      },
+    },
+    {
+      provide: ConfigService,
+      useValue: {
+        getGlobalEnvironmentVariable: () => null,
+      }
+    }
+  ],
+})
+class TestModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): any {
+    consumer.apply(cookieParser())
+      .forRoutes(CommentController);
+  }
+}
+
+
 describe(`AuthController`, () => {
   let app: INestApplication;
   let service: AuthControllerService;
 
   beforeAll(async () => {
     const testModule = await Test.createTestingModule({
-      controllers: [AuthController],
-      providers: [
-        AuthControllerService,
-        {
-          provide: authServiceSymbol,
-          useValue: {
-            authenticateUser: async () => null,
-            checkAccessToken: async () => null,
-            decodeAccessToken: async () => null,
-            refreshToken: async () => null,
-          },
-        },
-        {
-          provide: ConfigService,
-          useValue: {
-            getGlobalEnvironmentVariable: () => null,
-          }
-        }
-      ],
+      imports: [TestModule],
     }).compile();
 
     app = testModule.createNestApplication();
@@ -139,7 +166,7 @@ describe(`AuthController`, () => {
         });
       });
 
-      it.each([`refresh-token`, `access-token`])(`if request is valid should set %p header`, async (cookieName: string) => {
+      it.each([`refresh-token`, `access-token`])(`if request is valid should set %p cookie`, async (cookieName: string) => {
         const result = await request(app.getHttpServer())
           .post(loginUrl)
           .send({
@@ -148,6 +175,63 @@ describe(`AuthController`, () => {
           });
         const cookies = result.headers[`set-cookie`].map((cookie) => parse(cookie));
         const hasToken = cookies.some((cookie: string) => Boolean(cookie[cookieName]));
+        expect(hasToken).toBeTruthy();
+      });
+    });
+
+    describe(`/api/auth/logout end point`, () => {
+      const logoutUrl = `/api/auth/logout`;
+      const refreshToken = `test`;
+
+      it(`if request with valid refresh token status code should be 205`, async () => {
+        const result = await request(app.getHttpServer())
+          .head(logoutUrl)
+          .set({ cookie: `refresh-token=${refreshToken}` })
+          .send();
+        expect(result.status).toBe(HttpStatus.RESET_CONTENT);
+      });
+
+      it(`if request without refresh token status code should be 401`, async () => {
+        service.logout = jest.fn(service.logout).mockImplementationOnce(async () => {
+          throw new JsonWebTokenError({
+            type: EJsonWebTokenType.INVALID,
+            message: `JSON Web Token is invalid`,
+          });
+        });
+        const result = await request(app.getHttpServer())
+          .head(logoutUrl)
+          .send();
+        console.log(result.status);
+        expect(result.status).toBe(HttpStatus.UNAUTHORIZED);
+      });
+
+      describe(`logout method of Auth Controller Service`, () => {
+        it(`should call`, async () => {
+          service.logout = jest.fn(service.logout)
+          await request(app.getHttpServer())
+            .head(logoutUrl)
+            .set({ cookie: `refresh-token=${refreshToken}` })
+            .send();
+          expect(service.logout).toHaveBeenCalledTimes(1);
+        });
+
+        it(`should call with params`, async () => {
+          service.logout = jest.fn(service.logout)
+          await request(app.getHttpServer())
+            .head(logoutUrl)
+            .set({ cookie: `refresh-token=${refreshToken}` })
+            .send();
+          expect(service.logout).toHaveBeenCalledWith(refreshToken);
+        });
+      });
+
+      it.each([`refresh-token`, `access-token`])(`if request is valid should reset %p cookie`, async (cookieName: string) => {
+        const result = await request(app.getHttpServer())
+          .head(logoutUrl)
+          .set({ cookie: `refresh-token=${refreshToken}` })
+          .send();
+        const cookies = result.headers[`set-cookie`].map((cookie) => parse(cookie));
+        const hasToken = cookies.some((cookie: string) => cookie[cookieName] === ``);
         expect(hasToken).toBeTruthy();
       });
     });

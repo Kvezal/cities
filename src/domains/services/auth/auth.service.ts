@@ -17,6 +17,7 @@ import {
   AuthenticateUserUseCase,
   CheckTokenUseCase,
   DecodeAccessTokenUseCase,
+  LogoutUseCase,
   RefreshTokenUseCase,
 } from 'domains/use-cases';
 
@@ -25,6 +26,7 @@ export class AuthService implements
   AuthenticateUserUseCase,
   CheckTokenUseCase,
   DecodeAccessTokenUseCase,
+  LogoutUseCase,
   RefreshTokenUseCase {
   constructor(
     private readonly _userLoaderService: LoadUserByEmailPort,
@@ -84,6 +86,25 @@ export class AuthService implements
   }
 
 
+  public async logout(refreshToken: string): Promise<void> {
+    const isValid = await JsonWebTokenEntity.checkRefreshToken(refreshToken);
+    if (!isValid) {
+      throw new JsonWebTokenError({
+        type: EJsonWebTokenType.INVALID,
+        message: `JSON Web Token is invalid`,
+      });
+    }
+    const isExistedToken = await this._jsonWebTokenCheckerService.checkExistedJsonWebToken(refreshToken);
+    if (!isExistedToken) {
+      throw new JsonWebTokenError({
+        type: EJsonWebTokenType.IS_NOT_EXISTED,
+        message: `JSON Web Token isn't existed`,
+      });
+    }
+    await this._jsonWebTokenDeleterService.deleteJsonWebToken(refreshToken);
+  }
+
+
   public async checkAccessToken(accessToken: string): Promise<boolean> {
     const isValidJsonWebToken = await JsonWebTokenEntity.checkAccessToken(accessToken);
     if (!isValidJsonWebToken) {
@@ -109,24 +130,9 @@ export class AuthService implements
 
 
   public async refreshToken(refreshToken: string): Promise<JsonWebTokenEntity> {
-    const isValid = await JsonWebTokenEntity.checkRefreshToken(refreshToken);
-    if (!isValid) {
-      throw new JsonWebTokenError({
-        type: EJsonWebTokenType.INVALID,
-        message: `JSON Web Token is invalid`,
-      });
-    }
-    const isExistedToken = await this._jsonWebTokenCheckerService.checkExistedJsonWebToken(refreshToken);
-    if (!isExistedToken) {
-      throw new JsonWebTokenError({
-        type: EJsonWebTokenType.IS_NOT_EXISTED,
-        message: `JSON Web Token isn't existed`,
-      });
-    }
-    await this._jsonWebTokenDeleterService.deleteJsonWebToken(refreshToken);
+    await this.logout(refreshToken);
     const newJsonWebToken = await JsonWebTokenEntity.refresh(refreshToken);
     await this._jsonWebTokenSaverService.saveJsonWebToken(newJsonWebToken.refreshToken);
     return newJsonWebToken;
-
   }
 }

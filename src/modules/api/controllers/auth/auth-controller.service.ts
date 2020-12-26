@@ -33,6 +33,10 @@ export class AuthControllerService implements
     return this._authService.authenticateUser(params);
   }
 
+  public async logout(refreshToken: string): Promise<void> {
+    return this._authService.logout(refreshToken);
+  }
+
   public async decodeAccessToken(token: string): Promise<JsonWebTokenParams> {
     return this._authService.decodeAccessToken(token);
   }
@@ -50,5 +54,10 @@ export class AuthControllerService implements
       httpOnly: true,
       sameSite: true,
     });
+  }
+
+  public resetTokens(response: Response): void {
+    response.clearCookie(`access-token`);
+    response.clearCookie(`refresh-token`);
   }
 }

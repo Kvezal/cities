@@ -33,6 +33,7 @@ describe('AuthControllerService', () => {
           provide: authServiceSymbol,
           useValue: {
             authenticateUser: async () => null,
+            logout: async () => null,
             checkAccessToken: async () => null,
             decodeAccessToken: async () => null,
             refreshToken: async () => null,
@@ -74,6 +75,22 @@ describe('AuthControllerService', () => {
       jest.spyOn(authService, `authenticateUser`).mockImplementationOnce(async () => jsonWebTokenEntity);
       const result: JsonWebTokenEntity = await service.authenticateUser(authenticateUserParams);
       expect(result).toBe(jsonWebTokenEntity);
+    });
+  });
+
+  describe(`logout method`, () => {
+    const refreshToken = `test`;
+
+    it(`should call logout method of AuthService`, async () => {
+      const logout = jest.spyOn(authService, `logout`);
+      await service.logout(refreshToken)
+      expect(logout).toHaveBeenCalledTimes(1);
+    });
+
+    it(`should call logout method of AuthService with params`, async () => {
+      const logout = jest.spyOn(authService, `logout`);
+      await service.logout(refreshToken)
+      expect(logout).toHaveBeenCalledWith(refreshToken);
     });
   });
 

@@ -385,123 +385,35 @@ describe(`Auth service`, () => {
   describe(`refreshToken method`, () => {
     const jsonWebTokenEntity: JsonWebTokenEntity = JsonWebTokenEntity.generate(jsonWebTokenEntityParams);
 
-    describe(`checkRefreshToken method of JsonWebTokenEntity`, () => {
+    describe(`logout method of Auth service`, () => {
       it(`should call`, async () => {
-        JsonWebTokenEntity.checkRefreshToken = jest.fn(JsonWebTokenEntity.checkRefreshToken);
         const authService = new AuthService(
           null,
           null,
           null,
-          {saveJsonWebToken: async () => null},
+          null,
           {checkExistedJsonWebToken: async () => true},
           {deleteJsonWebToken: async () => null}
         );
-        await authService.refreshToken(jsonWebTokenEntity.refreshToken);
-        expect(JsonWebTokenEntity.checkRefreshToken).toHaveBeenCalledTimes(1);
-      });
-
-      it(`should call without params`, async () => {
-        JsonWebTokenEntity.checkRefreshToken = jest.fn(JsonWebTokenEntity.checkRefreshToken);
-        const authService = new AuthService(
-          null,
-          null,
-          null,
-          {saveJsonWebToken: async () => null},
-          {checkExistedJsonWebToken: async () => true},
-          {deleteJsonWebToken: async () => null}
-        );
-        await authService.refreshToken(jsonWebTokenEntity.refreshToken);
-        expect(JsonWebTokenEntity.checkRefreshToken).toHaveBeenCalledWith(jsonWebTokenEntity.refreshToken);
-      });
-
-      it(`should throw error if token is invalid`, async () => {
-        JsonWebTokenEntity.checkRefreshToken = jest.fn(JsonWebTokenEntity.checkRefreshToken)
-          .mockResolvedValueOnce(false);
-        const authService = new AuthService(
-          null,
-          null,
-          null,
-          null,
-          null,
-          null
-        );
-        await expect(authService.refreshToken(jsonWebTokenEntity.refreshToken)).rejects
-          .toThrow(new Error(`JSON Web Token is invalid`));
-      });
-    });
-
-    describe(`checkExistedJsonWebToken method of JsonWebTokenCheckerService`, () => {
-      it(`should call`, async () => {
-        const checkExistedJsonWebToken = jest.fn().mockResolvedValueOnce(true);
-        const authService = new AuthService(
-          null,
-          null,
-          null,
-          {saveJsonWebToken: async () => null},
-          {checkExistedJsonWebToken},
-          {deleteJsonWebToken: async () => null}
-        );
-        await authService.refreshToken(jsonWebTokenEntity.refreshToken);
-        expect(checkExistedJsonWebToken).toHaveBeenCalledTimes(1);
+        const logout = jest.spyOn(authService, `logout`)
+        await authService.logout(jsonWebTokenEntity.refreshToken);
+        expect(logout).toHaveBeenCalledTimes(1);
       });
 
       it(`should call with params`, async () => {
-        const checkExistedJsonWebToken = jest.fn().mockResolvedValueOnce(true);
         const authService = new AuthService(
           null,
           null,
           null,
-          {saveJsonWebToken: async () => null},
-          {checkExistedJsonWebToken},
+          null,
+          {checkExistedJsonWebToken: async () => true},
           {deleteJsonWebToken: async () => null}
         );
-        await authService.refreshToken(jsonWebTokenEntity.refreshToken);
-        expect(checkExistedJsonWebToken).toHaveBeenCalledWith(jsonWebTokenEntity.refreshToken);
+        const logout = jest.spyOn(authService, `logout`)
+        await authService.logout(jsonWebTokenEntity.refreshToken);
+        expect(logout).toHaveBeenCalledWith(jsonWebTokenEntity.refreshToken);
       });
-
-      it(`should throw error if token isn't existed`, async () => {
-        const authService = new AuthService(
-          null,
-          null,
-          null,
-          null,
-          {checkExistedJsonWebToken: async () => false},
-          null
-        );
-        await expect(authService.refreshToken(jsonWebTokenEntity.refreshToken)).rejects
-          .toThrow(new Error(`JSON Web Token isn't existed`));
-      });
-    });
-
-    describe(`deleteJsonWebToken method of JsonWebTokenDeleterService`, () => {
-      it(`should call`, async () => {
-        const deleteJsonWebToken = jest.fn();
-        const authService = new AuthService(
-          null,
-          null,
-          null,
-          {saveJsonWebToken: async () => null},
-          {checkExistedJsonWebToken: async () => true},
-          {deleteJsonWebToken}
-        );
-        await authService.refreshToken(jsonWebTokenEntity.refreshToken);
-        expect(deleteJsonWebToken).toHaveBeenCalledTimes(1);
-      });
-
-      it(`should call with params`, async () => {
-        const deleteJsonWebToken = jest.fn();
-        const authService = new AuthService(
-          null,
-          null,
-          null,
-          {saveJsonWebToken: async () => null},
-          {checkExistedJsonWebToken: async () => true},
-          {deleteJsonWebToken}
-        );
-        await authService.refreshToken(jsonWebTokenEntity.refreshToken);
-        expect(deleteJsonWebToken).toHaveBeenCalledWith(jsonWebTokenEntity.refreshToken);
-      });
-    });
+    })
 
     describe(`refresh method of JsonWebTokenEntity`, () => {
       it(`should call`, async () => {
@@ -561,6 +473,128 @@ describe(`Auth service`, () => {
         );
         await authService.refreshToken(jsonWebTokenEntity.refreshToken);
         expect(saveJsonWebToken).toHaveBeenCalledWith(jsonWebTokenEntity.refreshToken);
+      });
+    });
+  });
+
+  describe(`logout method`, () => {
+    const jsonWebTokenEntity: JsonWebTokenEntity = JsonWebTokenEntity.generate(jsonWebTokenEntityParams);
+
+    describe(`checkRefreshToken method of JsonWebTokenEntity`, () => {
+      it(`should call`, async () => {
+        JsonWebTokenEntity.checkRefreshToken = jest.fn(JsonWebTokenEntity.checkRefreshToken);
+        const authService = new AuthService(
+          null,
+          null,
+          null,
+          {saveJsonWebToken: async () => null},
+          {checkExistedJsonWebToken: async () => true},
+          {deleteJsonWebToken: async () => null}
+        );
+        await authService.logout(jsonWebTokenEntity.refreshToken);
+        expect(JsonWebTokenEntity.checkRefreshToken).toHaveBeenCalledTimes(1);
+      });
+
+      it(`should call without params`, async () => {
+        JsonWebTokenEntity.checkRefreshToken = jest.fn(JsonWebTokenEntity.checkRefreshToken);
+        const authService = new AuthService(
+          null,
+          null,
+          null,
+          {saveJsonWebToken: async () => null},
+          {checkExistedJsonWebToken: async () => true},
+          {deleteJsonWebToken: async () => null}
+        );
+        await authService.logout(jsonWebTokenEntity.refreshToken);
+        expect(JsonWebTokenEntity.checkRefreshToken).toHaveBeenCalledWith(jsonWebTokenEntity.refreshToken);
+      });
+
+      it(`should throw error if token is invalid`, async () => {
+        JsonWebTokenEntity.checkRefreshToken = jest.fn(JsonWebTokenEntity.checkRefreshToken)
+          .mockResolvedValueOnce(false);
+        const authService = new AuthService(
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        );
+        await expect(authService.logout(jsonWebTokenEntity.refreshToken)).rejects
+          .toThrow(new Error(`JSON Web Token is invalid`));
+      });
+    });
+
+    describe(`checkExistedJsonWebToken method of JsonWebTokenCheckerService`, () => {
+      it(`should call`, async () => {
+        const checkExistedJsonWebToken = jest.fn().mockResolvedValueOnce(true);
+        const authService = new AuthService(
+          null,
+          null,
+          null,
+          {saveJsonWebToken: async () => null},
+          {checkExistedJsonWebToken},
+          {deleteJsonWebToken: async () => null}
+        );
+        await authService.logout(jsonWebTokenEntity.refreshToken);
+        expect(checkExistedJsonWebToken).toHaveBeenCalledTimes(1);
+      });
+
+      it(`should call with params`, async () => {
+        const checkExistedJsonWebToken = jest.fn().mockResolvedValueOnce(true);
+        const authService = new AuthService(
+          null,
+          null,
+          null,
+          {saveJsonWebToken: async () => null},
+          {checkExistedJsonWebToken},
+          {deleteJsonWebToken: async () => null}
+        );
+        await authService.logout(jsonWebTokenEntity.refreshToken);
+        expect(checkExistedJsonWebToken).toHaveBeenCalledWith(jsonWebTokenEntity.refreshToken);
+      });
+
+      it(`should throw error if token isn't existed`, async () => {
+        const authService = new AuthService(
+          null,
+          null,
+          null,
+          null,
+          {checkExistedJsonWebToken: async () => false},
+          null
+        );
+        await expect(authService.logout(jsonWebTokenEntity.refreshToken)).rejects
+          .toThrow(new Error(`JSON Web Token isn't existed`));
+      });
+    });
+
+    describe(`deleteJsonWebToken method of JsonWebTokenDeleterService`, () => {
+      it(`should call`, async () => {
+        const deleteJsonWebToken = jest.fn();
+        const authService = new AuthService(
+          null,
+          null,
+          null,
+          {saveJsonWebToken: async () => null},
+          {checkExistedJsonWebToken: async () => true},
+          {deleteJsonWebToken}
+        );
+        await authService.logout(jsonWebTokenEntity.refreshToken);
+        expect(deleteJsonWebToken).toHaveBeenCalledTimes(1);
+      });
+
+      it(`should call with params`, async () => {
+        const deleteJsonWebToken = jest.fn();
+        const authService = new AuthService(
+          null,
+          null,
+          null,
+          {saveJsonWebToken: async () => null},
+          {checkExistedJsonWebToken: async () => true},
+          {deleteJsonWebToken}
+        );
+        await authService.logout(jsonWebTokenEntity.refreshToken);
+        expect(deleteJsonWebToken).toHaveBeenCalledWith(jsonWebTokenEntity.refreshToken);
       });
     });
   });

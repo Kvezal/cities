@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Head,
   HttpCode,
   HttpStatus,
   Post,
@@ -15,6 +16,7 @@ import {
   ApiCreatedResponse,
   ApiHeader,
   ApiOkResponse,
+  ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -34,6 +36,7 @@ import {
 } from '../../filters';
 import { EApiRouteName } from '../api-route-names.enum';
 import { AuthControllerService } from './auth-controller.service';
+import { IRequest } from 'modules/api/middlewares';
 
 
 @ApiTags(`Auth`)
@@ -48,10 +51,10 @@ export class AuthController {
   @UseFilters(Filter)
   @HttpCode(HttpStatus.CREATED)
   @ApiCreatedResponse({
-    description: `User is authorized`,
+    description: `User authorization`,
     headers: {
       'set-cookie': {
-        description: `should return access and refresh cookies`,
+        description: `should return access and refresh token cookies`,
         required: true,
       },
     },
@@ -62,6 +65,29 @@ export class AuthController {
   ): Promise<void> {
     const jsonWebTokenEntity = await this._authControllerService.authenticateUser(body);
     this._authControllerService.setTokens(response, jsonWebTokenEntity);
+    response.send();
+  }
+
+
+  @Head(`logout`)
+  @UseFilters(JsonWebTokenExceptionFilter)
+  @HttpCode(HttpStatus.RESET_CONTENT)
+  @ApiResponse({
+    description: `User logout`,
+    headers: {
+      'set-cookie': {
+        description: `should reset access and refresh token cookies`,
+        required: true,
+      },
+    },
+  })
+  public async logout(
+    @Req() request: IRequest,
+    @Res() response: Response
+  ): Promise<void> {
+    const refreshToken = request.cookies[`refresh-token`];
+    await this._authControllerService.logout(refreshToken);
+    this._authControllerService.resetTokens(response);
     response.send();
   }
 
