@@ -127,7 +127,7 @@ LEFT JOIN (
    LEFT JOIN locations AS locations1 ON hotels2.location_id = locations1.id
    LEFT JOIN locations AS locations2 ON hotels1.location_id = locations2.id
    WHERE (:id != '' AND hotels2.id = :id::UUID)
-) AS hotel_distances ON (hotels.id = hotel_distances.hotel_id) AND (:sorting= 'nearby')
+) AS hotel_distances ON (hotels.id = hotel_distances.hotel_id) AND (:sorting = 'nearby')
 
 
 LEFT JOIN (
@@ -150,6 +150,7 @@ WHERE
   AND (:city::JSON->>'id' IS NULL OR :city::JSON->>'id' = '' OR cities.id = UUID(:city::JSON->>'id'))
   AND (:city::JSON->>'title' IS NULL OR :city::JSON->>'title' = '' OR cities.title = :city::JSON->>'title')
   AND (:is_favorite = FALSE OR favorite_flags.value)
+  AND (:sorting != 'nearby' OR hotels.id != :id::UUID)
 ORDER BY
   CASE
     WHEN (:sorting= 'rating')
