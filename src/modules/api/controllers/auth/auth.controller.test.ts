@@ -201,7 +201,6 @@ describe(`AuthController`, () => {
         const result = await request(app.getHttpServer())
           .head(logoutUrl)
           .send();
-        console.log(result.status);
         expect(result.status).toBe(HttpStatus.UNAUTHORIZED);
       });
 
