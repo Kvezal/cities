@@ -149,7 +149,7 @@ export class TablesDataCreator {
       longitude:
         getRandomInt(city.from.longitude * 100000, city.to.longitude * 100000) /
         100000,
-      zoom: 10,
+      zoom: 16,
     };
   }
 }
