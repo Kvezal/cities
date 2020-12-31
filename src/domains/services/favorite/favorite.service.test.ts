@@ -150,7 +150,9 @@ describe(`Favorite service`, () => {
       it(`should call with params`, async () => {
         hotelLoaderService.loadHotelById = jest.fn(hotelLoaderService.loadHotelById);
         await favoriteService.toggleFavorite(userParams.id, hotelParams.id);
-        expect(hotelLoaderService.loadHotelById).toHaveBeenCalledWith(hotelParams.id);
+        expect(hotelLoaderService.loadHotelById).toHaveBeenCalledWith({
+          hotelId: hotelParams.id,
+        });
       });
 
       it(`should throw exception if hotel doesn't exist`, async () => {

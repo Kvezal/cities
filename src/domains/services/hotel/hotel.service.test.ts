@@ -122,8 +122,9 @@ describe(`Hotel Service`, () => {
         {loadHotelById},
         null,
       );
-       ;
-      await expect(hotelService.getHotelById(hotelParams.id)).rejects.toThrow(new HotelException({
+      await expect(hotelService.getHotelById({
+        hotelId: hotelParams.id,
+      })).rejects.toThrow(new HotelException({
         field: EHotelField.ID,
         message: `Hotel with ${hotelParams.id} id doesn't exist`,
       }));
@@ -136,7 +137,9 @@ describe(`Hotel Service`, () => {
         {loadHotelById},
         null,
       );
-      await hotelService.getHotelById(hotelParams.id);
+      await hotelService.getHotelById({
+        hotelId: hotelParams.id,
+      });
       expect(loadHotelById).toHaveBeenCalledTimes(1);
     });
 
@@ -146,7 +149,9 @@ describe(`Hotel Service`, () => {
         {loadHotelById: async () => hotelEntity},
         null,
       );
-      const hotelResult = await hotelService.getHotelById(hotelParams.id);
+      const hotelResult = await hotelService.getHotelById({
+        hotelId: hotelParams.id,
+      });
       expect(hotelResult).toEqual(hotelEntity);
     });
   });

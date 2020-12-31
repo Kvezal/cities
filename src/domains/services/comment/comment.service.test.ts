@@ -215,7 +215,9 @@ describe(`Comment Service`, () => {
           {loadHotelById},
         );
         await commentService.createHotelComment(commentCreateParams);
-        expect(loadHotelById).toHaveBeenCalledWith(commentCreateParams.hotelId);
+        expect(loadHotelById).toHaveBeenCalledWith({
+          hotelId: commentCreateParams.hotelId,
+        });
       });
 
       it(`should throw exception if user not existed`, async () => {

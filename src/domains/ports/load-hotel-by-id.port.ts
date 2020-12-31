@@ -1,6 +1,7 @@
 import { HotelEntity } from 'domains/entities';
+import { IHotelSortingParams } from 'domains/interfaces';
 
 
 export interface LoadHotelByIdPort {
-  loadHotelById(hotelId: string): Promise<HotelEntity>;
+  loadHotelById(params: IHotelSortingParams): Promise<HotelEntity>;
 }

@@ -23,8 +23,11 @@ export class HotelAdapterService implements
   ) {
   }
 
-  public async loadHotelById(id: string): Promise<HotelEntity> {
-    const hotel: IHotelTableParams = await this._hotelsDbTable.findOne({ id });
+  public async loadHotelById(params: IHotelSortingParams): Promise<HotelEntity> {
+    const hotel: IHotelTableParams = await this._hotelsDbTable.findOne({
+      id: params.hotelId,
+      user_id: params.userId,
+    });
     return hotel && HotelMapper.mapToDomain(hotel)
   }
 

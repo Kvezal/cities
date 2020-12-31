@@ -89,8 +89,12 @@ export class HotelController {
     description: `lets to get hotel by id`,
   })
   public async getHotelById(
-    @Param(`hotelId`) hotelId: string
+    @Param(`hotelId`) hotelId: string,
+    @Req() request: IRequest
   ): Promise<HotelOutput> {
-    return this._hotelControllerService.getHotelById(hotelId);
+    return this._hotelControllerService.getHotelById({
+      hotelId: hotelId,
+      userId: request.locals?.userId,
+    });
   }
 }

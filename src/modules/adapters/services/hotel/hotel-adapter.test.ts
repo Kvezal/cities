@@ -167,34 +167,47 @@ describe(`Hotel Adapter Service`, () => {
     describe(`findOne method of HotelsDbTable`, () => {
       it(`should call`, async () => {
         const findOne = jest.spyOn(hotelsDbTable, `findOne`).mockResolvedValueOnce(hotelTableParams);
-        await service.loadHotelById(hotelEntityParams.id);
+        await service.loadHotelById({
+          hotelId: hotelEntityParams.id,
+        });
         expect(findOne).toHaveBeenCalledTimes(1);
       });
 
       it(`should call with params`, async () => {
         const findOne = jest.spyOn(hotelsDbTable, `findOne`).mockResolvedValueOnce(hotelTableParams);
-        await service.loadHotelById(hotelEntityParams.id);
-        expect(findOne).toHaveBeenCalledWith({ id: hotelEntityParams.id});
+        await service.loadHotelById({
+          hotelId: hotelEntityParams.id,
+        });
+        expect(findOne).toHaveBeenCalledWith({
+          id: hotelEntityParams.id,
+          user_id: undefined,
+        });
       });
     });
 
     describe(`mapToDomain method of HotelMapper`, () => {
       it(`should call `, async () => {
         HotelMapper.mapToDomain = jest.fn(HotelMapper.mapToDomain).mockReturnValueOnce(hotelEntity);
-        await service.loadHotelById(hotelEntityParams.id);
+        await service.loadHotelById({
+          hotelId: hotelEntityParams.id,
+        });
         expect(HotelMapper.mapToDomain).toHaveBeenCalledTimes(1);
       });
 
       it(`should call with params`, async () => {
         HotelMapper.mapToDomain = jest.fn(HotelMapper.mapToDomain).mockReturnValueOnce(hotelEntity);
-        await service.loadHotelById(hotelEntityParams.id);
+        await service.loadHotelById({
+          hotelId: hotelEntityParams.id,
+        });
         expect(HotelMapper.mapToDomain).toHaveBeenCalledWith(hotelTableParams);
       });
     });
 
     it(`should return result of mapToDomain method of HotelMapper`, async () => {
       HotelMapper.mapToDomain = jest.fn(HotelMapper.mapToDomain).mockReturnValueOnce(hotelEntity);
-      const hotelOrmEntityResult = await service.loadHotelById(hotelEntityParams.id);
+      const hotelOrmEntityResult = await service.loadHotelById({
+          hotelId: hotelEntityParams.id,
+        });
       expect(hotelOrmEntityResult).toEqual(hotelEntity);
     });
   });

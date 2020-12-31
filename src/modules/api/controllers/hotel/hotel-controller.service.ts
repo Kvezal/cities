@@ -31,8 +31,8 @@ export class HotelControllerService {
   }
 
 
-  public async getHotelById(hotelId: string): Promise<HotelOutput> {
-    const hotelEntity: HotelEntity = await this._hotelService.getHotelById(hotelId);
+  public async getHotelById(params: IHotelSortingParams): Promise<HotelOutput> {
+    const hotelEntity: HotelEntity = await this._hotelService.getHotelById(params);
     return hotelEntity && this.transformEntityToOutputData(hotelEntity);
   }
 

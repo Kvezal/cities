@@ -28,7 +28,7 @@ export class FavoriteService implements ToggleFavoriteUseCase {
   }
 
   public async toggleFavorite(userId: string, hotelId: string): Promise<FavoriteEntity> {
-    const hotel = await this._hotelLoaderService.loadHotelById(hotelId);
+    const hotel = await this._hotelLoaderService.loadHotelById({ hotelId });
     if (!hotel) {
       throw new HotelException({
         field: EHotelField.ID,

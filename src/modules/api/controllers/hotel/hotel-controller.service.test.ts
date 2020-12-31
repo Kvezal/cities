@@ -194,40 +194,40 @@ describe('HotelControllerService', () => {
     describe(`getHotelById of HotelService`, () => {
       it(`should call`, async () => {
         const getHotelById = jest.spyOn(hotelService, `getHotelById`);
-        await service.getHotelById(hotelId);
+        await service.getHotelById({ hotelId });
         expect(getHotelById).toHaveBeenCalledTimes(1);
       });
 
       it(`should call with params`, async () => {
         const getHotelById = jest.spyOn(hotelService, `getHotelById`);
-        await service.getHotelById(hotelId);
-        expect(getHotelById).toHaveBeenCalledWith(hotelId);
+        await service.getHotelById({ hotelId });
+        expect(getHotelById).toHaveBeenCalledWith({ hotelId });
       });
     });
 
     describe(`transformEntityToOutputData`, () => {
       it(`should call`, async () => {
         service.transformEntityToOutputData = jest.fn(service.transformEntityToOutputData);
-        await service.getHotelById(hotelId);
+        await service.getHotelById({ hotelId });
         expect(service.transformEntityToOutputData).toHaveBeenCalledTimes(1);
       });
 
       it(`should call with params`, async () => {
         service.transformEntityToOutputData = jest.fn(service.transformEntityToOutputData);
-        await service.getHotelById(hotelId);
+        await service.getHotelById({ hotelId });
         expect(service.transformEntityToOutputData).toBeCalledWith(hotelEntity);
       });
     });
 
     describe(`should return correct result`, () => {
       it(`if hotel with hotelId is existed`, async () => {
-        const result = await service.getHotelById(hotelId);
+        const result = await service.getHotelById({ hotelId });
         expect(result).toEqual(expectedHotelOutput);
       });
 
       it(`if hotel with hotelId isn't existed`, async () => {
         jest.spyOn(hotelService, `getHotelById`).mockImplementationOnce(async () => null);
-        const result = await service.getHotelById(hotelId);
+        const result = await service.getHotelById({ hotelId });
         expect(result).toBe(null);
       });
     });

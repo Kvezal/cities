@@ -24,12 +24,12 @@ export class HotelService implements GetHotelListQuery {
     return this._hotelListLoaderService.loadHotelList(sortParams);
   }
 
-  public async getHotelById(hotelId: string): Promise<HotelEntity> {
-    const hotelEntity: HotelEntity = await this._hotelLoaderService.loadHotelById(hotelId);
+  public async getHotelById(params: IHotelSortingParams): Promise<HotelEntity> {
+    const hotelEntity: HotelEntity = await this._hotelLoaderService.loadHotelById(params);
     if (!hotelEntity) {
       throw new HotelException({
         field: EHotelField.ID,
-        message: `Hotel with ${hotelId} id doesn't exist`,
+        message: `Hotel with ${params.hotelId} id doesn't exist`,
       })
     }
     return hotelEntity;

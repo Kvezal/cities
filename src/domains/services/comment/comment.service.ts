@@ -44,7 +44,9 @@ export class CommentService implements
       });
     }
 
-    const hotelEntity = await this._hotelLoaderService.loadHotelById(commentParams.hotelId);
+    const hotelEntity = await this._hotelLoaderService.loadHotelById({
+      hotelId: commentParams.hotelId,
+    });
     if (!hotelEntity) {
       throw new CommentError({
         field: ECommentField.HOTEL_ID,

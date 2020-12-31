@@ -126,7 +126,10 @@ describe('HotelController', () => {
           await request(app.getHttpServer())
             .get(hotelUrl)
             .send();
-          expect(getHotelList).toHaveBeenCalledWith(`test`);
+          expect(getHotelList).toHaveBeenCalledWith({
+            hotelId: `test`,
+            userId: undefined,
+          });
         });
       });
     });
