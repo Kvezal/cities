@@ -157,11 +157,11 @@ ORDER BY
       THEN rating.value
     WHEN (:sorting= 'high-price')
       THEN (hotels.price)
-    WHEN (:sorting= 'nearby')
-      THEN (hotel_distances.value)
   END DESC,
   CASE
     WHEN (:sorting= 'low-price')
       THEN (hotels.price)
+    WHEN (:sorting= 'nearby')
+      THEN (hotel_distances.value)
   END ASC,
   ((favorite_counts.value + comment_counts.value) * rating.value) DESC;
