@@ -23,4 +23,5 @@ LEFT JOIN (
 ) AS users ON comments.user_id = users.id
 WHERE (:id = '' OR comments.id = :id::UUID)
   AND (:user::JSON->>'id' IS NULL OR users.id = UUID(:user::JSON->>'id'))
-  AND (:hotel_id = '' OR comments.hotel_id = UUID(:hotel_id));
+  AND (:hotel_id = '' OR comments.hotel_id = UUID(:hotel_id))
+ORDER BY created_at DESC;
