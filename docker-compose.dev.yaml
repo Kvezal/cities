@@ -1,0 +1,40 @@
+version: "3.9"
+services:
+  postgres:
+    container_name: postgres
+    build:
+      context: ./docker/postgres
+      dockerfile: Dockerfile
+    env_file: .env
+    environment:
+      POSTGRES_PASSWORD: $DB_PASSWORD
+      POSTGRES_USER: $DB_USER
+      POSTGRES_DB: $DB_DATABASE
+    ports:
+      - 5432:5432
+    networks:
+      - six-cities
+    stdin_open: true
+    tty: true
+  api:
+    build:
+      context: ./
+      dockerfile: ./docker/api/Dockerfile
+    container_name: api
+    env_file: .env
+    ports:
+      - $BACKEND_PORT:$BACKEND_PORT
+    depends_on:
+      - postgres
+    links:
+      - postgres:postgres
+    networks:
+      - six-cities
+    entrypoint: /app/scripts/api.sh fake
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./:/app
+      - /app/node_modules
+networks:
+  six-cities:

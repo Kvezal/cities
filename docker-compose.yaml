@@ -1,0 +1,35 @@
+version: "3.9"
+services:
+  postgres:
+    image: kvezal/cities-postgres:latest
+    container_name: postgres
+    env_file: .env
+    environment:
+      POSTGRES_PASSWORD: $DB_PASSWORD
+      POSTGRES_USER: $DB_USER
+      POSTGRES_DB: $DB_DATABASE
+    ports:
+      - 5432:5432
+    networks:
+      - six-cities
+    stdin_open: true
+    tty: true
+    volumes:
+    - ./dbdata:/var/lib/postgresql/data
+  api:
+    image: kvezal/cities-api:latest
+    container_name: api
+    env_file: .env
+    ports:
+      - $BACKEND_PORT:$BACKEND_PORT
+    depends_on:
+      - postgres
+    links:
+      - postgres:postgres
+    networks:
+      - six-cities
+    entrypoint: /app/scripts/api.sh
+    stdin_open: true
+    tty: true
+networks:
+  six-cities:

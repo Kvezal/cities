@@ -39,11 +39,8 @@ const uuidOsspExtension = `CREATE EXTENSION IF NOT EXISTS "uuid-ossp";`;
 
 const dbRightsSql = `GRANT ALL ON DATABASE ${process.env.DB_DATABASE} TO ${process.env.DB_USER};`;
 
-let hasError = false;
-
 const displayError = (message) => {
   console.log(red(message));
-  hasError = true;
 }
 
 const initDb = async () => {
@@ -105,8 +102,5 @@ export const command: ICli = {
     await initDb();
     await setDbExtensions();
     await initTables();
-    if (hasError) {
-      process.exit(1);
-    }
   },
 };

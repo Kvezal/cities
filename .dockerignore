@@ -1,0 +1,12 @@
+node_modules
+.env-example
+.env
+docker
+dist
+dbdata
+test
+.git
+.gitignore
+docker-compose.*
+scripts/publish.sh
+scripts/app.sh
